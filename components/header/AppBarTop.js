@@ -8,6 +8,7 @@ import FlatButton from 'material-ui/FlatButton';
 import Toggle from 'material-ui/Toggle';
 
 import RightMenu from './RightMenu';
+import ResultNav from './ResultNav';
 
 const styles = {
     container: {
@@ -19,7 +20,7 @@ const styles = {
 export default class AppBarTop extends React.Component {
     constructor() {
         super();
-        this.state = { open: false, locked: true }
+        this.state = { searchDialogOpen: false, resultNavOpen: true, locked: true }
 
         this.handleLeftIconTap = this.handleLeftIconTap.bind(this);
         this.handleOpenSearch = this.handleOpenSearch.bind(this);
@@ -60,11 +61,12 @@ export default class AppBarTop extends React.Component {
                     onLeftIconButtonTouchTap={this.handleLeftIconTap}
                     />
 
+                <ResultNav open={this.state.resultNavOpen} />
                 <div style={styles.container}>
                     <Dialog
                         ref="dialog"
                         title="Search"
-                        open={this.state.open}
+                        open={this.state.searchDialogOpen}
                         actions={standardActions}
                         onRequestClose={this.handleCloseSearch}
                         >
@@ -78,16 +80,15 @@ export default class AppBarTop extends React.Component {
     handleLeftIconTap() {
         //lilo:TODO
         console.log('AppBarTop - handleLeftIconTap');
+        this.setState({ resultNavOpen: !this.state.resultNavOpen });
     }
 
     handleOpenSearch() {
-        console.log('AppBarTop - handleOpenSearch');
-        this.setState({ open: true });
+        this.setState({ searchDialogOpen: true });
     };
 
     handleCloseSearch() {
-        console.log('AppBarTop - handleCloseSearch');
-        this.setState({ open: false });
+        this.setState({ searchDialogOpen: false });
     };
 
     handleChange(event, locked) {

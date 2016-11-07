@@ -6,6 +6,12 @@ import Title from './Title';
 import RaisedButton from 'material-ui/RaisedButton';
 
 export default class Header extends React.Component {
+
+    constructor(props, context) {
+        super(props, context);
+        this.handleDefaultButtonTap = this.handleDefaultButtonTap.bind(this);
+    }
+    
     updateTitle(e) {
         this.props.setTitle(e.target.value);
     }
@@ -19,8 +25,13 @@ export default class Header extends React.Component {
                 
                 <input value={this.props.title} onChange={this.updateTitle.bind(this)} />
                 <br />
-                <RaisedButton label="Default" />
+                <RaisedButton label="Click Me!" onTouchTap={this.handleDefaultButtonTap} />
             </div>
         );
+    }
+
+    handleDefaultButtonTap() {
+        //lilo:TODO
+        console.log('AppBarTop - handleButtonTap');
     }
 }
