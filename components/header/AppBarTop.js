@@ -20,12 +20,7 @@ const styles = {
 export default class AppBarTop extends React.Component {
     constructor() {
         super();
-        this.state = { searchDialogOpen: false, resultNavOpen: true, locked: true }
-
-        this.handleLeftIconTap = this.handleLeftIconTap.bind(this);
-        this.handleOpenSearch = this.handleOpenSearch.bind(this);
-        this.handleCloseSearch = this.handleCloseSearch.bind(this);
-        this.handleChange = this.handleChange.bind(this);
+        this.state = { searchDialogOpen: false, locked: true }
     }
 
     render() {
@@ -33,42 +28,43 @@ export default class AppBarTop extends React.Component {
             <FlatButton
                 label="Ok"
                 primary={true}
-                onTouchTap={this.handleCloseSearch}
+                onTouchTap={this.handleCloseSearch.bind(this)}
                 />
         );
 
         return (
-            <div>הקלטות
+            <div>
                 <Toggle
                     label="Lock"
                     defaultToggled={true}
-                    onToggle={this.handleChange}
+                    onToggle={this.handleChange.bind(this)}
                     labelPosition="right"
                     style={{ margin: 20 }}
                     />
 
                 <AppBar
+                    style={{ color: 'white', background: 'gray' }}
                     title="הקלטות"
                     iconElementRight={
                         <div>
-                            <IconButton tooltip="search" onTouchTap={this.handleOpenSearch}>
+                            <IconButton tooltip="search" onTouchTap={this.handleOpenSearch.bind(this)}>
                                 <SearchIcon />
                             </IconButton>
                             <RightMenu />
                         </div>
                     }
 
-                    onLeftIconButtonTouchTap={this.handleLeftIconTap}
+                    onLeftIconButtonTouchTap={this.handleLeftIconTap.bind(this)}
                     />
 
-                <ResultNav open={this.state.resultNavOpen} />
+                <ResultNav ref="resultNav" open={false} />
                 <div style={styles.container}>
                     <Dialog
                         ref="dialog"
                         title="Search"
                         open={this.state.searchDialogOpen}
                         actions={standardActions}
-                        onRequestClose={this.handleCloseSearch}
+                        onRequestClose={this.handleCloseSearch.bind(this)}
                         >
                         lilox:TODO
                     </Dialog>
@@ -78,9 +74,8 @@ export default class AppBarTop extends React.Component {
     }
 
     handleLeftIconTap() {
-        //lilo:TODO
         console.log('AppBarTop - handleLeftIconTap');
-        this.setState({ resultNavOpen: !this.state.resultNavOpen });
+        this.refs.resultNav.setState({ open: !this.refs.resultNav.state.open });
     }
 
     handleOpenSearch() {

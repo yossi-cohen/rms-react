@@ -9,9 +9,6 @@ import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 export default class RightMenu extends React.Component {
     constructor() {
         super();
-
-        this.handleSignOut = this.handleSignOut.bind(this);
-        this.handleSettings = this.handleSettings.bind(this);
     }
 
     render() {
@@ -23,8 +20,8 @@ export default class RightMenu extends React.Component {
                 targetOrigin={{ horizontal: 'right', vertical: 'top' }}
                 anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
                 >
-                <MenuItem primaryText="Sign out" onTouchTap={this.handleSignOut} />
-                <MenuItem primaryText="Settings..." onTouchTap={this.handleSettings} />
+                <MenuItem primaryText="Sign out" onTouchTap={this.handleSignOut.bind(this)} />
+                <MenuItem primaryText="Settings..." onTouchTap={this.handleSettings.bind(this)} />
             </IconMenu>
         );
     }

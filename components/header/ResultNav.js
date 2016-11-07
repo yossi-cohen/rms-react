@@ -6,7 +6,6 @@ export default class ResultNav extends React.Component {
     constructor(props) {
         super(props);
         this.state = { open: this.props ? this.props.open : false }
-        this.handleClose = this.handleClose.bind(this);
     }
 
     render() {
@@ -17,8 +16,8 @@ export default class ResultNav extends React.Component {
                 open={this.state.open}
                 onRequestChange={(open) => this.setState({ open })}
                 >
-                <MenuItem onTouchTap={this.handleClose}>Item 1</MenuItem>
-                <MenuItem onTouchTap={this.handleClose}>Item 2</MenuItem>
+                <MenuItem onTouchTap={this.handleClose.bind(this)}>Item 1</MenuItem>
+                <MenuItem onTouchTap={this.handleClose.bind(this)}>Item 2</MenuItem>
             </Drawer>
         );
     }

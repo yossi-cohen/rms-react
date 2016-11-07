@@ -32,6 +32,6 @@ export default class Header extends React.Component {
 
     handleDefaultButtonTap() {
         //lilo:TODO
-        console.log('AppBarTop - handleButtonTap');
+        console.log('Header - handleButtonTap');
     }
 }

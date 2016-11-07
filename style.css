@@ -3,7 +3,8 @@ html {
 }
 
 body {
-    background-color: yellowgreen;
+    /*background-color: yellowgreen;*/
+    background-color: dimgrey;
     font-size: 13px;
     line-height: 20px;
 }
