@@ -27,6 +27,7 @@ sudo npm install webpack-dev-server -g
 #### react-ui
  
 http://www.material-ui.com/#/get-started/installation
+also: https://www.npmjs.com/package/material-ui
 
 start with:
 
