@@ -1,4 +1,9 @@
+html {
+    font-family: 'Roboto', sans-serif;
+}
+
 body {
-    font-size: 2em;
-    background-color: yellowgreen
+    background-color: yellowgreen;
+    font-size: 13px;
+    line-height: 20px;
 }

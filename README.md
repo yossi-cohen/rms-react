@@ -7,7 +7,7 @@ touch index.html App.js main.js webpack.config.js
 
 #### notes
 - code formatting ctrl-shift-i
-
+npm install react-tap-event-plugin
 mkdir ${PROJECT_DIR} && cd ${PROJECT_DIR}
 npm init
 npm install react react-dom --save
@@ -20,6 +20,17 @@ npm install babel-core babel-loader jshint jshint-loader node-libs-browser babel
 3. run 'npm install' from the terminal
 4. install webpack and webpack-dev-server globally:
 ```
-npm install webpack-dev-server -g
-npm install webpack -g
+sudo npm install webpack -g
+sudo npm install webpack-dev-server -g
+```
+
+#### react-ui
+ 
+http://www.material-ui.com/#/get-started/installation
+
+start with:
+
+```
+npm install --save material-ui
+npm install --save react-tap-event-plugin
 ```

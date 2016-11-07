@@ -16,6 +16,7 @@ module.exports = {
         //         loader: 'jshint-loader'
         //     }
         // ],
+        noParse: [],
         loaders: [
             {
                 test: [/\.js$/, /\.es6$/],
@@ -25,17 +26,17 @@ module.exports = {
                     presets: ['react', 'es2015']
                 }
             },
-            {
-                test: /\.css$/,
-                loader: 'style!css!'
-            }
+            { test: /\.css$/, loader: 'style!css!' },
+            { test: /\.jsx$/, loader: 'jsx-loader?harmony' }
         ]
     },
 
     // resolve is a section which lets us specify what kind of file types we can process 
-    // without specifically giving them a file extension.
+    // without specifically giving them a file extension.{ test: /\.jsx$/, loader: 'jsx-loader?harmony' }
     // e.g., require('./logger'); instead of: require('./logger.es6');
     resolve: {
-        extensions: ['', '.js', '.es6']
+        modulesDirectories: ['node_modules'],
+        alias: {},
+        extensions: ['', '.jsx', '.js', '.es6']
     }
 }
