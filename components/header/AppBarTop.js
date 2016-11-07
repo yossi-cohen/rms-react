@@ -1,53 +1,13 @@
 import React from 'react';
 
-import mui from 'material-ui';
 import AppBar from 'material-ui/AppBar';
 import Dialog from 'material-ui/Dialog';
 import IconButton from 'material-ui/IconButton';
-import MenuItem from 'material-ui/MenuItem';
 import SearchIcon from 'material-ui/svg-icons/action/search';
-import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
-
-// lilox
-import IconMenu from 'material-ui/IconMenu';
 import Toggle from 'material-ui/Toggle';
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
-import NavigationClose from 'material-ui/svg-icons/navigation/close';
 
-class RightMenu extends React.Component {
-    constructor() {
-        super();
-
-        this.handleSignOut = this.handleSignOut.bind(this);
-        this.handleSettings = this.handleSettings.bind(this);
-    }
-
-    render() {
-        return (
-            <IconMenu
-                iconButtonElement={
-                    <IconButton><MoreVertIcon /></IconButton>
-                }
-                targetOrigin={{ horizontal: 'right', vertical: 'top' }}
-                anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
-                >
-                <MenuItem primaryText="Sign out" onTouchTap={this.handleSignOut} />
-                <MenuItem primaryText="Settings..." onTouchTap={this.handleSettings} />
-            </IconMenu>
-        );
-    }
-
-    handleSignOut() {
-        console.log('AppBar - handleSignOut');
-    }
-
-    handleSettings() {
-        console.log('AppBar - handleSettings');
-    }
-}
-
-RightMenu.muiName = 'IconMenu';
+import RightMenu from './RightMenu';
 
 const styles = {
     container: {
@@ -77,7 +37,7 @@ export default class AppBarTop extends React.Component {
         );
 
         return (
-            <div>
+            <div>הקלטות
                 <Toggle
                     label="Lock"
                     defaultToggled={true}
@@ -87,7 +47,7 @@ export default class AppBarTop extends React.Component {
                     />
 
                 <AppBar
-                    title="AppBar Title"
+                    title="הקלטות"
                     iconElementRight={
                         <div>
                             <IconButton tooltip="search" onTouchTap={this.handleOpenSearch}>
@@ -117,16 +77,16 @@ export default class AppBarTop extends React.Component {
 
     handleLeftIconTap() {
         //lilo:TODO
-        console.log('AppBar - handleLeftIconTap');
+        console.log('AppBarTop - handleLeftIconTap');
     }
 
     handleOpenSearch() {
-        console.log('AppBar - handleOpenSearch');
+        console.log('AppBarTop - handleOpenSearch');
         this.setState({ open: true });
     };
 
     handleCloseSearch() {
-        console.log('AppBar - handleCloseSearch');
+        console.log('AppBarTop - handleCloseSearch');
         this.setState({ open: false });
     };
 
