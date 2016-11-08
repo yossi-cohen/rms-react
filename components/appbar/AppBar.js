@@ -31,8 +31,8 @@ export default class AppBar extends React.Component {
                     }
 
                     onLeftIconButtonTouchTap={this.handleToggleResultNav.bind(this)}
-                    />
-
+                >
+                </MuiAppBar>
                 <SearchDialog ref="search" open={this.state.searchDialogOpen} />
                 <ResultNav ref="resultNav" open={this.state.resultNavOpen} />
             </div>
