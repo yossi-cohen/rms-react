@@ -5,6 +5,7 @@ import { Router, Route, IndexRoute, hashHistory } from 'react-router';
 import { applyMiddleware, createStore, combineReducers } from 'redux'
 import logger from 'redux-logger'
 import thunk from 'redux-thunk'
+import promise from "redux-promise-middleware";
 
 import injectTapEventPlugin from 'react-tap-event-plugin';
 
@@ -26,29 +27,23 @@ const reducers = combineReducers({
     videos: videosReducer
 });
 
-const error = (store) => (next) => (action) => {
-    try {
-        next(action);
-    } catch (e) {
-        console.log('ERROR: ', e);
-    }
-}
-
-const middleware = applyMiddleware(logger(), error);
+//lilox:log
+// const middleware = {};
+const middleware = applyMiddleware(promise(), thunk, logger())
 const store = createStore(reducers, middleware);
 
 // ---------------------------------------------------------------
 // TESTS - start
 // ---------------------------------------------------------------
-store.subscribe(() => {
-    console.log('store changed: ', store.getState())
-});
+// store.subscribe(() => {
+//     console.log('store changed: ', store.getState())
+// });
 
 store.dispatch({type: "CHANGE_NAME", payload: 'lilo'});
 store.dispatch({type: "CHANGE_AGE", payload: 50});
 
 // update video-list
-store.dispatch({type: "CHANGE_VIDEOS", payload: [
+store.dispatch({type: "UPDATE_VIDEOS", payload: [
         {textKey: 'Material UI', valueKey: 'video-1'},
         {textKey: 'Elemental UI', valueKey: 'video-2'},
         {textKey: 'Grommet', valueKey: 'video-3'},
