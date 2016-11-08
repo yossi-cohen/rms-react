@@ -1,12 +1,14 @@
 const reducer = (state = [], action) => {
     switch (action.type) {
         case 'CHANGE_VIDEOS':
-            console.log(action.payload);
-            state = {...state, videos: action.payload};
+            state = [...action.payload];
             break;
 
         case 'ADD_VIDEO':
-            return state.videos.concat(action.payload);
+            return [
+                ...state,
+                action.payload
+            ];
             break;
     }
 

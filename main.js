@@ -2,7 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Router, Route, IndexRoute, hashHistory } from 'react-router';
 
-import { createStore, combineReducers } from 'redux'
+import { applyMiddleware, createStore, combineReducers } from 'redux'
+import logger from 'redux-logger'
+import thunk from 'redux-thunk'
 
 import injectTapEventPlugin from 'react-tap-event-plugin';
 
@@ -11,6 +13,7 @@ import Search from './components/Search';
 import Settings from './components/Settings';
 import Video from './components/Video';
 
+// reducers
 import userReducer from './store/userReducer';
 import videosReducer from './store/videosReducer';
 
@@ -23,18 +26,28 @@ const reducers = combineReducers({
     videos: videosReducer
 });
 
-const store = createStore(reducers);
+const error = (store) => (next) => (action) => {
+    try {
+        next(action);
+    } catch (e) {
+        console.log('ERROR': e);
+    }
+}
+
+const middleware = applyMiddleware(logger(), error);
+const store = createStore(reducers, middleware);
 
 // ---------------------------------------------------------------
 // TESTS - start
 // ---------------------------------------------------------------
 store.subscribe(() => {
-    console.log('sliloxtore changed: ', store.getState())
+    console.log('store changed: ', store.getState())
 });
 
 store.dispatch({type: "CHANGE_NAME", payload: 'lilo'});
 store.dispatch({type: "CHANGE_AGE", payload: 50});
 
+// update video-list
 store.dispatch({type: "CHANGE_VIDEOS", payload: [
         {textKey: 'Material UI', valueKey: 'video-1'},
         {textKey: 'Elemental UI', valueKey: 'video-2'},
@@ -47,8 +60,11 @@ store.dispatch({type: "CHANGE_VIDEOS", payload: [
 // add video
 store.dispatch({type: "ADD_VIDEO", payload: {textKey: 'New Video', valueKey: 'video-6'}});
 
-//lilox:TODO - remove video
-// store.dispatch({type: "REMOVE_VIDEO", payload: {valueKey: 'video-6'}});
+// store.dispatch((dispatch) => {
+//     dispatch({type: 'FOO'})
+//     // do somthing async
+//     dispatch({type: 'BAR'})
+// });
 
 // ---------------------------------------------------------------
 // TESTS - end
