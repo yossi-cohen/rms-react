@@ -1,4 +1,4 @@
-export const userReducer = (state = {}, action) => {
+const reducer = (state = {}, action) => {
     switch (action.type) {
         case 'CHANGE_NAME':
             state = {...state, name: action.payload}
@@ -10,3 +10,5 @@ export const userReducer = (state = {}, action) => {
 
     return state;
 };
+
+export default reducer;

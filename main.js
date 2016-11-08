@@ -11,45 +11,25 @@ import Search from './components/Search';
 import Settings from './components/Settings';
 import Video from './components/Video';
 
-// lilox
-// import userReducer from './store/userReducer';
-// import videosReducer from './store/videosReducer';
-const userReducer = (state = {}, action) => {
-    switch (action.type) {
-        case 'CHANGE_NAME':
-            state = {...state, name: action.payload}
-            break;
-        case 'CHANGE_AGE':
-            state = {...state, age: action.payload}
-            break;
-    }
+import userReducer from './store/userReducer';
+import videosReducer from './store/videosReducer';
 
-    return state;
-};
+// Needed for onTouchTap 
+// http://stackoverfloinjectTapEventPluginw.com/a/34015469/988941 
+injectTapEventPlugin();
 
-const videosReducer = (state = [], action) => {
-    switch (action.type) {
-        case 'CHANGE_VIDEOS':
-            state = {...state, videos: action.payload}
-            break;
-
-        case 'ADD_VIDEO':
-            return state.videos.concat(action.payload);
-            break;
-    }
-
-    return state;
-};
-
-const reducers = combineReducers({
+const reducers = combineReducers({ 
     user: userReducer,
     videos: videosReducer
 });
 
 const store = createStore(reducers);
 
+// ---------------------------------------------------------------
+// TESTS - start
+// ---------------------------------------------------------------
 store.subscribe(() => {
-    console.log('store changed: ', store.getState())
+    console.log('sliloxtore changed: ', store.getState())
 });
 
 store.dispatch({type: "CHANGE_NAME", payload: 'lilo'});
@@ -60,7 +40,7 @@ store.dispatch({type: "CHANGE_VIDEOS", payload: [
         {textKey: 'Elemental UI', valueKey: 'video-2'},
         {textKey: 'Grommet', valueKey: 'video-3'},
         {textKey: 'Mui', valueKey: 'video-4'},
-        {textKey: 'Rebass', valueKey: 'video-5'},
+        {textKey: 'Rebass', valueKey: 'video-5'}
     ]
 });
 
@@ -70,9 +50,9 @@ store.dispatch({type: "ADD_VIDEO", payload: {textKey: 'New Video', valueKey: 'vi
 //lilox:TODO - remove video
 // store.dispatch({type: "REMOVE_VIDEO", payload: {valueKey: 'video-6'}});
 
-// Needed for onTouchTap 
-// http://stackoverfloinjectTapEventPluginw.com/a/34015469/988941 
-injectTapEventPlugin();
+// ---------------------------------------------------------------
+// TESTS - end
+// ---------------------------------------------------------------
 
 ReactDOM.render(
     <Router history={hashHistory}>
