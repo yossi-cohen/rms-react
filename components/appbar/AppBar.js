@@ -1,6 +1,6 @@
 import React from 'react';
 
-import AppBar from 'material-ui/AppBar';
+import MuiAppBar from 'material-ui/AppBar';
 import Dialog from 'material-ui/Dialog';
 import IconButton from 'material-ui/IconButton';
 import SearchIcon from 'material-ui/svg-icons/action/search';
@@ -17,7 +17,7 @@ const styles = {
     },
 };
 
-export default class AppBarTop extends React.Component {
+export default class AppBar extends React.Component {
     constructor() {
         super();
         this.state = { searchDialogOpen: false, locked: true }
@@ -42,7 +42,7 @@ export default class AppBarTop extends React.Component {
                     style={{ margin: 20 }}
                     />
 
-                <AppBar
+                <MuiAppBar
                     style={{ color: 'white', background: 'gray' }}
                     title="הקלטות"
                     iconElementRight={
@@ -74,7 +74,6 @@ export default class AppBarTop extends React.Component {
     }
 
     handleLeftIconTap() {
-        console.log('AppBarTop - handleLeftIconTap');
         this.refs.resultNav.setState({ open: !this.refs.resultNav.state.open });
     }
 
