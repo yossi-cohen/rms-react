@@ -3,7 +3,7 @@
 sudo npm install babel webpack webpack-dev-server -g
 
 
-touch index.html App.js main.js webpack.config.js
+touch index.html App.js index.js webpack.config.js
 
 #### notes
 - code formatting ctrl-shift-i
