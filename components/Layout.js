@@ -1,10 +1,13 @@
 import React from 'react';
 
+import { Link } from 'react-router';
+
 import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 import AppBar from './appbar/AppBar';
+import Search from './Search';
 import Video from './Video';
 
 export default class Layout extends React.Component {
@@ -17,7 +20,7 @@ export default class Layout extends React.Component {
             <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
                 <div>
                     <AppBar />
-                    <Video />
+                    {this.props.children}
                 </div>
             </MuiThemeProvider>
         );

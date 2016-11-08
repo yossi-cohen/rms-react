@@ -6,7 +6,7 @@ import SearchIcon from 'material-ui/svg-icons/action/search';
 
 import RightMenu from './RightMenu';
 import ResultNav from './ResultNav';
-import Search from './Search';
+import SearchDialog from './SearchDialog';
 
 export default class AppBar extends React.Component {
     constructor() {
@@ -33,7 +33,7 @@ export default class AppBar extends React.Component {
                     onLeftIconButtonTouchTap={this.handleToggleResultNav.bind(this)}
                     />
 
-                <Search ref="search" open={this.state.searchDialogOpen} />
+                <SearchDialog ref="search" open={this.state.searchDialogOpen} />
                 <ResultNav ref="resultNav" open={this.state.resultNavOpen} />
             </div>
         );
