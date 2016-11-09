@@ -15,9 +15,6 @@ import Search from './components/Search';
 import Settings from './components/Settings';
 import Video from './components/Video';
 
-//lilox
-test(store);
-
 ReactDOM.render(
     <Provider store={store}>
         <Router history={hashHistory}>
@@ -31,14 +28,3 @@ ReactDOM.render(
     </Provider>,
     document.getElementById('app')
 );
-
-function test(store) {
-    store.subscribe(() => {
-        console.log('store changed: ', store.getState())
-    });
-
-    store.dispatch(changeName('lilo'));
-    store.dispatch(changeAge(50));
-
-    store.dispatch(fetchVideos());
-}

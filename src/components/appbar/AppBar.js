@@ -4,6 +4,8 @@ import MuiAppBar from 'material-ui/AppBar';
 import IconButton from 'material-ui/IconButton';
 import SearchIcon from 'material-ui/svg-icons/action/search';
 
+import { Link } from 'react-router';
+
 import RightMenu from './RightMenu';
 import ResultNav from './ResultNav';
 import SearchDialog from './SearchDialog';
@@ -31,7 +33,7 @@ export default class AppBar extends React.Component {
                     }
 
                     onLeftIconButtonTouchTap={this.handleToggleResultNav.bind(this)}
-                >
+                    >
                 </MuiAppBar>
                 <SearchDialog ref="search" open={this.state.searchDialogOpen} />
                 <ResultNav ref="resultNav" open={this.state.resultNavOpen} />

@@ -1,3 +1,5 @@
+import * as types from '../constants/ActionTypes'
+
 const initialState = {
   fetching: false,
   fetched: false,
@@ -7,13 +9,13 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case "FETCH_VIDEOS_PENDING": {
+    case types.FETCH_VIDEOS_REQUEST: {
       return {...state, fetching: true}
     }
-    case "FETCH_VIDEOS_REJECTED": {
+    case types.FETCH_TODOS_FAILURE: {
       return {...state, fetching: false, error: action.payload}
     }
-    case "FETCH_VIDEOS_FULFILLED": {
+    case types.FETCH_TODOS_SUCCESS: {
       return {
         ...state,
         fetching: false,
