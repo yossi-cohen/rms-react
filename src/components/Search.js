@@ -2,6 +2,8 @@ import React from 'react';
 
 import AutoComplete from 'material-ui/AutoComplete';
 
+import store from "../store";
+
 //lilox:TODO - auto-complete data source (should come from server)
 const dataSource = [
     { textKey: 'Material UI', valueKey: 'value-1' },
@@ -29,7 +31,11 @@ export default class Search extends React.Component {
     //lilox
     componentDidMount() {
         console.log('lilox ------------------------------------------------------------------------------------');
+        console.log('props : ');
         console.log(this.props);
+        console.log('lilox ------------------------------------------------------------------------------------');
+        console.log('store-state: ');
+        console.log(store.getState());
         console.log('lilox ------------------------------------------------------------------------------------');
     }
 
