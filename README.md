@@ -35,3 +35,6 @@ start with:
 npm install --save material-ui
 npm install --save react-tap-event-plugin
 ```
+
+json-server db.json
+// json-server --watch db.json
