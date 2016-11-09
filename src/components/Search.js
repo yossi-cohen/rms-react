@@ -26,6 +26,13 @@ export default class Search extends React.Component {
         super(props);
     }
 
+    //lilox
+    componentDidMount() {
+        console.log('lilox ------------------------------------------------------------------------------------');
+        console.log(this.props);
+        console.log('lilox ------------------------------------------------------------------------------------');
+    }
+
     render() {
         return (
             <div className="search">

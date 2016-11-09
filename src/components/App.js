@@ -10,9 +10,33 @@ import AppBar from './appbar/AppBar';
 import Search from './Search';
 import Video from './Video';
 
-export default class Layout extends React.Component {
+//lilox:TODO - fetch autocomplete data from server...
+import { connect } from 'react-redux'
+import { fetchVideos } from '../actions';
+
+function mapStateToProps(state) {
+    const { data } = state;
+    return {
+        data
+    };
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        fetchVideos() {
+            dispatch(fetchVideos());
+        }
+    }
+}
+
+class App extends React.Component {
     constructor() {
         super();
+    }
+
+    //lilox:TODO
+    componentDidMount() {
+        this.props.fetchVideos();
     }
 
     render() {
@@ -26,3 +50,6 @@ export default class Layout extends React.Component {
         );
     }
 }
+
+// Export a container that wraps App
+export default connect(mapStateToProps, mapDispatchToProps)(App);
