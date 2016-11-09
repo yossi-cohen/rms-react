@@ -1,3 +1,4 @@
+import "../style.css"
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux'
@@ -7,8 +8,7 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin();
 
 import store from "./store";
-import { changeName, changeAge } from "./actions/userActions";
-import { fetchVideos } from "./actions/videoActions";
+import { changeName, changeAge, fetchVideos } from "./actions";
 
 import App from './components/App';
 import Search from './components/Search';
@@ -41,17 +41,4 @@ function test(store) {
     store.dispatch(changeAge(50));
 
     store.dispatch(fetchVideos());
-
-    // update video-list
-    // store.dispatch({type: "UPDATE_VIDEOS", payload: [
-    //         {textKey: 'Material UI', valueKey: 'video-1'},
-    //         {textKey: 'Elemental UI', valueKey: 'video-2'},
-    //         {textKey: 'GrommaddTodoet', valueKey: 'video-3'},
-    //         {textKey: 'Mui', valueKey: 'video-4'},
-    //         {textKey: 'Rebass', valueKey: 'video-5'}
-    //     ]
-    // });
-
-    // add video
-    // store.dispatch({type: "ADD_VIDEO", payload: {textKey: 'New Video', valueKey: 'video-6'}});
 }

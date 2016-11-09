@@ -8,3 +8,27 @@ body {
     font-size: 13px;
     line-height: 20px;
 }
+
+.search {
+    width: 90%;
+    height: 400px;
+    margin: 0 auto;
+    border: 2px solid #FF9800;
+    text-align: center;
+}
+
+.video {
+    width: 400px;
+    height: 400px;
+    margin: 0 auto;
+    border: 2px solid #FF9800;
+    text-align: center;
+}
+
+.settings {
+    width: 90%;
+    height: 400px;
+    margin: 0 auto;
+    border: 2px solid #FF9800;
+    text-align: center;
+}

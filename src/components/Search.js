@@ -7,14 +7,7 @@ export default class Search extends React.Component {
 
     render() {
         return (
-            <div style={{
-                width: '80%',
-                height: '300px',
-                margin: '0 auto',
-                border: '2px solid #FF9800',
-                align: 'center', 
-                textAlign: 'center',
-            }}>
+            <div className="search">
                 <h1>Search</h1>
             </div>
         );

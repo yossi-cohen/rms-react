@@ -5,12 +5,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "webpack-dev-server --inline --hot"
+    "start": "webpack-dev-server --inline --hot",
+    "api": "json-server db.json --port 3000"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "axios": "^0.15.2",
+    "css-loader": "^0.25.0",
     "history": "^4.4.0",
     "material-ui": "^0.16.1",
     "react": "^15.3.2",
@@ -21,7 +23,8 @@
     "redux": "^3.6.0",
     "redux-logger": "^2.7.4",
     "redux-promise-middleware": "^4.1.0",
-    "redux-thunk": "^2.1.0"
+    "redux-thunk": "^2.1.0",
+    "style-loader": "^0.13.1"
   },
   "devDependencies": {
     "babel-core": "^6.18.2",

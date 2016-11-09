@@ -11,14 +11,7 @@ export default class Settings extends React.Component {
 
     render() {
         return (
-            <div style={{
-                width: '80%',
-                height: '400px',
-                margin: '0 auto',
-                border: '2px solid #FF9800',
-                align: 'center', 
-                textAlign: 'center'
-            }}>
+            <div className="settings">
                 <h1>Settings</h1>
                 <Toggle
                     label='Locked'
