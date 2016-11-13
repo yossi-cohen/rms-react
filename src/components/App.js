@@ -11,33 +11,36 @@ import Search from './Search';
 import Video from './Video';
 
 //lilox:TODO - fetch autocomplete data from server...
-import { connect } from 'react-redux'
-import { fetchVideos } from '../actions';
+// import { connect } from 'react-redux'
+// import { fetchVideos } from '../actions';
 
-function mapStateToProps(state) {
-    const { data } = state;
-    return {
-        data
-    };
-}
+//lilox
+// function mapStateToProps(state) {
+//     const { data } = state;
+//     return {
+//         data
+//     };
+// }
 
-function mapDispatchToProps(dispatch) {
-    return {
-        fetchVideos() {
-            dispatch(fetchVideos());
-        }
-    }
-}
+//lilox
+// function mapDispatchToProps(dispatch) {
+//     return {
+//         fetchVideos() {
+//             dispatch(fetchVideos());
+//         }
+//     }
+// }
 
-class App extends React.Component {
+export default class App extends React.Component {
     constructor() {
         super();
     }
 
     //lilox:TODO
-    componentDidMount() {
-        this.props.fetchVideos();
-    }
+    // componentWillMount() {
+    //     console.log('lilox: App --------------------------------------------------');
+    //     this.props.fetchVideos();
+    // }
 
     render() {
         return (
@@ -51,5 +54,6 @@ class App extends React.Component {
     }
 }
 
+//lilox
 // Export a container that wraps App
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+// export default connect(mapStateToProps, mapDispatchToProps)(App);

@@ -1,21 +1,12 @@
 import React from 'react';
-
 import AutoComplete from 'material-ui/AutoComplete';
 
-import store from "../store";
-
-//lilox:TODO - auto-complete data source (should come from server)
-const dataSource = [
-    { textKey: 'Material UI', valueKey: 'value-1' },
-    { textKey: 'Elemental UI', valueKey: 'value-2' },
-    { textKey: 'Grommet', valueKey: 'value-3' },
-    { textKey: 'Mui', valueKey: 'value-4' },
-    { textKey: 'Rebass', valueKey: 'value-5' },
-];
+import { connect } from "react-redux";
+import { fetchVideos } from '../actions';
 
 const dataSourceConfig = {
-    text: 'textKey',
-    value: 'valueKey',
+    text: 'title',
+    value: 'vid',
 };
 
 const focusNameInputField = ref => {
@@ -23,20 +14,18 @@ const focusNameInputField = ref => {
         ref.focus();
 };
 
+@connect((store) => {
+    return {
+        videos: store.videos.videos
+    };
+})
 export default class Search extends React.Component {
     constructor(props) {
         super(props);
     }
 
-    //lilox
-    componentDidMount() {
-        console.log('lilox ------------------------------------------------------------------------------------');
-        console.log('props : ');
-        console.log(this.props);
-        console.log('lilox ------------------------------------------------------------------------------------');
-        console.log('store-state: ');
-        console.log(store.getState());
-        console.log('lilox ------------------------------------------------------------------------------------');
+    componentWillMount() {
+        this.props.dispatch(fetchVideos());
     }
 
     render() {
@@ -47,7 +36,7 @@ export default class Search extends React.Component {
                     ref={focusNameInputField}
                     hintText="Type something ..."
                     filter={AutoComplete.fuzzyFilter}
-                    dataSource={dataSource}
+                    dataSource={this.props.videos}
                     dataSourceConfig={dataSourceConfig}
                     maxSearchResults={5}
                     />
