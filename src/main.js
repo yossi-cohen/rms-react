@@ -9,10 +9,10 @@ injectTapEventPlugin();
 
 import store from "./store";
 
-import App from './components/App';
-import Search from './components/search/Search';
-import Settings from './components/Settings';
-import Video from './components/Video';
+import App from './components/App/App';
+import Search from './components/Search/Search';
+import Settings from './components/Settings/Settings';
+import Video from './components/Video/Video';
 
 ReactDOM.render(
     <Provider store={store}>
