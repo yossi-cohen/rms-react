@@ -3,7 +3,7 @@ import React from 'react';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 
-import Search from '../Search';
+import Search from '../search/Search';
 
 const styles = {
     container: {

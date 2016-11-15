@@ -15,9 +15,7 @@
   "dependencies": {
     "axios": "^0.15.2",
     "css-loader": "^0.25.0",
-    "es6-promise": "^4.0.5",
     "history": "^4.4.0",
-    "isomorphic-fetch": "^2.2.1",
     "material-ui": "^0.16.1",
     "nock": "^9.0.2",
     "react": "^15.3.2",
@@ -32,6 +30,7 @@
     "style-loader": "^0.13.1"
   },
   "devDependencies": {
+    "babel": "^6.5.2",
     "babel-core": "^6.18.2",
     "babel-jest": "^17.0.0",
     "babel-loader": "^6.2.7",

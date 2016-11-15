@@ -2,7 +2,9 @@ import React from 'react';
 import AutoComplete from 'material-ui/AutoComplete';
 
 import { connect } from "react-redux";
-import { fetchVideos } from '../actions/videoActions';
+import { fetchVideos } from '../../actions/videoActions';
+
+import DateTimePicker from './DateTimePicker'
 
 const dataSourceConfig = {
     text: 'title',
@@ -40,6 +42,7 @@ export default class Search extends React.Component {
                     dataSourceConfig={dataSourceConfig}
                     maxSearchResults={5}
                     />
+                <DateTimePicker />
             </div>
         );
     }

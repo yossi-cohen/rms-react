@@ -10,7 +10,7 @@ injectTapEventPlugin();
 import store from "./store";
 
 import App from './components/App';
-import Search from './components/Search';
+import Search from './components/search/Search';
 import Settings from './components/Settings';
 import Video from './components/Video';
 
