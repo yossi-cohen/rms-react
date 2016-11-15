@@ -2,7 +2,7 @@ import React from 'react';
 import AutoComplete from 'material-ui/AutoComplete';
 
 import { connect } from "react-redux";
-import { fetchVideos } from '../actions';
+import { fetchVideos } from '../actions/videoActions';
 
 const dataSourceConfig = {
     text: 'title',

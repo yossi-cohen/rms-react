@@ -8,7 +8,6 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin();
 
 import store from "./store";
-import { changeName, changeAge, fetchVideos } from "./actions";
 
 import App from './components/App';
 import Search from './components/Search';

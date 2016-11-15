@@ -2,7 +2,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import nock from 'nock';
 import expect from 'expect'; // You can use any testing library
-import * as actions from "../actions";
+import * as actions from '../actions/videoActions';
 import * as types from '../constants/ActionTypes';
 
 const middlewares = [thunk];
