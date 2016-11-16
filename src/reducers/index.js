@@ -6,10 +6,10 @@ import videosReducer from './videosReducer';
 
 const initialSearch = {
     text: '',
-    fromDate: '',
-    fromTime: '',
-    toDate: '',
-    toTime: ''
+    startDate: null,
+    startTime: null,
+    endDate: null,
+    endTime: null
 }
 
 const reducers = combineReducers({
