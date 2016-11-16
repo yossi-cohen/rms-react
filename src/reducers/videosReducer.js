@@ -20,7 +20,9 @@ export default function reducer(state = initialState, action) {
         ...state,
         fetching: false,
         fetched: true,
-        videos: action.body,
+        videos: action.body.map(function (v) {
+          return v.title;
+        }),
       }
     }
   }

@@ -11,11 +11,6 @@ const focusNameInputField = ref => {
     }
 };
 
-const dataSourceConfig = {
-    text: 'title',
-    value: 'vid',
-};
-
 const isRequired = (value) => !validator.isNull('' + value);
 
 @connect((store) => {
@@ -46,15 +41,15 @@ class Search extends React.Component {
                     validateOn="blur">
                     <AutoComplete
                         name="searchText"
-                        ref={focusNameInputField}
+                        ref={focusNameInputField} ref='autoComplete'
                         floatingLabelText=""
                         openOnFocus={false}
                         hintText="Enter text here"
                         filter={AutoComplete.fuzzyFilter}
                         dataSource={this.props.videos}
-                        dataSourceConfig={dataSourceConfig}
                         maxSearchResults={5}
                         onUpdateInput={v => dispatch(actions.change('search.text', v))}
+                        onNewRequest={this.handleNewRequest.bind(this)}
                         />
                 </Field>
                 <button>Search</button>
@@ -62,8 +57,18 @@ class Search extends React.Component {
         );
     }
 
+    // fired when selection changes or <enter> key pressed
+    handleNewRequest(value, index) {
+        if (index >= 0) { // otherwise <enter> key was pressed (which triggers submit)
+            this.handleSubmit();
+            this.refs.autoComplete.focus();
+        }
+    }
+
     handleSubmit(values) {
         //lilox:TODO
+        if (!values)
+            values = this.props.search;
         console.log('submit: ', values);
     }
 }
