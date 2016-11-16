@@ -8,7 +8,7 @@ import Search from '../Search/Search';
 const styles = {
     container: {
         textAlign: 'center',
-        paddingTop: 200,
+        paddingTop: 20,
     },
 };
 

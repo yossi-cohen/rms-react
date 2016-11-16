@@ -13,7 +13,7 @@ body {
     width: 90%;
     height: 400px;
     margin: 0 auto;
-    border: 2px solid #FF9800;
+    border: 1px solid #FF9800;
     text-align: center;
 }
 
@@ -21,7 +21,7 @@ body {
     width: 400px;
     height: 400px;
     margin: 0 auto;
-    border: 2px solid #FF9800;
+    border: 1px solid #FF9800;
     text-align: center;
 }
 
@@ -29,7 +29,7 @@ body {
     width: 90%;
     height: 400px;
     margin: 0 auto;
-    border: 2px solid #FF9800;
+    border: 1px solid #FF9800;
     text-align: center;
 }
 

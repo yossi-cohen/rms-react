@@ -32,7 +32,7 @@ const isRequired = (value) => !validator.isNull('' + value);
 class Search extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { expanded: false };
+        this.dateValid = this.dateValid.bind(this);
     }
 
     componentWillMount() {
@@ -52,7 +52,7 @@ class Search extends React.Component {
         };
 
         return (
-            <Form model="search" onSubmit={(v) => this.handleSubmit(v)} style={formStyle}>
+            <Form model="search" onSubmit={(v) => this.handleSubmit(v)} style={formStyle} className="search">
                 <Card>
                     <CardHeader
                         actAsExpander={true}
@@ -71,7 +71,7 @@ class Search extends React.Component {
                                 ref={focusNameInputField} ref='autoComplete'
                                 floatingLabelText=""
                                 openOnFocus={false}
-                                hintText="Search Text"
+                                hintText="Enter text..."
                                 filter={AutoComplete.fuzzyFilter}
                                 dataSource={this.props.videos}
                                 maxSearchResults={5}
@@ -80,7 +80,7 @@ class Search extends React.Component {
                                 />
                         </Field>
                     </CardText>
-                    <CardActions expandable={true} expanded={this.state.expanded}>
+                    <CardActions expandable={true}>
                         <Field model="search.startDate" style={style}>
                             <DatePicker
                                 ref="startDate"
@@ -94,6 +94,7 @@ class Search extends React.Component {
                             <TimePicker
                                 ref="startTime"
                                 hintText="Start Time"
+                                disabled={!this.dateValid(this.props.search.startDate)}
                                 onChange={(event, time) => dispatch(actions.change('search.startTime', time))}
                                 />
                         </Field>
@@ -104,6 +105,7 @@ class Search extends React.Component {
                                 hintText="End Date"
                                 autoOk={true}
                                 container="inline"
+                                disabled={!this.dateValid(this.props.search.startDate)}
                                 onChange={(event, date) => dispatch(actions.change('search.endDate', date))}
                                 />
                         </Field>
@@ -111,7 +113,7 @@ class Search extends React.Component {
                             <TimePicker
                                 ref="endTime"
                                 hintText="End Time"
-                                container="inline"
+                                disabled={!this.dateValid(this.props.search.endDate)}
                                 onChange={(event, time) => dispatch(actions.change('search.endTime', time))}
                                 />
                         </Field>
@@ -137,6 +139,10 @@ class Search extends React.Component {
         if (!values)
             values = this.props.search;
         console.log('submit: ', values);
+    }
+
+    dateValid(date) {
+        return null != date;
     }
 }
 
