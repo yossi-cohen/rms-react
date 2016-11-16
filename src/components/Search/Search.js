@@ -73,9 +73,9 @@ class Search extends React.Component {
                             <AutoComplete
                                 name="searchText"
                                 ref={focusNameInputField} ref='autoComplete'
-                                floatingLabelText=""
                                 openOnFocus={false}
-                                hintText="Enter text..."
+                                hintText="Search by name"
+                                floatingLabelText="Search by name"
                                 filter={AutoComplete.fuzzyFilter}
                                 dataSource={this.props.videos}
                                 maxSearchResults={5}
@@ -89,6 +89,7 @@ class Search extends React.Component {
                             <DatePicker
                                 ref="startDate"
                                 hintText="Start Date"
+                                floatingLabelText="Start Date"
                                 autoOk={true}
                                 container="inline"
                                 onChange={(event, date) => dispatch(actions.change('search.startDate', date))}
@@ -98,6 +99,7 @@ class Search extends React.Component {
                             <TimePicker
                                 ref="startTime"
                                 hintText="Start Time"
+                                floatingLabelText="Start Time"
                                 disabled={!this.dateValid(this.props.search.startDate)}
                                 onChange={(event, time) => dispatch(actions.change('search.startTime', time))}
                                 />
@@ -107,6 +109,7 @@ class Search extends React.Component {
                             <DatePicker
                                 ref="endDate"
                                 hintText="End Date"
+                                floatingLabelText="End Date"
                                 autoOk={true}
                                 container="inline"
                                 disabled={!this.dateValid(this.props.search.startDate)}
@@ -117,6 +120,7 @@ class Search extends React.Component {
                             <TimePicker
                                 ref="endTime"
                                 hintText="End Time"
+                                floatingLabelText="End Time"
                                 disabled={!this.dateValid(this.props.search.endDate)}
                                 onChange={(event, time) => dispatch(actions.change('search.endTime', time))}
                                 />
