@@ -52,7 +52,11 @@ class Search extends React.Component {
         };
 
         return (
-            <Form model="search" onSubmit={(v) => this.handleSubmit(v)} style={formStyle} className="search">
+            <Form model="search"
+                style={formStyle}
+                className="search"
+                onSubmit={(v) => this.handleSubmit(v)}
+                >
                 <Card>
                     <CardHeader
                         actAsExpander={true}
