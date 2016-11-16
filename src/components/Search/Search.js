@@ -4,9 +4,14 @@ import { Form, Control, Field, actions } from 'react-redux-form';
 import validator from 'validator';
 import {
     AutoComplete,
+    Card,
+    CardActions,
+    CardHeader,
+    CardText,
     DatePicker,
     RaisedButton,
     TimePicker,
+    Toggle
 } from 'material-ui';
 import { fetchVideos } from '../../actions/videoActions';
 
@@ -27,6 +32,7 @@ const isRequired = (value) => !validator.isNull('' + value);
 class Search extends React.Component {
     constructor(props) {
         super(props);
+        this.state = { expanded: false };
     }
 
     componentWillMount() {
@@ -47,63 +53,73 @@ class Search extends React.Component {
 
         return (
             <Form model="search" onSubmit={(v) => this.handleSubmit(v)} style={formStyle}>
-                <Field model="search.text"
-                    validators={{
-                        isRequired,
-                        length: (v) => v && v.length >= 3,
-                    }}
-                    validateOn="blur"
-                    style={style}>
-                    <AutoComplete
-                        name="searchText"
-                        ref={focusNameInputField} ref='autoComplete'
-                        floatingLabelText=""
-                        openOnFocus={false}
-                        hintText="Search Text"
-                        filter={AutoComplete.fuzzyFilter}
-                        dataSource={this.props.videos}
-                        maxSearchResults={5}
-                        onUpdateInput={v => dispatch(actions.change('search.text', v))}
-                        onNewRequest={this.handleNewRequest.bind(this)}
+                <Card>
+                    <CardHeader
+                        actAsExpander={true}
+                        showExpandableButton={true}
                         />
-                </Field>
-                <p />
-                <Field model="search.startDate" style={style}>
-                    <DatePicker
-                        ref="startDate"
-                        hintText="Start Date"
-                        autoOk={true}
-                        container="inline"
-                        onChange={(event, date) => dispatch(actions.change('search.startDate', date))}
-                        />
-                </Field>
-                <Field model="search.startTime" style={style}>
-                    <TimePicker
-                        ref="startTime"
-                        hintText="Start Time"
-                        onChange={(event, time) => dispatch(actions.change('search.startTime', time))}
-                        />
-                </Field>
-                <p />
-                <Field model="search.endDate" style={style}>
-                    <DatePicker
-                        ref="endDate"
-                        hintText="End Date"
-                        autoOk={true}
-                        container="inline"
-                        onChange={(event, date) => dispatch(actions.change('search.endDate', date))}
-                        />
-                </Field>
-                <Field model="search.endTime" style={style}>
-                    <TimePicker
-                        ref="endTime"
-                        hintText="End Time"
-                        onChange={(event, time) => dispatch(actions.change('search.endTime', time))}
-                        />
-                </Field>
-                <p />
-                <p />
-                <RaisedButton label="Search" type="submit" primary={true} style={style} />
+                    <CardText>
+                        <Field model="search.text"
+                            validators={{
+                                isRequired,
+                                length: (v) => v && v.length >= 3,
+                            }}
+                            validateOn="blur"
+                            style={style}>
+                            <AutoComplete
+                                name="searchText"
+                                ref={focusNameInputField} ref='autoComplete'
+                                floatingLabelText=""
+                                openOnFocus={false}
+                                hintText="Search Text"
+                                filter={AutoComplete.fuzzyFilter}
+                                dataSource={this.props.videos}
+                                maxSearchResults={5}
+                                onUpdateInput={v => dispatch(actions.change('search.text', v))}
+                                onNewRequest={this.handleNewRequest.bind(this)}
+                                />
+                        </Field>
+                    </CardText>
+                    <CardActions expandable={true} expanded={this.state.expanded}>
+                        <Field model="search.startDate" style={style}>
+                            <DatePicker
+                                ref="startDate"
+                                hintText="Start Date"
+                                autoOk={true}
+                                container="inline"
+                                onChange={(event, date) => dispatch(actions.change('search.startDate', date))}
+                                />
+                        </Field>
+                        <Field model="search.startTime" style={style}>
+                            <TimePicker
+                                ref="startTime"
+                                hintText="Start Time"
+                                onChange={(event, time) => dispatch(actions.change('search.startTime', time))}
+                                />
+                        </Field>
+                        <p />
+                        <Field model="search.endDate" style={style}>
+                            <DatePicker
+                                ref="endDate"
+                                hintText="End Date"
+                                autoOk={true}
+                                container="inline"
+                                onChange={(event, date) => dispatch(actions.change('search.endDate', date))}
+                                />
+                        </Field>
+                        <Field model="search.endTime" style={style}>
+                            <TimePicker
+                                ref="endTime"
+                                hintText="End Time"
+                                container="inline"
+                                onChange={(event, time) => dispatch(actions.change('search.endTime', time))}
+                                />
+                        </Field>
+                    </CardActions>
+                    <CardActions>
+                        <RaisedButton label="Search" type="submit" primary={true} style={style} />
+                    </CardActions>
+                </Card>
             </Form>
         );
     }
