@@ -15,12 +15,6 @@ import {
 } from 'material-ui';
 import { fetchVideos } from '../../actions/videoActions';
 
-const focusNameInputField = ref => {
-    if (ref) {
-        ref.focus();
-    }
-};
-
 const isRequired = (value) => !validator.isNull('' + value);
 
 @connect((store) => {
@@ -94,8 +88,9 @@ class Search extends React.Component {
                             validateOn="blur"
                             style={style}>
                             <AutoComplete
+                                autoFocus
                                 name="searchText"
-                                ref={focusNameInputField} ref='autoComplete'
+                                ref='autoComplete'
                                 openOnFocus={false}
                                 hintText="Search by name"
                                 floatingLabelText="Search by name"
