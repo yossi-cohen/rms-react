@@ -13,7 +13,9 @@ import {
     TimePicker,
     Toggle
 } from 'material-ui';
-import { fetchVideos } from '../../actions/videoActions';
+
+import { fetchVideos } from '../../actions/fetchVideos';
+import { searchVideos } from '../../actions/searchVideos';
 
 const isRequired = (value) => !validator.isNull('' + value);
 
@@ -26,12 +28,6 @@ const isRequired = (value) => !validator.isNull('' + value);
 class Search extends React.Component {
     constructor(props) {
         super(props);
-
-        // this binding
-        this.handleChangeStartDate = this.handleChangeStartDate.bind(this);
-        this.handleChangeStartTime = this.handleChangeStartTime.bind(this);
-        this.handleChangeEndDate = this.handleChangeEndDate.bind(this);
-        this.handleChangeEndTime = this.handleChangeEndTime.bind(this);
 
         this.searchTextValid = this.searchTextValid.bind(this);
         this.startDateValid = this.startDateValid.bind(this);
@@ -57,7 +53,7 @@ class Search extends React.Component {
     }
 
     render() {
-        let { search, searchForm, dispatch } = this.props;
+        let { search, searchForm, dispatch ,videos } = this.props;
 
         let formStyle = {
             textAlign: 'center',
@@ -95,7 +91,7 @@ class Search extends React.Component {
                                 hintText="Search by name"
                                 floatingLabelText="Search by name"
                                 filter={AutoComplete.fuzzyFilter}
-                                dataSource={this.props.videos}
+                                dataSource={videos}
                                 maxSearchResults={5}
                                 onUpdateInput={v => dispatch(actions.change('search.text', v))}
                                 onNewRequest={this.handleNewRequest.bind(this)}
@@ -194,10 +190,7 @@ class Search extends React.Component {
     }
 
     handleSubmit(values) {
-        //lilox:TODO
-        if (!values)
-            values = this.props.search;
-        console.log('submit: ', values);
+        this.props.dispatch(searchVideos(values));
     }
 
     // ---------------------------------------------------

@@ -1,8 +1,10 @@
+import * as types from '../constants/ActionTypes'
+
 const reducer = (state = {}, action) => {
     switch (action.type) {
-        case 'CHANGE_NAME':
+        case types.CHANGE_NAME:
             return {...state, name: action.payload};
-        case 'CHANGE_AGE':
+        case types.CHANGE_AGE:
             return {...state, age: action.payload};
     }
 

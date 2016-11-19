@@ -2,7 +2,8 @@ import { combineReducers } from 'redux'
 import { modelReducer, formReducer, } from 'react-redux-form';
 
 import userReducer from './userReducer';
-import videosReducer from './videosReducer';
+import fetchVideosReducer from './fetchVideosReducer';
+import searchResultReducer from './searchResultReducer';
 
 const initialSearch = {
     text: '',
@@ -10,13 +11,14 @@ const initialSearch = {
     startTime: null,
     endDate: null,
     endTime: null
-}
+};
 
 const reducers = combineReducers({
   search: modelReducer('search', initialSearch),
   searchForm: formReducer('search', initialSearch),
   user: userReducer,
-  videos: videosReducer
-})
+  videos: fetchVideosReducer,
+  searchResult: searchResultReducer
+});
 
-export default reducers
+export default reducers;
