@@ -28,7 +28,5 @@ app.get('/api/videos', function (req, res) {
 
 app.post("/api/search", function (req, res) {
     //lilox:TODO
-    console.log('post - headers:', req.headers);
-    console.log('post - req-body:', req.body);
-    res.json({ status: 'SUCCESS' });
+    res.json(videos.searchResult);
 });

@@ -7,7 +7,7 @@
   "scripts": {
     "start": "webpack-dev-server --inline --hot",
     "api": "json-server db.json --port 3000",
-    "server": "node src/server/server.js",
+    "server": "cd src/server/ && nodemon server.js",
     "test": "jest",
     "test:watch": "npm test -- --watch"
   },
@@ -54,6 +54,7 @@
     "jshint-loader": "^0.8.3",
     "node-libs-browser": "^1.0.0",
     "node-sass": "^3.12.5",
+    "nodemon": "^1.11.0",
     "sass-loader": "^4.0.2",
     "webpack": "^1.13.3"
   }
