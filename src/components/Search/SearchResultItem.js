@@ -23,7 +23,7 @@ const rightIconMenu = (
   </IconMenu>
 );
 
-export default class VideoListItem extends React.Component {
+export default class SearchResultItem extends React.Component {
   constructor(props) {
     super(props);
   }

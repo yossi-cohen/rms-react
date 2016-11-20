@@ -1,6 +1,7 @@
 import React from 'react';
 import { List } from 'material-ui';
-import VideoItem from './VideoItem';
+import SearchResultItem from './SearchResultItem';
+import VideoPanel from './VideoPanel';
 
 export default class SearchResult extends React.Component {
     constructor(props) {
@@ -9,13 +10,18 @@ export default class SearchResult extends React.Component {
 
     render() {
         const videoItems = this.props.videos.map((video) => {
-            return <VideoItem key={video.vid} video={video} />
+            return <SearchResultItem key={video.vid} video={video} />
         });
 
         return (
-            <List>
-                {videoItems}
-            </List>
+            <div>
+                <div className="searchResult" >
+                    <List>
+                        {videoItems}
+                    </List>
+                </div>
+                <VideoPanel />
+            </div>
         );
     }
 }
