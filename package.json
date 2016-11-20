@@ -6,12 +6,11 @@
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server --inline --hot",
-    "api": "json-server db.json --port 3000",
     "server": "cd src/server/ && nodemon server.js",
     "test": "jest",
     "test:watch": "npm test -- --watch"
   },
-  "author": "",
+  "author": "lilo",
   "license": "ISC",
   "dependencies": {
     "babel-runtime": "^6.18.0",
@@ -30,6 +29,7 @@
     "redux-promise-middleware": "^4.1.0",
     "redux-thunk": "^2.1.0",
     "style-loader": "^0.13.1",
+    "svg-url-loader": "^1.1.0",
     "url-join": "^1.1.0",
     "validator": "^6.1.0"
   },

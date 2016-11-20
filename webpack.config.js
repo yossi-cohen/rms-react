@@ -8,6 +8,7 @@ module.exports = {
         filename: "bundle.js"
     },
     devServer: {
+        contentBase: './public',
         inline: true,
         port: 3333
     },
@@ -25,12 +26,13 @@ module.exports = {
             { test: /\.css$/, loader: "style-loader!css-loader" },
             { test: /\.json$/, loader: 'json-loader' },
             { test: /\.jsx$/, loader: 'jsx-loader?harmony' },
-            { test: /\.scss$/, loader: ExtractTextPlugin.extract('css!sass') }
+            { test: /\.scss$/, loader: ExtractTextPlugin.extract('css!sass') },
+            { test: /\.svg/, loader: 'svg-url-loader' }
         ]
     },
 
     plugins: [
-        new ExtractTextPlugin('public/style.css', { allChunks: true })
+        new ExtractTextPlugin('public/css/main.css', { allChunks: true })
     ],
 
     // resolve is a section which lets us specify what kind of file types we can process 

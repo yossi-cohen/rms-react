@@ -2,7 +2,6 @@ import * as urls from '../constants/urls'
 import * as types from '../constants/ActionTypes'
 
 export function searchVideos(query) {
-  console.log('lilox: submit - ', query);
   return function (dispatch) {
     dispatch(searchVideosRequest());
 
@@ -26,9 +25,6 @@ function searchVideosRequest() {
 }
 
 function searchVideosSuccess(json) {
-  //lilox
-  console.log('lilox: searchVideosSuccess', json);
-  
   return {
     type: types.SEARCH_VIDEOS_SUCCESS,
     json

@@ -1,16 +1,16 @@
 import React from 'react';
 
-import AppBar from '../AppBar/AppBar';
+//lilox:import AppBar from '../AppBar/AppBar';
 
 export default class App extends React.Component {
     constructor() {
         super();
     }
 
+                //lilox: <AppBar />
     render() {
         return (
             <div>
-                <AppBar />
                 {this.props.children}
             </div>
         );
