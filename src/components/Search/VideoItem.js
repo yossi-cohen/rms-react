@@ -45,35 +45,3 @@ export default class VideoListItem extends React.Component {
     console.log('lilox ------------------------------ showVideo: ', video);
   }
 }
-
-// ===============================
-//lilox: grid
-// ===============================
-// import React from 'react';
-// import { IconButton, StarBorder, GridTile, } from 'material-ui';
-
-// import VideoImage from 'material-ui/svg-icons/av/videocam';
-
-// export default class VideoGridItem extends React.Component {
-//   constructor(props) {
-//     super(props);
-//   }
-
-//   render() {
-//     const { video } = this.props;
-//     return (
-//       <GridTile
-//         key={video.vid}
-//         title={video.title}
-//         subtitle={video.vid}
-//         actionIcon={<IconButton><VideoImage /></IconButton>}
-//         onTouchTap={(event) => this.showVideo(event, video)}
-//         >
-//       </GridTile>
-//     );
-//   }
-
-//   showVideo(event, video) {
-//     console.log('lilox ------------------------------ showVideo: ', video);
-//   }
-// }

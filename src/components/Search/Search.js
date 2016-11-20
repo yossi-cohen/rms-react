@@ -18,9 +18,7 @@ import SearchResult from './SearchResult';
 import { fetchVideos } from '../../actions/fetchVideos';
 import { searchVideos } from '../../actions/searchVideos';
 
-//lilox
-// const isRequired = (value) => !validator.isNull('' + value);
-const isRequired = (value) => null != value;
+const isRequired = (value) => !validator.isNull('' + value);
 
 @connect((store) => {
     return {
@@ -46,9 +44,6 @@ class Search extends React.Component {
         maxDate.setHours(0, 0, 0, 0);
 
         this.state = this.initialState = {
-            //lilox
-            // searchTerm: '',
-            // suggestions: [],
             minDate: minDate,
             maxDate: maxDate,
             autoOk: false,
@@ -60,7 +55,6 @@ class Search extends React.Component {
     }
 
     render() {
-        // console.log('lilox (searchResult)', this.props.searchResult);
         let { search, searchForm, dispatch, videos } = this.props;
 
         let formStyle = {
