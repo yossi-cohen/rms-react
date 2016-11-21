@@ -4,6 +4,7 @@ import nock from 'nock';
 import expect from 'expect'; // You can use any testing library
 import * as actions from '../actions/fetchVideos';
 import * as types from '../constants/ActionTypes';
+import { baseUrl } from '../constants/urls'
 
 const middlewares = [thunk];
 const mockStore = configureMockStore(middlewares);
@@ -22,7 +23,7 @@ describe('async actions', () => {
     });
 
     it('creates FETCH_VIDEOS_SUCCESS when fetching videos has been done', () => {
-        nock('http://localhost:3000')
+        nock(baseUrl)
             .get('/api/videos')
             .reply(200, { body: test_res_body });
 

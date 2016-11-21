@@ -1,9 +1,12 @@
 import React from 'react';
+import { connect } from "react-redux";
 import { IconButton, IconMenu, ListItem, MenuItem } from 'material-ui';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import { grey400, darkBlack, lightBlack } from 'material-ui/styles/colors';
 
 import VideoImage from 'material-ui/svg-icons/av/videocam';
+
+import { playVideo } from '../../actions/playVideo';
 
 const iconButtonElement = (
   <IconButton
@@ -23,7 +26,7 @@ const rightIconMenu = (
   </IconMenu>
 );
 
-export default class SearchResultItem extends React.Component {
+class SearchResultItem extends React.Component {
   constructor(props) {
     super(props);
   }
@@ -36,12 +39,14 @@ export default class SearchResultItem extends React.Component {
         secondaryText={video.vid}
         leftIcon={<VideoImage />}
         rightIconButton={rightIconMenu}
-        onTouchTap={(event) => this.showVideo(event, video)}
+        onTouchTap={() => this.showVideo(video)}
         />
     );
   }
 
-  showVideo(event, video) {
-    console.log('lilox ------------------------------ showVideo: ', video);
+  showVideo(video) {
+    this.props.dispatch(playVideo(video));
   }
 }
+
+export default connect()(SearchResultItem);

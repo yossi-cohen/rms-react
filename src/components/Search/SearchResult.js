@@ -1,7 +1,8 @@
 import React from 'react';
 import { List } from 'material-ui';
+import { Grid, Row, Col } from 'react-flexbox-grid/lib/index'
 import SearchResultItem from './SearchResultItem';
-import VideoPanel from './VideoPanel';
+import VideoPlayer from '../Video/VideoPlayer';
 
 export default class SearchResult extends React.Component {
     constructor(props) {
@@ -14,14 +15,18 @@ export default class SearchResult extends React.Component {
         });
 
         return (
-            <div>
-                <div className="searchResult" >
-                    <List>
-                        {videoItems}
-                    </List>
-                </div>
-                <VideoPanel />
-            </div>
+            <Grid>
+                <Row>
+                    <Col xs={6} md={3}>
+                        <List>
+                            {videoItems}
+                        </List>
+                    </Col>
+                    <Col>
+                        <VideoPlayer />
+                    </Col>
+                </Row>
+            </Grid>
         );
     }
 }

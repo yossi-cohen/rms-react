@@ -45,16 +45,21 @@ input {
   padding: 20px;
 }
 
-.videoPanel {
-  background: yellowgreen;
-  width: 640px;
-  height: 480px;
-  /*position: absolute;
-  left: 400px;
-  top: 300px;
-  bottom: 20px;
-  right: 20px;*/
-  border-left: 1px solid #ccc;
+.videoPlayer {
+  min-width: 640px;
+  min-height: 480px;
+  border: 1px solid black;
   overflow: auto;
-  padding: 40px;
+  padding: 20px;
+  margin: 20px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

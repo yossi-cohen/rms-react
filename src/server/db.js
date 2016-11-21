@@ -8,9 +8,9 @@ var videos = {
     ],
 
     searchResult: [
-        { "vid": "vid-1", "title": "Material UI", "url": "vid-1-url" },
-        { "vid": "vid-2", "title": "Elemental UI", "url": "vid-2-url" },
-        { "vid": "vid-3", "title": "Grommet", "url": "vid-3-url" },
+        { "vid": "vid-1", "title": "Material UI", "url": "https://www.youtube.com/watch?v=ysz5S6PUM-U" },
+        { "vid": "vid-2", "title": "Elemental UI", "url": "https://www.youtube.com/watch?v=oUFJJNQGwhk" },
+        { "vid": "vid-3", "title": "Grommet", "url": "https://www.youtube.com/watch?v=jNgP6d9HraI" },
         { "vid": "vid-4", "title": "Mui", "url": "vid-4-url" },
         { "vid": "vid-5", "title": "Rebass", "url": "vid-5-url" },
         { "vid": "vid-6", "title": "title-6", "url": "vid-6-url" },

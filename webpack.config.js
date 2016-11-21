@@ -9,7 +9,7 @@ module.exports = {
     },
     devServer: {
         contentBase: './public',
-        inline: true,
+        noInfo: false,
         port: 3333
     },
     module: {
@@ -23,7 +23,8 @@ module.exports = {
                     plugins: ['transform-class-properties', 'transform-decorators-legacy']
                 }
             },
-            { test: /\.css$/, loader: "style-loader!css-loader" },
+            { test: /\.css$/, loader: 'style!css?modules', include: /flexboxgrid/ },
+            { test: /\.css$/, loader: "style-loader!css-loader", exclude: /flexboxgrid/ },
             { test: /\.json$/, loader: 'json-loader' },
             { test: /\.jsx$/, loader: 'jsx-loader?harmony' },
             { test: /\.scss$/, loader: ExtractTextPlugin.extract('css!sass') },
