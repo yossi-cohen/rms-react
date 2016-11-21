@@ -48,7 +48,7 @@ input {
 .videoPlayer {
   min-width: 640px;
   min-height: 480px;
-  border: 1px solid black;
+  /*border: 1px solid black;*/
   overflow: auto;
   padding: 20px;
   margin: 20px;

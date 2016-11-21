@@ -21,8 +21,8 @@ const iconButtonElement = (
 //lilox:TODO 
 const rightIconMenu = (
   <IconMenu iconButtonElement={iconButtonElement}>
-    <MenuItem>Play</MenuItem>
-    <MenuItem>Properties</MenuItem>
+    <MenuItem onTouchTap={() => this.showVideo(this.props.video)}>Play</MenuItem>
+    <MenuItem onTouchTap={() => this.handleProperties()}>Properties</MenuItem>
   </IconMenu>
 );
 
@@ -46,6 +46,10 @@ class SearchResultItem extends React.Component {
 
   showVideo(video) {
     this.props.dispatch(playVideo(video));
+  }
+
+  showVideo(video) {
+    console.log('lilox: TODO');
   }
 }
 

@@ -45,6 +45,7 @@ export default class VideoPlayer extends React.Component {
         if (props.video)
             this.load(props.video.url);
     }
+
     render() {
         const {
             url, playing, volume,
@@ -58,7 +59,8 @@ export default class VideoPlayer extends React.Component {
             <div className="videoPlayer">
                 {
                     null == url ?
-                        <VideoCam style={iconStyles} color={blue500} hoverColor={red500} /> :
+                        //lilox: <VideoCam style={iconStyles} color={blue500} hoverColor={red500} /> :
+                        <div /> :
                         <div>
                             <ReactPlayer
                                 ref={player => { this.player = player } }
@@ -156,10 +158,10 @@ export default class VideoPlayer extends React.Component {
     }
 
     playPause = () => {
-        this.setState({ playing: !this.state.playing })
+        this.setState({ playing: !this.state.playing });
     }
     stop = () => {
-        this.setState({ url: null, playing: false })
+        this.setState({ url: null, playing: false });
     }
     setVolume = e => {
         this.setState({ volume: parseFloat(e.target.value) })
