@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from "react-redux";
 import ReactPlayer from 'react-player'
+import Duration from './Duration'
 import { findDOMNode } from 'react-dom'
 import screenfull from 'screenfull'
 import VideoCam from 'material-ui/svg-icons/av/videocam';
@@ -70,58 +71,76 @@ export default class VideoPlayer extends React.Component {
                                 soundcloudConfig={soundcloudConfig}
                                 youtubeConfig={youtubeConfig}
                                 fileConfig={fileConfig}
-                                onReady={() => console.log('onReady')}
-                                onStart={() => console.log('onStart')}
+                                onReady={() => { this.onReady() } }
+                                onStart={() => { this.onStart() } }
                                 onPlay={() => this.setState({ playing: true })}
                                 onPause={() => this.setState({ playing: false })}
-                                onBuffer={() => console.log('onBuffer')}
+                                onBuffer={() => { this.onBuffer() } }
                                 onEnded={() => this.setState({ playing: false })}
-                                onError={e => console.log('onError', e)}
+                                onError={e => this.onError(e)}
+
                                 onProgress={this.onProgress}
                                 onDuration={duration => this.setState({ duration })}
                                 />
 
-                            <table><tbody>
-                                <tr>
-                                    <th>Controls</th>
-                                    <td>
-                                        <button onClick={this.stop}>Stop</button>
-                                        <button onClick={this.playPause}>{playing ? 'Pause' : 'Play'}</button>
-                                        <button onClick={this.onClickFullscreen}>Fullscreen</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>Seek</th>
-                                    <td>
-                                        <input
-                                            type='range' min={0} max={1} step='any'
-                                            value={played}
-                                            onMouseDown={this.onSeekMouseDown}
-                                            onChange={this.onSeekChange}
-                                            onMouseUp={this.onSeekMouseUp}
-                                            />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>Volume</th>
-                                    <td>
-                                        <input type='range' min={0} max={1} step='any' value={volume} onChange={this.setVolume} />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>Played</th>
-                                    <td><progress max={1} value={played} /></td>
-                                </tr>
-                                <tr>
-                                    <th>Loaded</th>
-                                    <td><progress max={1} value={loaded} /></td>
-                                </tr>
-                            </tbody>
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <th>Controls</th>
+                                        <td>
+                                            <button onClick={this.stop}>Stop</button>
+                                            <button onClick={this.playPause}>{playing ? 'Pause' : 'Play'}</button>
+                                            <button onClick={this.onClickFullscreen}>Fullscreen</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Seek</th>
+                                        <td>
+                                            <input
+                                                type='range' min={0} max={1} step='any'
+                                                value={played}
+                                                onMouseDown={this.onSeekMouseDown}
+                                                onChange={this.onSeekChange}
+                                                onMouseUp={this.onSeekMouseUp}
+                                                />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Volume</th>
+                                        <td>
+                                            <input type='range' min={0} max={1} step='any' value={volume} onChange={this.setVolume} />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Played</th>
+                                        <td><progress max={1} value={played} /></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Loaded</th>
+                                        <td><progress max={1} value={loaded} /></td>
+                                    </tr>
+                                    <tr>
+                                        <th>duration</th>
+                                        <td><Duration seconds={duration} /></td>
+                                    </tr>
+                                    <tr>
+                                        <th>elapsed</th>
+                                        <td><Duration seconds={duration * played} /></td>
+                                    </tr>
+                                    <tr>
+                                        <th>remaining</th>
+                                        <td><Duration seconds={duration * (1 - played)} /></td>
+                                    </tr>
+                                </tbody>
                             </table>
                         </div>
                 }
             </div>
         );
+    }
+
+    onStart = () => {
+        //lilox: console.log('onStart');
     }
 
     onReady = () => {
