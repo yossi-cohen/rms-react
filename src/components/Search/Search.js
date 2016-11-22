@@ -246,6 +246,6 @@ class Search extends React.Component {
 
 export default connect((store) => ({
     search: store.search,
-    suggestions: store.mySearch.suggestions,
-    result: store.mySearch.result
+    suggestions: store.search.suggestions,
+    result: store.search.result
 }))(Search);
