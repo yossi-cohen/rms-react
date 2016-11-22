@@ -16,7 +16,6 @@ import store from "./store";
 import App from './components/App/App';
 import Search from './components/Search/Search';
 import Settings from './components/Settings/Settings';
-import Video from './components/Video/Video';
 
 ReactDOM.render(
     <MuiThemeProvider>
@@ -25,7 +24,6 @@ ReactDOM.render(
                 <Route path="/" component={App}>
                     <IndexRoute component={Search} />
                     <Route path="/search" component={Search} />
-                    <Route path="/video" component={Video} />
                     <Route path="/settings" component={Settings} />
                 </Route>
             </Router>

@@ -7,25 +7,36 @@ import {
     Card,
     CardActions,
     CardHeader,
+    CardMedia,
     CardText,
+    CardTitle,
     DatePicker,
     RaisedButton,
-    TimePicker,
-    Toggle
+    TimePicker
 } from 'material-ui';
 
+import GeoJsonPicker from './GeoJsonPicker';
 import SearchResult from './SearchResult';
 import { fetchVideos } from '../../actions/fetchVideos';
 import { searchVideos } from '../../actions/searchVideos';
 
 const isRequired = (value) => !validator.isNull('' + value);
 
-@connect((store) => {
-    return {
-        videos: store.videos.videos,
-        searchResult:store.searchResult.videos 
-    };
-})
+const styles = {
+    form: {
+        textAlign: 'center',
+        height: '100%'
+    },
+
+    dateTimeFields: {
+        display: 'inline-block'
+    },
+
+    card: {
+        borderStyle: 'none',
+        boxShadow: 'none',
+    }
+}
 
 class Search extends React.Component {
     constructor(props) {
@@ -44,6 +55,7 @@ class Search extends React.Component {
         maxDate.setHours(0, 0, 0, 0);
 
         this.state = this.initialState = {
+            expanded: false,
             minDate: minDate,
             maxDate: maxDate,
             autoOk: false,
@@ -57,42 +69,35 @@ class Search extends React.Component {
     render() {
         let { search, searchForm, dispatch, videos } = this.props;
 
-        let formStyle = {
-            textAlign: 'center',
-            height: '100%'
-        };
-
-        let style = {
-            display: 'inline-block'
-        };
-
         return (
             <div>
                 <Form model="search"
-                    style={formStyle}
+                    style={styles.form}
                     className="search"
                     onSubmit={(v) => this.handleSubmit(v)}
                     >
-                    <Card>
+                    <Card
+                        expanded={this.state.expanded}
+                        onExpandChange={(expanded) => this.setState({ expanded: expanded })}
+                        style={styles.card}
+                        >
                         <CardHeader
                             actAsExpander={true}
                             showExpandableButton={true}
                             />
-                        <CardText>
+                        <CardActions>
                             <Field model="search.text"
                                 validators={{
                                     isRequired,
                                     length: (v) => v && v.length >= 3,
                                 }}
-                                validateOn="blur"
-                                style={style}>
+                                validateOn="blur">
                                 <AutoComplete
                                     autoFocus
                                     name="searchText"
                                     ref='autoComplete'
                                     openOnFocus={false}
-                                    hintText="Search by name"
-                                    floatingLabelText="Search by name"
+                                    hintText="Search video by name"
                                     filter={AutoComplete.fuzzyFilter}
                                     dataSource={videos}
                                     maxSearchResults={5}
@@ -100,9 +105,9 @@ class Search extends React.Component {
                                     onNewRequest={this.handleChangeSearchTerm.bind(this)}
                                     />
                             </Field>
-                        </CardText>
+                        </CardActions>
                         <CardActions expandable={true}>
-                            <Field model="search.startDate" style={style}>
+                            <Field model="search.startDate" style={styles.dateTimeFields}>
                                 <DatePicker
                                     ref="startDate"
                                     hintText="Start Date"
@@ -113,7 +118,7 @@ class Search extends React.Component {
                                     onChange={(event, date) => this.handleChangeStartDate(event, date)}
                                     />
                             </Field>
-                            <Field model="search.startTime" style={style}>
+                            <Field model="search.startTime" style={styles.dateTimeFields}>
                                 <TimePicker
                                     ref="startTime"
                                     hintText="Start Time"
@@ -123,7 +128,7 @@ class Search extends React.Component {
                                     />
                             </Field>
                             <p />
-                            <Field model="search.endDate" style={style}>
+                            <Field model="search.endDate" style={styles.dateTimeFields}>
                                 <DatePicker
                                     ref="endDate"
                                     hintText="End Date"
@@ -136,7 +141,7 @@ class Search extends React.Component {
                                     onChange={(event, date) => this.handleChangeEndDate(event, date)}
                                     />
                             </Field>
-                            <Field model="search.endTime" style={style}>
+                            <Field model="search.endTime" style={styles.dateTimeFields}>
                                 <TimePicker
                                     ref="endTime"
                                     hintText="End Time"
@@ -146,12 +151,17 @@ class Search extends React.Component {
                                     />
                             </Field>
                         </CardActions>
+                        <CardActions expandable={true}>
+                            <Field model="search.geoJson" style={styles.dateTimeFields}>
+                                <GeoJsonPicker />
+                            </Field>
+                        </CardActions>
                         <CardActions>
-                            <RaisedButton label="Search" type="submit" primary={true} style={style} />
+                            <RaisedButton label="Search" type="submit" primary={true} />
                         </CardActions>
                     </Card>
                 </Form>
-                <SearchResult videos={this.props.searchResult}/>
+                <SearchResult videos={this.props.searchResult} />
             </div>
         );
     }
@@ -195,6 +205,7 @@ class Search extends React.Component {
     }
 
     handleSubmit(searchTerm) {
+        this.setState({ expanded: false });
         this.props.dispatch(searchVideos(searchTerm));
     }
 
@@ -234,4 +245,9 @@ class Search extends React.Component {
     }
 }
 
-export default connect((state) => ({ search: state.search }))(Search);
+export default connect((store) => ({
+    search: store.search,
+    videos: store.videos.videos,
+    searchResult: store.searchResult.videos
+}))(Search);
+

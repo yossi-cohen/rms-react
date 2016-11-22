@@ -48,7 +48,7 @@ class SearchResultItem extends React.Component {
     this.props.dispatch(playVideo(video));
   }
 
-  showVideo(video) {
+  handleProperties(video) {
     console.log('lilox: TODO');
   }
 }
