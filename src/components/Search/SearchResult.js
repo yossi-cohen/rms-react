@@ -5,8 +5,8 @@ import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import { grey400, darkBlack, lightBlack } from 'material-ui/styles/colors';
 import VideoImage from 'material-ui/svg-icons/av/videocam';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib/index'
-import { playVideo } from '../../actions/videoPlayerActions';
-import VideoPlayer from '../Video/VideoPlayer';
+import { playVideo } from 'actions/videoPlayerActions';
+import VideoPlayer from 'components/Video/VideoPlayer';
 
 class SearchResult extends React.Component {
     constructor(props) {

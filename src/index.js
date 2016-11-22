@@ -1,4 +1,4 @@
-import "../public/css/main.css"
+import "styles/main.css"
 
 import React from 'react';
 import ReactDOM from 'react-dom';

@@ -1,7 +1,7 @@
 import urljoin from 'url-join';
 
-export const host = 'localhost';
-export const port = 3003;
-export const baseUrl = 'http://' + host + ':' + port;
+import config from '../../config.js'
+
+export const baseUrl = 'http://' + config.host + ':' + config.port;
 export const getVideoList = urljoin(baseUrl, '/api/videos');
 export const postVideoSearch = urljoin(baseUrl, '/api/search');

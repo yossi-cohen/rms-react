@@ -1,5 +1,5 @@
-import * as urls from '../constants/urls'
-import * as types from '../constants/ActionTypes'
+import * as urls from 'constants/urls'
+import * as types from 'constants/ActionTypes'
 
 // --------------------------------------------------------
 // fetchVideos

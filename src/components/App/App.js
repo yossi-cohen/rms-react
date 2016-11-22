@@ -1,6 +1,6 @@
 import React from 'react';
 
-//lilox:import AppBar from '../AppBar/AppBar';
+//lilox:import AppBar from 'components/AppBar/AppBar';
 
 export default class App extends React.Component {
     constructor() {

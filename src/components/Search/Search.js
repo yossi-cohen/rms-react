@@ -16,9 +16,9 @@ import {
 import validator from 'validator';
 import GeoJsonPicker from './GeoJsonPicker';
 import SearchResult from './SearchResult';
-import { fetchVideos } from '../../actions/searchActions';
-import { searchVideos } from '../../actions/searchActions';
-import { stopVideo } from '../../actions/videoPlayerActions';
+import { fetchVideos } from 'actions/searchActions';
+import { searchVideos } from 'actions/searchActions';
+import { stopVideo } from 'actions/videoPlayerActions';
 
 const isRequired = (value) => !validator.isNull('' + value);
 

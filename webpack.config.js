@@ -1,14 +1,19 @@
+const path = require("path")
+
+const config = require("./config")
+const PATHS = config.PATHS;
+
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = {
     devtool: 'source-map',
     context: __dirname,
-    entry: './src/main.js',
+    entry: './src/index.js',
     output: {
         filename: "bundle.js"
     },
     devServer: {
-        contentBase: './public',
+        contentBase: PATHS.src,
         noInfo: false,
         port: 3333
     },
@@ -40,6 +45,7 @@ module.exports = {
     // without specifically giving them a file extension.{ test: /\.jsx$/, loader: 'jsx-loader?harmony' }
     // e.g., require('./logger'); instead of: require('./logger.es6');
     resolve: {
+        root : PATHS.src,
         modulesDirectories: ['node_modules'],
         alias: {},
         extensions: ['', '.jsx', '.js', '.es6']
