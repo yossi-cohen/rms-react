@@ -1,26 +1,27 @@
 const path = require("path")
+var autoPrefixer = require('autoprefixer');
+var HtmlPlugin = require('html-webpack-plugin');
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
+var webpack = require('webpack');
 
 const config = require("./config")
 const PATHS = config.PATHS;
 
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
-
-module.exports = {
-    devtool: 'source-map',
+webpackConfig = {
     context: __dirname,
-    entry: './src/index.js',
-    output: {
-        filename: "bundle.js"
+    devtool: 'source-map',
+    entry: {
+        app: ['./src/index.js']
     },
-    devServer: {
-        contentBase: PATHS.src,
-        noInfo: false,
-        port: 3333
+    output: {
+        filename: 'bundle.js',
+        hash: false
     },
     module: {
+        unknownContextCritical: false, // ignore Cesium related warnings
         loaders: [
             {
-                test: [/\.js$/, /\.es6$/],
+                test: [/\.js$/],
                 exclude: /node_modules/,
                 loader: 'babel-loader',
                 query: {
@@ -28,26 +29,46 @@ module.exports = {
                     plugins: ['transform-class-properties', 'transform-decorators-legacy']
                 }
             },
-            { test: /\.css$/, loader: 'style!css?modules', include: /flexboxgrid/ },
-            { test: /\.css$/, loader: "style-loader!css-loader", exclude: /flexboxgrid/ },
+            { test: /\.jsx$/, loader: 'babel-loader' },
             { test: /\.json$/, loader: 'json-loader' },
-            { test: /\.jsx$/, loader: 'jsx-loader?harmony' },
+            { test: /\.css$/, loader: 'style!css?modules', include: /flexboxgrid/ },
+            { test: /\.css$/, loader: 'style-loader!css-loader', exclude: /flexboxgrid/ },
             { test: /\.scss$/, loader: ExtractTextPlugin.extract('css!sass') },
             { test: /\.svg/, loader: 'svg-url-loader' }
         ]
     },
-
+    postcss: [autoPrefixer()],
     plugins: [
-        new ExtractTextPlugin('public/css/main.css', { allChunks: true })
+        new ExtractTextPlugin('src/styles/main.css', { allChunks: true }),
+        new HtmlPlugin({
+            title: 'rms-ui',
+            template: 'public/index.html',
+            inject: 'true',
+            chunks: ['app']
+        })
     ],
 
     // resolve is a section which lets us specify what kind of file types we can process 
     // without specifically giving them a file extension.{ test: /\.jsx$/, loader: 'jsx-loader?harmony' }
     // e.g., require('./logger'); instead of: require('./logger.es6');
     resolve: {
-        root : PATHS.src,
+        root: PATHS.src,
+        extensions: ['', '.jsx', '.js', '.es6'],
         modulesDirectories: ['node_modules'],
-        alias: {},
-        extensions: ['', '.jsx', '.js', '.es6']
+        alias: {}
     }
 }
+
+webpackConfig.entry.app.unshift('webpack/hot/only-dev-server');
+webpackConfig.devServer = {
+    port: 3333,
+    contentBase: PATHS.dist,
+    hot: true,
+    noInfo: false
+};
+
+webpackConfig.plugins.push(
+    new webpack.HotModuleReplacementPlugin()
+);
+
+module.exports = webpackConfig;

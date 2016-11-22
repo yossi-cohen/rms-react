@@ -13,7 +13,7 @@ const config = {
     PATHS: {
         base: projectBasePath,
         src: path.resolve(projectBasePath, 'src'),
-        dist: path.resolve(projectBasePath, 'dist')
+        dist: path.resolve(projectBasePath, 'public')
     }
 };
 
