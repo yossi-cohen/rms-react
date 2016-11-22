@@ -11,13 +11,7 @@ const iconStyles = {
     marginRight: 24
 };
 
-@connect((store) => {
-    return {
-        video: store.player.video
-    };
-})
-
-export default class VideoPlayer extends React.Component {
+class VideoPlayer extends React.Component {
     constructor(props) {
         super(props);
 
@@ -42,8 +36,7 @@ export default class VideoPlayer extends React.Component {
     }
 
     componentWillReceiveProps(props) {
-        if (props.video)
-            this.load(props.video.url);
+        this.load(null == props.video ? null : props.video.url);
     }
 
     render() {
@@ -186,3 +179,7 @@ export default class VideoPlayer extends React.Component {
         screenfull.request(findDOMNode(this.player))
     }
 }
+
+export default connect((store) => ({
+    video: store.player.video
+}))(VideoPlayer);
