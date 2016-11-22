@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from "react-redux";
 import { Form, Control, Field, actions } from 'react-redux-form';
-import { Grid, Row, Col } from 'react-flexbox-grid/lib/index'
 import {
     AutoComplete,
     Card,
@@ -17,9 +16,9 @@ import {
 import validator from 'validator';
 import GeoJsonPicker from './GeoJsonPicker';
 import SearchResult from './SearchResult';
-import VideoPlayer from '../Video/VideoPlayer';
-import { fetchVideos } from '../../actions/fetchVideos';
-import { searchVideos } from '../../actions/searchVideos';
+import { fetchVideos } from '../../actions/searchActions';
+import { searchVideos } from '../../actions/searchActions';
+import { stopVideo } from '../../actions/videoPlayerActions';
 
 const isRequired = (value) => !validator.isNull('' + value);
 
@@ -68,8 +67,6 @@ class Search extends React.Component {
     }
 
     render() {
-        let { search, searchForm, dispatch, videos } = this.props;
-
         return (
             <div>
                 <Form model="search"
@@ -100,9 +97,9 @@ class Search extends React.Component {
                                     openOnFocus={false}
                                     hintText="Search video by name"
                                     filter={AutoComplete.fuzzyFilter}
-                                    dataSource={videos}
+                                    dataSource={this.props.suggestions}
                                     maxSearchResults={5}
-                                    onUpdateInput={v => dispatch(actions.change('search.text', v))}
+                                    onUpdateInput={v => this.props.dispatch(actions.change('search.text', v))}
                                     onNewRequest={this.handleChangeSearchTerm.bind(this)}
                                     />
                             </Field>
@@ -162,16 +159,7 @@ class Search extends React.Component {
                         </CardActions>
                     </Card>
                 </Form>
-                <Grid>
-                    <Row>
-                        <Col>
-                            <SearchResult videos={this.props.searchResult} />
-                        </Col>
-                        <Col>
-                            <VideoPlayer />
-                        </Col>
-                    </Row>
-                </Grid>
+                <SearchResult result={this.props.result} />
             </div>
         );
     }
@@ -251,14 +239,13 @@ class Search extends React.Component {
 
     handleSubmit(searchTerm) {
         this.setState({ expanded: false });
-        this.props.dispatch(playVideo(null));
+        this.props.dispatch(stopVideo());
         this.props.dispatch(searchVideos(searchTerm));
     }
 }
 
 export default connect((store) => ({
     search: store.search,
-    videos: store.videos.videos,
-    searchResult: store.searchResult.videos
+    suggestions: store.mySearch.suggestions,
+    result: store.mySearch.result
 }))(Search);
-

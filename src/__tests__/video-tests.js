@@ -2,7 +2,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import nock from 'nock';
 import expect from 'expect'; // You can use any testing library
-import * as actions from '../actions/fetchVideos';
+import * as actions from '../actions/searchActions';
 import * as types from '../constants/ActionTypes';
 import { baseUrl } from '../constants/urls'
 

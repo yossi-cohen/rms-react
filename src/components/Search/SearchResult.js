@@ -4,7 +4,9 @@ import { IconButton, IconMenu, List, ListItem, MenuItem } from 'material-ui';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import { grey400, darkBlack, lightBlack } from 'material-ui/styles/colors';
 import VideoImage from 'material-ui/svg-icons/av/videocam';
-import { playVideo } from '../../actions/playVideo';
+import { Grid, Row, Col } from 'react-flexbox-grid/lib/index'
+import { playVideo } from '../../actions/videoPlayerActions';
+import VideoPlayer from '../Video/VideoPlayer';
 
 class SearchResult extends React.Component {
     constructor(props) {
@@ -12,16 +14,25 @@ class SearchResult extends React.Component {
     }
 
     render() {
-        const videoItems = this.props.videos.map((video) => { return this.renderResultItem(video) });
+        const items = this.props.result.map((video) => { return this.renderVideoItem(video) });
 
         return (
-            <List>
-                {videoItems}
-            </List>
+            <Grid>
+                <Row>
+                    <Col>
+                        <List>
+                            {items}
+                        </List>
+                    </Col>
+                    <Col>
+                        <VideoPlayer />
+                    </Col>
+                </Row>
+            </Grid>
         );
     }
 
-    renderResultItem(video) {
+    renderVideoItem(video) {
         return (
             <ListItem
                 key={video.vid}

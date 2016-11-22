@@ -1,10 +1,8 @@
 import { combineReducers } from 'redux'
 import { modelReducer, formReducer, } from 'react-redux-form';
 
-import userReducer from './userReducer';
-import fetchVideosReducer from './fetchVideosReducer';
-import searchResultReducer from './searchResultReducer';
-import playVideoReducer from './playVideoReducer';
+import searchReducer from './searchReducer';
+import videoPlayerReducer from './videoPlayerReducer';
 
 const initialSearch = {
     text: '',
@@ -17,10 +15,8 @@ const initialSearch = {
 const reducers = combineReducers({
   search: modelReducer('search', initialSearch),
   searchForm: formReducer('search', initialSearch),
-  user: userReducer,
-  videos: fetchVideosReducer,
-  searchResult: searchResultReducer,
-  player: playVideoReducer
+  mySearch: searchReducer,
+  player: videoPlayerReducer
 });
 
 export default reducers;

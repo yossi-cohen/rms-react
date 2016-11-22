@@ -6,3 +6,10 @@ export function playVideo(video) {
     video
   };
 }
+
+export function stopVideo() {
+  return {
+    type: types.STOP_VIDEO,
+    video: null
+  };
+}
