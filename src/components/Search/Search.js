@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from "react-redux";
 import { Form, Control, Field, actions } from 'react-redux-form';
-import validator from 'validator';
+import { Grid, Row, Col } from 'react-flexbox-grid/lib/index'
 import {
     AutoComplete,
     Card,
@@ -14,9 +14,10 @@ import {
     RaisedButton,
     TimePicker
 } from 'material-ui';
-
+import validator from 'validator';
 import GeoJsonPicker from './GeoJsonPicker';
 import SearchResult from './SearchResult';
+import VideoPlayer from '../Video/VideoPlayer';
 import { fetchVideos } from '../../actions/fetchVideos';
 import { searchVideos } from '../../actions/searchVideos';
 
@@ -161,9 +162,53 @@ class Search extends React.Component {
                         </CardActions>
                     </Card>
                 </Form>
-                <SearchResult videos={this.props.searchResult} />
+                <Grid>
+                    <Row>
+                        <Col>
+                            <SearchResult videos={this.props.searchResult} />
+                        </Col>
+                        <Col>
+                            <VideoPlayer />
+                        </Col>
+                    </Row>
+                </Grid>
             </div>
         );
+    }
+
+    // ---------------------------------------------------
+    // validation helpers
+    // ---------------------------------------------------
+
+    searchTextValid(text) {
+        return !validator.isEmpty(validator.trim(text));
+    }
+
+    startDateValid(date) {
+        let startDate = null != date ? date : this.props.search.startDate;
+        let endDate = this.props.search.endDate;
+        let ret = this.dateValid(startDate);
+        return ret;
+    }
+
+    endDateValid(date) {
+        let endDate = null != date ? date : this.props.search.endDate;
+        let ret = this.dateValid(endDate) && this.isEqualOrAfter(endDate, this.state.minDate);
+        return ret;
+    }
+
+    dateValid(date) {
+        return null != date && validator.isDate(date.toString());
+    }
+
+    // check if date1 is equal or after date2.
+    isEqualOrAfter(date1, date2) {
+        return null != date1 && null != date2 && (date1.toString() == date2.toString() || validator.isAfter(date1.toString(), date2.toString()));
+    }
+
+    // check if date1 is equal or before date2.
+    isEqualOrBefore(date1, date2) {
+        return null != date1 && null != date2 && (date1.toString() == date2.toString() || validator.isBefore(date1.toString(), date2.toString()));
     }
 
     // ---------------------------------------------------
@@ -206,42 +251,8 @@ class Search extends React.Component {
 
     handleSubmit(searchTerm) {
         this.setState({ expanded: false });
+        this.props.dispatch(playVideo(null));
         this.props.dispatch(searchVideos(searchTerm));
-    }
-
-    // ---------------------------------------------------
-    // validation helpers
-    // ---------------------------------------------------
-
-    searchTextValid(text) {
-        return !validator.isEmpty(validator.trim(text));
-    }
-
-    startDateValid(date) {
-        let startDate = null != date ? date : this.props.search.startDate;
-        let endDate = this.props.search.endDate;
-        let ret = this.dateValid(startDate);
-        return ret;
-    }
-
-    endDateValid(date) {
-        let endDate = null != date ? date : this.props.search.endDate;
-        let ret = this.dateValid(endDate) && this.isEqualOrAfter(endDate, this.state.minDate);
-        return ret;
-    }
-
-    dateValid(date) {
-        return null != date && validator.isDate(date.toString());
-    }
-
-    // isEqualOrAfter(date1 date2) - check if date1 is equal or after date2.
-    isEqualOrAfter(date1, date2) {
-        return null != date1 && null != date2 && (date1.toString() == date2.toString() || validator.isAfter(date1.toString(), date2.toString()));
-    }
-
-    // isEqualOrBefore(date1 date2) - check if date1 is equal or before date2.
-    isEqualOrBefore(date1, date2) {
-        return null != date1 && null != date2 && (date1.toString() == date2.toString() || validator.isBefore(date1.toString(), date2.toString()));
     }
 }
 
