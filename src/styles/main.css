@@ -1,3 +1,4 @@
+
 html {
     font-family: 'Roboto', sans-serif;
 }
@@ -46,24 +47,6 @@ input {
 }
 
 .videoPlayer {
-  min-width: 640px;
-  min-height: 480px;
-  overflow: auto;
-  padding: 20px;
-  margin: 20px;
-  text-align: center;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.geoJsonPicker {
-  width: 300px;
-  height: 300px;
-  padding: 20px;
-  margin: 20px;
-  text-align: center;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  padding: 10px;
+  margin: 10px;
 }

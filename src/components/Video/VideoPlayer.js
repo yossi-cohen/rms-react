@@ -21,12 +21,11 @@ class VideoPlayer extends React.Component {
             volume: 0.8,
             played: 0,
             loaded: 0,
-            duration: 0, 
+            duration: 0,
             youtubeConfig: { iframeParams: { fullscreen: 1 } },
             fileConfig: { iframeParams: { fullscreen: 1 } }
         }
     }
-
 
     load = url => {
         this.setState({
@@ -54,14 +53,12 @@ class VideoPlayer extends React.Component {
             <div className="videoPlayer">
                 {
                     null == url ?
-                        //lilox: <VideoCam style={iconStyles} color={blue500} hoverColor={red500} /> :
                         <div /> :
                         <div>
                             <ReactPlayer
                                 ref={player => { this.player = player } }
                                 className='react-player'
-                                width={480}
-                                height={270}
+                                controls={true}
                                 url={url}
                                 playing={playing}
                                 volume={volume}
@@ -77,59 +74,7 @@ class VideoPlayer extends React.Component {
                                 onError={e => this.onError(e)}
                                 onProgress={this.onProgress}
                                 onDuration={duration => this.setState({ duration })}
-                                style={{ width: '100%', height: '100% important!' }}
                                 />
-
-                            <table>
-                                <tbody>
-                                    <tr>
-                                        <th>Controls</th>
-                                        <td>
-                                            <button onClick={this.stop}>Stop</button>
-                                            <button onClick={this.playPause}>{playing ? 'Pause' : 'Play'}</button>
-                                            <button onClick={this.onClickFullscreen}>Fullscreen</button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>Seek</th>
-                                        <td>
-                                            <input
-                                                type='range' min={0} max={1} step='any'
-                                                value={played}
-                                                onMouseDown={this.onSeekMouseDown}
-                                                onChange={this.onSeekChange}
-                                                onMouseUp={this.onSeekMouseUp}
-                                                />
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>Volume</th>
-                                        <td>
-                                            <input type='range' min={0} max={1} step='any' value={volume} onChange={this.setVolume} />
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>Played</th>
-                                        <td><progress max={1} value={played} /></td>
-                                    </tr>
-                                    <tr>
-                                        <th>Loaded</th>
-                                        <td><progress max={1} value={loaded} /></td>
-                                    </tr>
-                                    <tr>
-                                        <th>duration</th>
-                                        <td><Duration seconds={duration} /></td>
-                                    </tr>
-                                    <tr>
-                                        <th>elapsed</th>
-                                        <td><Duration seconds={duration * played} /></td>
-                                    </tr>
-                                    <tr>
-                                        <th>remaining</th>
-                                        <td><Duration seconds={duration * (1 - played)} /></td>
-                                    </tr>
-                                </tbody>
-                            </table>
                         </div>
                 }
             </div>
@@ -155,30 +100,33 @@ class VideoPlayer extends React.Component {
     playPause = () => {
         this.setState({ playing: !this.state.playing });
     }
+
     stop = () => {
         this.setState({ url: null, playing: false });
     }
+
     setVolume = e => {
         this.setState({ volume: parseFloat(e.target.value) })
     }
+
     onSeekMouseDown = e => {
         this.setState({ seeking: true })
     }
+
     onSeekChange = e => {
         this.setState({ played: parseFloat(e.target.value) })
     }
+
     onSeekMouseUp = e => {
         this.setState({ seeking: false })
         this.player.seekTo(parseFloat(e.target.value))
     }
+
     onProgress = state => {
         // We only want to update time slider if we are not currently seeking
         if (!this.state.seeking) {
             this.setState(state)
         }
-    }
-    onClickFullscreen = () => {
-        screenfull.request(findDOMNode(this.player))
     }
 }
 

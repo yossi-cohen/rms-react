@@ -14,7 +14,7 @@ import {
     TimePicker
 } from 'material-ui';
 import validator from 'validator';
-import GeoJsonPicker from './GeoJsonPicker';
+import CesiumComponent from 'components/Cesium/CesiumComponent';
 import SearchResult from './SearchResult';
 import { fetchVideos } from 'actions/searchActions';
 import { searchVideos } from 'actions/searchActions';
@@ -151,7 +151,7 @@ class Search extends React.Component {
                         </CardActions>
                         <CardActions expandable={true}>
                             <Field model="search.geoJson" style={styles.dateTimeFields}>
-                                <GeoJsonPicker />
+                                <CesiumComponent />
                             </Field>
                         </CardActions>
                         <CardActions>
