@@ -1,11 +1,13 @@
 import React from 'react';
 import BuildModuleUrl from 'cesium/Source/Core/buildModuleUrl';
-BuildModuleUrl.setBaseUrl('./');
+import Cesium from 'cesium/Source/Cesium.js';
 import CesiumViewer from 'cesium/Source/Widgets/Viewer/Viewer';
 import Entity from 'cesium/Source/DataSources/Entity';
 import CesiumPatcher from './cesium.patcher.js';
 import Cartesian3 from 'cesium/Source/Core/Cartesian3';
 import 'styles/cesium.css';
+import screenfull from 'screenfull'
+import { findDOMNode } from 'react-dom'
 
 let cesiumViewerOptions = {
   animation: false,
@@ -28,6 +30,11 @@ class CesiumComponent extends React.Component {
   }
 
   componentDidMount() {
+
+    Cesium.BingMapsApi.defaultKey = 'AlrnjpmA4KiONSspH1oyt38LOXi3FXPhf8Iy3jDyuzXnIv-DEMGGaiJdyikzFArD';
+
+    BuildModuleUrl.setBaseUrl('/cesium/');
+
     // Create the Cesium Viewer
     this.viewer = new CesiumViewer(this.refs.map, cesiumViewerOptions);
 
@@ -37,11 +44,12 @@ class CesiumComponent extends React.Component {
         id: city.id,
         show: city.visible,
         position: new Cartesian3.fromDegrees(city.longitude, city.latitude),
-        billboard: {
-          image: require('../../images/pin.svg'),
-          width: 30,
-          height: 30
-        }
+        //lilox
+        // billboard: {
+        //   image: require('images/pin.svg'),
+        //   width: 30,
+        //   height: 30
+        // }
       }));
     });
   }
@@ -58,9 +66,13 @@ class CesiumComponent extends React.Component {
     });
   }
 
+  onClickFullscreen = () => {
+    screenfull.request(findDOMNode(this.refs.map))
+  }
+
   render() {
     return (
-      <div ref="map">
+      <div ref="map" onClick={this.onClickFullscreen} style={{ width: '100%', height: '100%' }}>
       </div>
     );
   }

@@ -4,14 +4,14 @@ var HtmlPlugin = require('html-webpack-plugin');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var webpack = require('webpack');
 
-const config = require("./config")
+const config = require("./../config")
 const PATHS = config.PATHS;
 
 webpackConfig = {
     context: __dirname,
     devtool: 'source-map',
     entry: {
-        app: ['./src/index.js']
+        app: [path.join(PATHS.src, 'index.js')]
     },
     output: {
         filename: 'bundle.js',
@@ -42,7 +42,7 @@ webpackConfig = {
         new ExtractTextPlugin('src/styles/main.css', { allChunks: true }),
         new HtmlPlugin({
             title: 'rms-ui',
-            template: 'public/index.html',
+            template: PATHS.dist + '/index.html',
             inject: 'true',
             chunks: ['app']
         })

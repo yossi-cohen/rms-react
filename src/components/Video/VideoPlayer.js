@@ -2,8 +2,8 @@ import React from 'react';
 import { connect } from "react-redux";
 import ReactPlayer from 'react-player'
 import Duration from './Duration'
-import { findDOMNode } from 'react-dom'
 import screenfull from 'screenfull'
+import { findDOMNode } from 'react-dom'
 import VideoCam from 'material-ui/svg-icons/av/videocam';
 import { blue500, red500, greenA200 } from 'material-ui/styles/colors';
 
@@ -73,7 +73,6 @@ class VideoPlayer extends React.Component {
                                 onBuffer={() => { this.onBuffer() } }
                                 onEnded={() => this.setState({ playing: false })}
                                 onError={e => this.onError(e)}
-
                                 onProgress={this.onProgress}
                                 onDuration={duration => this.setState({ duration })}
                                 />
