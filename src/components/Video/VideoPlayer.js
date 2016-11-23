@@ -21,7 +21,9 @@ class VideoPlayer extends React.Component {
             volume: 0.8,
             played: 0,
             loaded: 0,
-            duration: 0
+            duration: 0, 
+            youtubeConfig: { iframeParams: { fullscreen: 1 } },
+            fileConfig: { iframeParams: { fullscreen: 1 } }
         }
     }
 
@@ -75,6 +77,7 @@ class VideoPlayer extends React.Component {
                                 onError={e => this.onError(e)}
                                 onProgress={this.onProgress}
                                 onDuration={duration => this.setState({ duration })}
+                                style={{ width: '100%', height: '100% important!' }}
                                 />
 
                             <table>

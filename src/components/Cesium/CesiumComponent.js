@@ -36,7 +36,7 @@ class CesiumComponent extends React.Component {
     BuildModuleUrl.setBaseUrl('/cesium/');
 
     // Create the Cesium Viewer
-    this.viewer = new CesiumViewer(this.refs.map, cesiumViewerOptions);
+    this.viewer = new CesiumViewer(this.refs.cesuim, cesiumViewerOptions);
 
     // Add the initial points
     this.props.cities.forEach((city) => {
@@ -67,12 +67,22 @@ class CesiumComponent extends React.Component {
   }
 
   onClickFullscreen = () => {
-    screenfull.request(findDOMNode(this.refs.map))
+    //lilox: 
+    screenfull.request(findDOMNode(this.refs.cesuim));
+
+    // let elem = findDOMNode(this.refs.cesuim);
+    // console.log('lilox ----------------------- elem:', elem);
+    // console.log('lilox ----------------------- elem.requestFullscreen:', elem.requestFullscreen);
+
+    // if (elem && elem.requestFullscreen)
+    //   elem.requestFullscreen();
   }
 
   render() {
     return (
-      <div ref="map" onClick={this.onClickFullscreen} style={{ width: '100%', height: '100%' }}>
+      <div>
+        <div ref="cesuim" onTouchTap={this.onClickFullscreen}>
+        </div>
       </div>
     );
   }
