@@ -8,14 +8,14 @@ const glob = require('glob');
 
 const PATHS = configValues.PATHS;
 
-const outputPath = path.join(PATHS.dist, "cesium");
+const outputPath = path.join(PATHS.base, "dist/cesium");
 const inputPath = path.join(PATHS.base, "node_modules/cesium/Build/Cesium/**/*.js");
 
 
 
 let globOptions = {
-    nodir: true,
-    cwd: "node_modules/cesium/Build/Cesium/",
+    nodir : true,
+    cwd : "node_modules/cesium/Build/Cesium/",
     ignore: ["*Cesium.js", "**/NaturalEarthII/**/*", "**/maki/**/*"]
 };
 

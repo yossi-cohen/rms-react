@@ -1,5 +1,6 @@
-import * as urls from 'constants/urls'
 import * as types from 'constants/ActionTypes'
+import urljoin from 'url-join';
+import config from '../../config';
 
 // --------------------------------------------------------
 // fetchVideos
@@ -8,7 +9,7 @@ import * as types from 'constants/ActionTypes'
 export function fetchVideos() {
   return function (dispatch) {
     dispatch(fetchVideosRequest());
-    return fetch(urls.getVideoList)
+    return fetch(urljoin(config.BASE_URL, '/api/videos'))
       .then(res => res.json())
       .then(json => { dispatch(fetchVideosSuccess(json)) })
       .catch(ex => dispatch(fetchVideosFailure(ex)));
@@ -17,20 +18,20 @@ export function fetchVideos() {
 
 function fetchVideosRequest() {
   return {
-    type: types.FETCH_VIDEOS_REQUEST
+    type: types.FETCH_SUGGESTIONS_REQUEST
   }
 }
 
 function fetchVideosSuccess(json) {
   return {
-    type: types.FETCH_VIDEOS_SUCCESS,
+    type: types.FETCH_SUGGESTIONS_SUCCESS,
     json
   }
 }
 
 function fetchVideosFailure(ex) {
   return {
-    type: types.FETCH_VIDEOS_FAILURE,
+    type: types.FETCH_SUGGESTIONS_FAILURE,
     ex
   }
 }
@@ -43,7 +44,7 @@ export function searchVideos(query) {
   return function (dispatch) {
     dispatch(searchVideosRequest());
 
-    return fetch(urls.postVideoSearch, {
+    return fetch(urljoin(config.BASE_URL, '/api/search'), {
       method: 'post',
       headers: {
         'Content-Type': 'application/json',

@@ -1,5 +1,5 @@
 import React from 'react';
-import Cesium from 'cesium/Source/Cesium.js';
+import Cesium from "cesium/Cesium"
 import Box from 'react-layout-components'
 import 'styles/cesium.css';
 import 'assets/cesiumWidgets.css'

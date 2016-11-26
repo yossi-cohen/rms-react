@@ -14,7 +14,7 @@ class SearchResult extends React.Component {
     }
 
     render() {
-        const items = this.props.result.map((video) => { return this.renderVideoItem(video) });
+        const items = this.props.result.videos.map((v) => { return this.renderVideoItem(v) });
 
         return (
             <Grid>
@@ -73,4 +73,6 @@ class SearchResult extends React.Component {
     }
 }
 
-export default connect()(SearchResult);
+export default connect((store) => ({
+  result: store.searchResult
+}))(SearchResult);
