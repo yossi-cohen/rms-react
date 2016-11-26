@@ -6,8 +6,8 @@ import videoPlayerReducer from './videoPlayerReducer';
 import initialState from './initialState'
 
 const reducers = combineReducers({
-  query: modelReducer('query', initialState),
-  queryForm: formReducer('query', initialState),
+  query: modelReducer('query', initialState.query),
+  queryForm: formReducer('query', initialState.query),
   suggestions: searchTermSuggestionsReducer,
   result: searchResultReducer,
   player: videoPlayerReducer
