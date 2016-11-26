@@ -1,8 +1,10 @@
 import { combineReducers } from 'redux'
 import searchReducers from './search'
+import catalogReducer from './catalog';
 
 const reducers = combineReducers({
-  search: searchReducers
+  search: searchReducers,
+  catalog: catalogReducer
 });
 
 export default reducers;
