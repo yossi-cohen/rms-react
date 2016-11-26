@@ -1,12 +1,7 @@
 import * as types from 'constants/ActionTypes'
+import initialState from './initialState'
 
-const initialState = {
-  searching: false,
-  videos: [],
-  error: null
-}
-
-export default function reducer(state = initialState, action) {
+export default function reducer(state = initialState.result, action) {
   switch (action.type) {
     case types.SEARCH_VIDEOS_REQUEST:
       return {...state, searching: true, error: null }

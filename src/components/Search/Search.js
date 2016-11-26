@@ -47,7 +47,7 @@ class Search extends React.Component {
     maxDate.setHours(0, 0, 0, 0);
 
     this.state = this.initialState = {
-      expanded: true,
+      expanded: false,
       minDate: minDate,
       maxDate: maxDate,
       autoOk: false,
@@ -61,7 +61,7 @@ class Search extends React.Component {
   render() {
     return (
       <div>
-        <Form model="search" onSubmit={(v) => this.handleSubmit(v)}>
+        <Form model="query" onSubmit={(v) => this.handleSubmit(v)}>
           <Grid>
             <Card
               expanded={this.state.expanded}
@@ -75,7 +75,7 @@ class Search extends React.Component {
               <CardActions>
                 <Row center="xs">
                   <Col xs={3}>
-                    <Field model="search.text"
+                    <Field model="query.text"
                       validators={{
                         isRequired,
                         length: (v) => v && v.length >= 3,
@@ -90,7 +90,7 @@ class Search extends React.Component {
                         filter={AutoComplete.fuzzyFilter}
                         dataSource={this.props.suggestions.videos}
                         maxSearchResults={5}
-                        onUpdateInput={v => this.props.dispatch(actions.change('search.text', v))}
+                        onUpdateInput={v => this.props.dispatch(actions.change('query.text', v))}
                         onNewRequest={this.handleChangeSearchTerm.bind(this)}
                         />
                     </Field>
@@ -103,20 +103,20 @@ class Search extends React.Component {
               <CardActions expandable={true}>
                 <Row center="xs">
                   <Col xs={3}>
-                    <Field model="search.startDate">
+                    <Field model="query.startDate">
                       <DatePicker
                         ref="startDate"
                         hintText="Start Date"
                         floatingLabelText="Start Date"
                         autoOk={this.state.autoOk}
                         container="inline"
-                        value={this.props.search.startDate}
+                        value={this.props.query.startDate}
                         onChange={(event, date) => this.handleChangeStartDate(event, date)}
                         />
                     </Field>
                   </Col>
                   <Col>
-                    <Field model="search.startTime">
+                    <Field model="query.startTime">
                       <TimePicker
                         ref="startTime"
                         hintText="Start Time"
@@ -129,7 +129,7 @@ class Search extends React.Component {
                 </Row>
                 <Row center="xs">
                   <Col xs={3}>
-                    <Field model="search.endDate">
+                    <Field model="query.endDate">
                       <DatePicker
                         ref="endDate"
                         hintText="End Date"
@@ -138,13 +138,13 @@ class Search extends React.Component {
                         minDate={this.state.minDate}
                         container="inline"
                         disabled={!this.startDateValid()}
-                        value={this.props.search.endDate}
+                        value={this.props.query.endDate}
                         onChange={(event, date) => this.handleChangeEndDate(event, date)}
                         />
                     </Field>
                   </Col>
                   <Col>
-                    <Field model="search.endTime">
+                    <Field model="query.endTime">
                       <TimePicker
                         ref="endTime"
                         hintText="End Time"
@@ -158,7 +158,7 @@ class Search extends React.Component {
                 <p />
                 <Row center="xs">
                   <Col>
-                    <Field model="search.geoJson">
+                    <Field model="query.geoJson">
                       <CesiumComponent />
                     </Field>
                   </Col>
@@ -167,7 +167,7 @@ class Search extends React.Component {
             </Card>
           </Grid>
         </Form>
-        <SearchResult videos={this.props.result.videos} />
+        <SearchResult result={this.props.result} />
       </div>
     );
   }
@@ -181,14 +181,14 @@ class Search extends React.Component {
   }
 
   startDateValid(date) {
-    let startDate = null != date ? date : this.props.search.startDate;
-    let endDate = this.props.search.endDate;
+    let startDate = null != date ? date : this.props.query.startDate;
+    let endDate = this.props.query.endDate;
     let ret = this.dateValid(startDate);
     return ret;
   }
 
   endDateValid(date) {
-    let endDate = null != date ? date : this.props.search.endDate;
+    let endDate = null != date ? date : this.props.query.endDate;
     let ret = this.dateValid(endDate) && this.isEqualOrAfter(endDate, this.state.minDate);
     return ret;
   }
@@ -220,29 +220,29 @@ class Search extends React.Component {
 
   handleChangeStartDate(event, date) {
     if (this.startDateValid(date)) {
-      this.props.dispatch(actions.change('search.startDate', date));
+      this.props.dispatch(actions.change('query.startDate', date));
       this.setState({ minDate: date });
     }
 
     // reset endDate if became invalid
-    if (null != this.props.search.endDate && !this.isEqualOrAfter(this.props.search.endDate, date)) {
-      this.props.dispatch(actions.change('search.endDate', null));
+    if (null != this.props.query.endDate && !this.isEqualOrAfter(this.props.query.endDate, date)) {
+      this.props.dispatch(actions.change('query.endDate', null));
     }
   }
 
   handleChangeStartTime(event, time) {
-    this.props.dispatch(actions.change('search.startTime', time));
+    this.props.dispatch(actions.change('query.startTime', time));
   }
 
   handleChangeEndDate(event, date) {
     if (this.endDateValid(date)) {
-      this.props.dispatch(actions.change('search.endDate', date));
+      this.props.dispatch(actions.change('query.endDate', date));
       this.setState({ maxDate: date });
     }
   }
 
   handleChangeEndTime(event, time) {
-    this.props.dispatch(actions.change('search.endTime', time));
+    this.props.dispatch(actions.change('query.endTime', time));
   }
 
   handleSubmit(searchTerm) {
@@ -253,7 +253,7 @@ class Search extends React.Component {
 }
 
 export default connect((store) => ({
-  search: store.search,
-  suggestions: store.searchTermSuggesttions,
-  result: store.searchResult
+  query: store.search.query,
+  suggestions: store.search.suggestions,
+  result: store.search.result
 }))(Search);

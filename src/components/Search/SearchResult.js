@@ -73,6 +73,4 @@ class SearchResult extends React.Component {
     }
 }
 
-export default connect((store) => ({
-  result: store.searchResult
-}))(SearchResult);
+export default connect()(SearchResult);

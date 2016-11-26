@@ -1,12 +1,7 @@
 import * as types from 'constants/ActionTypes'
+import initialState from './initialState'
 
-const initialState = {
-  fetching: false,
-  videos: [],
-  error: null
-}
-
-export default function reducer(state = initialState, action) {
+export default function reducer(state = initialState.suggestions, action) {
   switch (action.type) {
     case types.FETCH_SUGGESTIONS_REQUEST:
       return {...state, fetching: true, error: null }

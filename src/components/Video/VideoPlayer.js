@@ -131,5 +131,5 @@ class VideoPlayer extends React.Component {
 }
 
 export default connect((store) => ({
-    video: store.player.video
+    video: store.search.player.video
 }))(VideoPlayer);
