@@ -79,7 +79,6 @@ class CesiumComponent extends React.Component {
         //lilox: home
         const latitude = 32.80;
         const longitude = 35.13;
-        const height = 17.0;
 
         const west = longitude;
         const south = latitude;
@@ -114,8 +113,8 @@ class CesiumComponent extends React.Component {
         handler.setInputAction(
             function (event) {
                 dragging = true;
-                self.enableDefaultEventHandlers(scene, false);
-                const pos = self.getLatLongAlt(viewer, event.position);
+                cesiumTools.enableDefaultEventHandlers(scene, false);
+                const pos = cesiumTools.getLatLongAlt(viewer, event.position);
                 self.state.positions = [pos];
             }, Cesium.ScreenSpaceEventType.LEFT_DOWN, Cesium.KeyboardEventModifier.SHIFT
         );
@@ -123,7 +122,7 @@ class CesiumComponent extends React.Component {
         handler.setInputAction(
             function (movement) {
                 if (dragging) {
-                    const pos = self.getLatLongAlt(viewer, movement.endPosition);
+                    const pos = cesiumTools.getLatLongAlt(viewer, movement.endPosition);
                     self.state.positions.push(pos);
                 }
             }, Cesium.ScreenSpaceEventType.MOUSE_MOVE
@@ -133,50 +132,10 @@ class CesiumComponent extends React.Component {
             function () {
                 if (dragging) {
                     dragging = false;
-                    self.enableDefaultEventHandlers(scene, true);
+                    cesiumTools.enableDefaultEventHandlers(scene, true);
                 }
             }, Cesium.ScreenSpaceEventType.LEFT_UP
         );
-    }
-
-    // enable/disable cesium default event handlers
-    enableDefaultEventHandlers(scene, enable = true) {
-        scene.screenSpaceCameraController.enableRotate = enable;
-        scene.screenSpaceCameraController.enableTranslate = enable;
-        scene.screenSpaceCameraController.enableZoom = enable;
-        scene.screenSpaceCameraController.enableTilt = enable;
-        scene.screenSpaceCameraController.enableLook = enable;
-    }
-
-    // get ongitude, latitude, altitude from mouse position
-    getLatLongAlt(viewer, mousePosition) {
-        const scene = viewer.scene;
-        const ellipsoid = scene.globe.ellipsoid;
-
-        let pos = { longitude: 0, latitude: 0, altitude: 0 };
-
-        const cartesian = viewer.camera.pickEllipsoid(mousePosition, ellipsoid);
-        if (cartesian) {
-            const cartographic = ellipsoid.cartesianToCartographic(cartesian);
-            pos.longitude = Cesium.Math.toDegrees(cartographic.longitude);
-            pos.latitude = Cesium.Math.toDegrees(cartographic.latitude);
-
-            // get height
-            const ray = viewer.camera.getPickRay(mousePosition);
-            const position = viewer.scene.globe.pick(ray, viewer.scene);
-            if (Cesium.defined(position)) {
-                const cartographic = Cesium.Ellipsoid.WGS84.cartesianToCartographic(position);
-                pos.altitude = cartographic.height;
-            }
-        }
-
-        //lilox
-        // console.log(
-        //     '### longitude:', pos.longitude.toFixed(2),
-        //     ', latitude:', pos.latitude.toFixed(2),
-        //     ', height:', pos.altitude.toFixed(2));
-
-        return pos;
     }
 
     handleToolbarButton() {
