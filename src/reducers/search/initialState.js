@@ -5,7 +5,9 @@ const initialState = {
         startTime: null,
         endDate: null,
         endTime: null,
-        geoJson: null
+        cesium: {
+            geoJson: null,
+        }
     },
 
     suggestions: {

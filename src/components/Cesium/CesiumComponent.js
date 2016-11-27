@@ -1,17 +1,23 @@
 import React from 'react';
+import { connect } from "react-redux";
 import Cesium from "cesium/Cesium"
+import cesiumTools from './CesiumTools'
 import Box from 'react-layout-components'
-import 'styles/cesium.css';
 import 'assets/cesiumWidgets.css'
+import 'styles/cesium.css';
 
 class CesiumComponent extends React.Component {
     constructor(props) {
         super(props);
 
+        //lilox
         this.state = {
-            clickPositions: []
+            positions: [],
         }
 
+        // this.state = {
+        //     clickPositions: [],
+        // }
         // let click1 = new Cesium.Cartesian3(-2155350.2, -4622163.4, 3817393.1);
         // this.state.clickPositions.push(click1);
     }
@@ -24,8 +30,10 @@ class CesiumComponent extends React.Component {
         window.CESIUM_BASE_URL = '/cesium/';
         Cesium.BingMapsApi.defaultKey = 'AlrnjpmA4KiONSspH1oyt38LOXi3FXPhf8Iy3jDyuzXnIv-DEMGGaiJdyikzFArD';
         this.viewer = this.createCesiumViewer();
-        this.handleClick();
-        // this.handleDrawPolygon();
+
+        this.createControls();
+
+        this.captureMouse();
     }
 
     componentWillUnmount() {
@@ -62,7 +70,13 @@ class CesiumComponent extends React.Component {
             })
         };
 
-        // home
+        this.setCesiumHome(); // before creating viewer
+
+        return new Cesium.Viewer(this.refs.cesiumNode, cesiumViewerOptions);
+    }
+
+    setCesiumHome() {
+        //lilox: home
         const latitude = 32.80;
         const longitude = 35.13;
         const height = 17.0;
@@ -75,190 +89,107 @@ class CesiumComponent extends React.Component {
 
         Cesium.Camera.DEFAULT_VIEW_RECTANGLE = extent;
         Cesium.Camera.DEFAULT_VIEW_FACTOR = 0;
-
-        return new Cesium.Viewer(this.refs.cesiumNode, cesiumViewerOptions);
     }
 
-    handleClick() {
-        // handle click
-        let viewer = this.viewer;
-        viewer.canvas.addEventListener('click', function (e) {
-            let mousePosition = new Cesium.Cartesian2(e.clientX, e.clientY);
-
-            let ellipsoid = viewer.scene.globe.ellipsoid;
-            let cartesian = viewer.camera.pickEllipsoid(mousePosition, ellipsoid);
-            if (cartesian) {
-                let cartographic = ellipsoid.cartesianToCartographic(cartesian);
-                let longitudeString = Cesium.Math.toDegrees(cartographic.longitude).toFixed(2);
-                let latitudeString = Cesium.Math.toDegrees(cartographic.latitude).toFixed(2);
-
-                console.log(longitudeString + ', ' + latitudeString);
-            } else {
-                console.log('Globe was not picked');
-            }
-        }, false);
-    }
-
-    //lilox
-    // get coordinates (longitude, latitude, altitude) on mouse click:
-    // You don't have to use Cesium.Math.toDegrees on the height, it is given in meters.
-    // You can also use the ScreenSpaceEventHandler to handle the click event directly. 
-    // Use ScreenSpaceEventType.LEFT_CLICK.  
-    // Then, replace movement.endPosition with movement.position in the handler function.
-    getCoordinates() {
-        let ray = viewer.camera.getPickRay(movement.endPosition);
-        let position = viewer.scene.globe.pick(ray, viewer.scene);
-        if (Cesium.defined(position)) {
-            let cartographic = Cesium.Ellipsoid.WGS84.cartesianToCartographic(position);
-            let height = cartographic.height
-        }
-    }
-
-    handleDrawPolygon() {
+    createControls() {
         //lilox:TODO
-        let viewer = this.viewer;
 
-        // let cesiumTerrainProvider = new Cesium.CesiumTerrainProvider({
-        //     url: '//assets.agi.com/stk-terrain/world'
-        // });
-        // viewer.terrainProvider = cesiumTerrainProvider;
-        // viewer.selectionIndicator = false;
-        // viewer.baseLayerPicker = false;
+        cesiumTools.addToolbarButton('clear', this.handleToolbarButton);
+        cesiumTools.addToolbarMenu([
+            { text: 'circle', value: 'circle' },
+            { text: 'box', value: 'box' },
+            { text: 'polygon', value: 'polygon' }
+        ], this.handleMenuSelection);
+    }
 
-        viewer.scene.globe.depthTestAgainstTerrain = true;
-
-        viewer.screenSpaceEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
-        viewer.screenSpaceEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
-
-        let scene = viewer.scene;
-        let camera = viewer.camera;
-        let color;
-        let colors = [];
-        let polyline;
-        let drawing = false;
-        let positions = [];
-
+    captureMouse() {
+        const self = this;
+        const viewer = this.viewer;
+        const scene = viewer.scene;
+        const camera = viewer.camera;
+        const ellipsoid = scene.globe.ellipsoid;
+        let dragging = false;
         let handler = new Cesium.ScreenSpaceEventHandler(viewer.canvas);
 
         handler.setInputAction(
-            function (click) {
-                let pickedObject = scene.pick(click.position);
-                let length = colors.length;
-                let lastColor = colors[length - 1];
-                let cartesian = scene.pickPosition(click.position);
-
-                if (scene.pickPositionSupported && Cesium.defined(cartesian)) {
-                    let cartographic = Cesium.Cartographic.fromCartesian(cartesian);
-                    let longitude = Cesium.Math.toDegrees(cartographic.longitude);
-                    let latitude = Cesium.Math.toDegrees(cartographic.latitude);
-                    let altitude = cartographic.height;
-                    let altitudeString = Math.round(altitude).toString();
-
-                    viewer.entities.add({
-                        polyline: {
-                            positions: new Cesium.CallbackProperty(function () {
-                                return [cartesian, Cesium.Cartesian3.fromDegrees(longitude, latitude, altitude + 9.5)];
-                            }, false),
-                            width: 2
-                        }
-                    });
-                    viewer.entities.add({
-                        position: Cesium.Cartesian3.fromDegrees(longitude, latitude, altitude + 10.0),
-                        label: {
-                            heightReference: 1,
-                            text: altitudeString,
-                            eyeOffset: new Cesium.Cartesian3(0.0, 0.0, -25.0),
-                            scale: 0.75
-                        }
-                    });
-                }
-            }, Cesium.ScreenSpaceEventType.RIGHT_CLICK);
-
-        handler.setInputAction(
-            function (click) {
-                if (drawing) {
-                    reset(color, positions);
-                } else {
-                    polyline = viewer.entities.add({
-                        polyline: {
-                            positions: new Cesium.CallbackProperty(function () {
-                                return positions;
-                            }, false),
-                            material: color,
-                            width: 10
-                        }
-                    });
-                }
-                drawing = !drawing;
-            }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+            function (event) {
+                dragging = true;
+                self.enableDefaultEventHandlers(scene, false);
+                const pos = self.getLatLongAlt(viewer, event.position);
+                self.state.positions = [pos];
+            }, Cesium.ScreenSpaceEventType.LEFT_DOWN, Cesium.KeyboardEventModifier.SHIFT
+        );
 
         handler.setInputAction(
             function (movement) {
-                if (!movement || !movement.endPosition)
-                    return;
-                let pickedObject = scene.pick(movement.endPosition);
-                console.log('lilox --- pickedObject:', pickedObject);
-                if (!pickedObject)
-                    return;
-                let length = colors.length;
-                let lastColor = colors[length - 1];
-                let cartesian = scene.pickPosition(movement.endPosition);
-
-                if (scene.pickPositionSupported && Cesium.defined(cartesian)) {
-                    let cartographic = Cesium.Cartographic.fromCartesian(cartesian);
-
-                    // are we drawing on the globe
-                    if (!Cesium.defined(pickedObject)) {
-                        color = Cesium.Color.BLUE;
-
-                        if (!Cesium.defined(lastColor) || !lastColor.equals(Cesium.Color.BLUE)) {
-                            colors.push(Cesium.Color.BLUE);
-                        }
-                        if (drawing) {
-                            if (Cesium.defined(lastColor) && lastColor.equals(Cesium.Color.BLUE)) {
-                                positions.push(cartesian);
-                            } else {
-                                reset(lastColor, positions);
-                                draw(color, positions);
-                            }
-                        }
-                    }
+                if (dragging) {
+                    const pos = self.getLatLongAlt(viewer, movement.endPosition);
+                    self.state.positions.push(pos);
                 }
-            }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
+            }, Cesium.ScreenSpaceEventType.MOUSE_MOVE
+        );
+
+        handler.setInputAction(
+            function () {
+                if (dragging) {
+                    dragging = false;
+                    self.enableDefaultEventHandlers(scene, true);
+                }
+            }, Cesium.ScreenSpaceEventType.LEFT_UP
+        );
     }
 
-    pushColor(color, colors) {
-        let lastColor = colors[colors.length - 1];
-        if (!Cesium.defined(lastColor) || !color.equals(lastColor)) {
-            colors.push(color);
+    // enable/disable cesium default event handlers
+    enableDefaultEventHandlers(scene, enable = true) {
+        scene.screenSpaceCameraController.enableRotate = enable;
+        scene.screenSpaceCameraController.enableTranslate = enable;
+        scene.screenSpaceCameraController.enableZoom = enable;
+        scene.screenSpaceCameraController.enableTilt = enable;
+        scene.screenSpaceCameraController.enableLook = enable;
+    }
+
+    // get ongitude, latitude, altitude from mouse position
+    getLatLongAlt(viewer, mousePosition) {
+        const scene = viewer.scene;
+        const ellipsoid = scene.globe.ellipsoid;
+
+        let pos = { longitude: 0, latitude: 0, altitude: 0 };
+
+        const cartesian = viewer.camera.pickEllipsoid(mousePosition, ellipsoid);
+        if (cartesian) {
+            const cartographic = ellipsoid.cartesianToCartographic(cartesian);
+            pos.longitude = Cesium.Math.toDegrees(cartographic.longitude);
+            pos.latitude = Cesium.Math.toDegrees(cartographic.latitude);
+
+            // get height
+            const ray = viewer.camera.getPickRay(mousePosition);
+            const position = viewer.scene.globe.pick(ray, viewer.scene);
+            if (Cesium.defined(position)) {
+                const cartographic = Cesium.Ellipsoid.WGS84.cartesianToCartographic(position);
+                pos.altitude = cartographic.height;
+            }
         }
+
+        //lilox
+        // console.log(
+        //     '### longitude:', pos.longitude.toFixed(2),
+        //     ', latitude:', pos.latitude.toFixed(2),
+        //     ', height:', pos.altitude.toFixed(2));
+
+        return pos;
     }
 
-    reset(color, currentPositions) {
-        viewer.entities.add({
-            polyline: {
-                positions: new Cesium.CallbackProperty(function () {
-                    return currentPositions;
-                }, false),
-                material: color,
-                width: 10
-            }
-        });
-        positions = [];
-        viewer.entities.remove(polyline);
+    handleToolbarButton() {
+        //lilox:TODO
+        console.log('lilox: ---- handleToolbarButton');
     }
 
-    draw(color, currentPositions) {
-        polyline = viewer.entities.add({
-            polyline: {
-                positions: new Cesium.CallbackProperty(function () {
-                    return currentPositions;
-                }, false),
-                material: color,
-                width: 10
-            }
-        });
+    handleMenuSelection(e) {
+        //lilox:TODO
+        console.log('lilox: ---- selected-menu:', e.target.value, ', selected-index:', e.target.selectedIndex);
     }
 }
 
-export default CesiumComponent;
+export default connect((store) => ({
+    cesium: store.search.query.cesium,
+}))(CesiumComponent);

@@ -47,7 +47,7 @@ class Search extends React.Component {
     maxDate.setHours(0, 0, 0, 0);
 
     this.state = this.initialState = {
-      expanded: false,
+      expanded: true,
       minDate: minDate,
       maxDate: maxDate,
       autoOk: false,
@@ -158,7 +158,7 @@ class Search extends React.Component {
                 <p />
                 <Row center="xs">
                   <Col>
-                    <Field model="query.geoJson">
+                    <Field model="query.cesium">
                       <CesiumComponent />
                     </Field>
                   </Col>
