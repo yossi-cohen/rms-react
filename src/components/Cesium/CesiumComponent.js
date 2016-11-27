@@ -31,9 +31,8 @@ class CesiumComponent extends React.Component {
         Cesium.BingMapsApi.defaultKey = 'AlrnjpmA4KiONSspH1oyt38LOXi3FXPhf8Iy3jDyuzXnIv-DEMGGaiJdyikzFArD';
         this.viewer = this.createCesiumViewer();
 
-        this.createControls();
-
-        this.captureMouse();
+        this.createControls(this.viewer);
+        this.handleSelection(this.viewer);
     }
 
     componentWillUnmount() {
@@ -90,7 +89,7 @@ class CesiumComponent extends React.Component {
         Cesium.Camera.DEFAULT_VIEW_FACTOR = 0;
     }
 
-    createControls() {
+    createControls(viewer) {
         //lilox:TODO
 
         cesiumTools.addToolbarButton('clear', this.handleToolbarButton);
@@ -101,9 +100,18 @@ class CesiumComponent extends React.Component {
         ], this.handleMenuSelection);
     }
 
-    captureMouse() {
+    handleToolbarButton() {
+        //lilox:TODO
+        console.log('lilox: ---- handleToolbarButton');
+    }
+
+    handleMenuSelection(e) {
+        //lilox:TODO
+        console.log('lilox: ---- selected-menu:', e.target.value, ', selected-index:', e.target.selectedIndex);
+    }
+
+    handleSelection(viewer) {
         const self = this;
-        const viewer = this.viewer;
         const scene = viewer.scene;
         const camera = viewer.camera;
         const ellipsoid = scene.globe.ellipsoid;
@@ -116,6 +124,7 @@ class CesiumComponent extends React.Component {
                 cesiumTools.enableDefaultEventHandlers(scene, false);
                 const pos = cesiumTools.getLatLongAlt(viewer, event.position);
                 self.state.positions = [pos];
+                self.startSelectionDrawing(viewer, pos);
             }, Cesium.ScreenSpaceEventType.LEFT_DOWN, Cesium.KeyboardEventModifier.SHIFT
         );
 
@@ -124,6 +133,7 @@ class CesiumComponent extends React.Component {
                 if (dragging) {
                     const pos = cesiumTools.getLatLongAlt(viewer, movement.endPosition);
                     self.state.positions.push(pos);
+                    self.updateSelectionDrawing(viewer, pos);
                 }
             }, Cesium.ScreenSpaceEventType.MOUSE_MOVE
         );
@@ -138,14 +148,66 @@ class CesiumComponent extends React.Component {
         );
     }
 
-    handleToolbarButton() {
-        //lilox:TODO
-        console.log('lilox: ---- handleToolbarButton');
+    reset(viewer) {
+        viewer.dataSources.removeAll();
+        viewer.entities.removeAll();
     }
 
-    handleMenuSelection(e) {
+    startSelectionDrawing(viewer, pos) {
+        const scene = viewer.scene;
+
+        //lilox
+        const x = pos.longitude;
+        const y = pos.latitude;
+
         //lilox:TODO
-        console.log('lilox: ---- selected-menu:', e.target.value, ', selected-index:', e.target.selectedIndex);
+        // this.reset(viewer);
+
+        // const entity = viewer.entities.add({
+        //     position: Cesium.Cartesian3.fromDegrees(x, y),
+        //     ellipse: {
+        //         semiMajorAxis: 100.0,
+        //         semiMinorAxis: 100.0,
+        //         height: 50
+        //     },
+        //     material: Cesium.Color.fromRandom(new Cesium.Color(1.0, 0.0, 0.0, 0.5)),
+        // });
+
+        const circleInstance = new Cesium.GeometryInstance({
+            geometry: new Cesium.CircleGeometry({
+                center: Cesium.Cartesian3.fromDegrees(x, y),
+                radius: 200.0,
+                vertexFormat: Cesium.PerInstanceColorAppearance.VERTEX_FORMAT
+            }),
+            attributes: {
+                color : new Cesium.ColorGeometryInstanceAttribute(0.0, 1.0, 0.0, 0.5)
+            },
+            id: 'circle'
+        });
+
+        const primitive = new Cesium.Primitive({
+            geometryInstances: circleInstance,
+            appearance : new Cesium.PerInstanceColorAppearance()
+        });
+        
+        scene.primitives.add(primitive);
+    }
+
+    updateSelectionDrawing(viewer, pos) {
+        //lilox:TODO
+        this.updateCircle(viewer, pos);
+    }
+
+    updateCircle(viewer, pos) {
+        //lilox:TODO
+    }
+
+    updateBoundingRect(viewer, pos) {
+        //lilox:TODO
+    }
+
+    updatePolygon(viewer, pos) {
+        //lilox:TODO
     }
 }
 
