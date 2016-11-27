@@ -18,7 +18,9 @@ class CesiumComponent extends React.Component {
         this.state = {
             center: { x: 0, y: 0 },
             primitive: null, // current primitive we work on
-            primitives: []
+            primitives: [],
+            picked: false,
+            pickedObject: null,
         }
     }
 
@@ -33,6 +35,7 @@ class CesiumComponent extends React.Component {
 
         this.createControls(this.viewer);
         this.handleSelection(this.viewer);
+        this.handleMovePrimitives(this.viewer);
     }
 
     componentWillUnmount() {
@@ -115,6 +118,46 @@ class CesiumComponent extends React.Component {
     handleMenuSelection(e) {
         //lilox:TODO
         console.log('lilox: ---- selected-menu:', e.target.value, ', selected-index:', e.target.selectedIndex);
+    }
+
+    //lilox2
+    handleMovePrimitives(viewer) {
+        const self = this;
+        const camera = viewer.camera;
+        const scene = viewer.scene;
+        const ellipsoid = viewer.scene.globe.ellipsoid;
+
+        const handler = new Cesium.ScreenSpaceEventHandler(viewer.canvas);
+
+        handler.setInputAction(function (click) {
+            const pickedObject = scene.pick(click.position);
+            if (Cesium.defined(pickedObject)) {
+                self.state.picked = true;
+                self.state.pickedObject = pickedObject;
+                cesiumTools.enableDefaultEventHandlers(scene, false);
+            }
+        }, Cesium.ScreenSpaceEventType.LEFT_DOWN);
+
+        handler.setInputAction(function (movement) {
+            // move the primitive around
+            if (!self.state.picked)
+                return;
+            const position = camera.pickEllipsoid(movement.endPosition, ellipsoid);
+            //lilox2
+            // console.log('lilox ###### self.state.pickedObject:', self.state.pickedObject);
+            // const radius = self.state.pickedObject._boundingSphere2D.radius;
+            const radius = 200;
+            self.removePrimitive(viewer, self.state.pickedObject);
+            self.state.primitive = self.state.pickedObject = self.drawCirclePrimitive(viewer, position, radius);
+        }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
+
+        handler.setInputAction(function (movement) {
+            self.state.picked = false; // if picked
+            self.state.pickedObject = null;
+            cesiumTools.enableDefaultEventHandlers(scene, true);
+        }, Cesium.ScreenSpaceEventType.LEFT_UP);
+
+        viewer.zoomTo(viewer.entities);
     }
 
     handleSelection(viewer) {

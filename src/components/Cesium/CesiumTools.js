@@ -79,12 +79,12 @@ const cesiumTools = {
     },
 
     // enable/disable cesium default event handlers
-    enableDefaultEventHandlers(scene, enable = true) {
-        scene.screenSpaceCameraController.enableRotate = enable;
-        scene.screenSpaceCameraController.enableTranslate = enable;
-        scene.screenSpaceCameraController.enableZoom = enable;
-        scene.screenSpaceCameraController.enableTilt = enable;
-        scene.screenSpaceCameraController.enableLook = enable;
+    enableDefaultEventHandlers(scene, state = true) {
+        scene.screenSpaceCameraController.enableRotate = state;
+        scene.screenSpaceCameraController.enableTranslate = state;
+        scene.screenSpaceCameraController.enableZoom = state;
+        scene.screenSpaceCameraController.enableTilt = state;
+        scene.screenSpaceCameraController.enableLook = state;
     },
 }
 
