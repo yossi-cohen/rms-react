@@ -5,15 +5,18 @@ function getToolbarElement() {
     return toolbarElement;
 }
 
-const cesiumTools = {
+class CesiumTools {
+    constructor() {
+    }
+
     declare() {
-    },
+    }
 
     highlight() {
-    },
+    }
 
     reset() {
-    },
+    }
 
     addToolbarButton(text, onclick) {
         var button = document.createElement('button');
@@ -29,7 +32,7 @@ const cesiumTools = {
         var toolbarElement = getToolbarElement();
         toolbarElement.appendChild(button);
         // toolbarElement.insertBefore(button, toolbarElement.firstChild);
-    },
+    }
 
     addToolbarMenu(options, onchange) {
         var menu = document.createElement('select');
@@ -45,7 +48,7 @@ const cesiumTools = {
             option.value = options[i].value;
             menu.appendChild(option);
         }
-    },
+    }
 
     // get ongitude, latitude, altitude from mouse position
     getLatLongAlt(viewer, mousePosition) {
@@ -76,7 +79,7 @@ const cesiumTools = {
         //     ', height:', pos.altitude.toFixed(2));
 
         return pos;
-    },
+    }
 
     // enable/disable cesium default event handlers
     enableDefaultEventHandlers(scene, state = true) {
@@ -85,7 +88,7 @@ const cesiumTools = {
         scene.screenSpaceCameraController.enableZoom = state;
         scene.screenSpaceCameraController.enableTilt = state;
         scene.screenSpaceCameraController.enableLook = state;
-    },
+    }
 
     setCesiumHome(latitude, longitude) {
         const west = longitude;
@@ -96,7 +99,7 @@ const cesiumTools = {
 
         Cesium.Camera.DEFAULT_VIEW_RECTANGLE = extent;
         Cesium.Camera.DEFAULT_VIEW_FACTOR = 0;
-    },
+    }
 
     drawCirclePrimitive(viewer, center, radius) {
         const circleInstance = new Cesium.GeometryInstance({
@@ -119,7 +122,7 @@ const cesiumTools = {
 
         viewer.scene.primitives.add(primitive);
         return primitive;
-    },
+    }
 
     drawCircleOutlinePrimitive(viewer, center, radius) {
         const circleInstance = new Cesium.GeometryInstance({
@@ -152,4 +155,5 @@ const cesiumTools = {
     }
 }
 
+const cesiumTools = new CesiumTools();
 export default cesiumTools;
