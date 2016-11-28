@@ -86,6 +86,70 @@ const cesiumTools = {
         scene.screenSpaceCameraController.enableTilt = state;
         scene.screenSpaceCameraController.enableLook = state;
     },
+
+    setCesiumHome(latitude, longitude) {
+        const west = longitude;
+        const south = latitude;
+        const east = longitude + 0.01;
+        const north = latitude + 0.01;
+        let extent = Cesium.Rectangle.fromDegrees(west, south, east, north);
+
+        Cesium.Camera.DEFAULT_VIEW_RECTANGLE = extent;
+        Cesium.Camera.DEFAULT_VIEW_FACTOR = 0;
+    },
+
+    drawCirclePrimitive(viewer, center, radius) {
+        const circleInstance = new Cesium.GeometryInstance({
+            geometry: new Cesium.CircleGeometry({
+                center: center,
+                radius: radius,
+                vertexFormat: Cesium.PerInstanceColorAppearance.VERTEX_FORMAT
+            }),
+            attributes: {
+                color: new Cesium.ColorGeometryInstanceAttribute(0.0, 1.0, 0.0, 0.5)
+            },
+            id: 'circle'
+        });
+
+        const primitive = new Cesium.Primitive({
+            geometryInstances: circleInstance,
+            asynchronous: false,
+            appearance: new Cesium.PerInstanceColorAppearance()
+        });
+
+        viewer.scene.primitives.add(primitive);
+        return primitive;
+    },
+
+    drawCircleOutlinePrimitive(viewer, center, radius) {
+        const circleInstance = new Cesium.GeometryInstance({
+            geometry: new Cesium.CircleOutlineGeometry({
+                center: center,
+                radius: radius,
+            }),
+            attributes: {
+                color: Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.RED)
+            },
+            id: 'circle'
+        });
+
+        const primitive = new Cesium.Primitive({
+            geometryInstances: circleInstance,
+            asynchronous: false,
+            appearance: new Cesium.PerInstanceColorAppearance({
+                flat: true,
+                renderState: {
+                    depthTest: {
+                        enabled: true
+                    },
+                    lineWidth: Math.min(3.0, viewer.scene.maximumAliasedLineWidth)
+                }
+            })
+        });
+
+        viewer.scene.primitives.add(primitive);
+        return primitive;
+    }
 }
 
 export default cesiumTools;

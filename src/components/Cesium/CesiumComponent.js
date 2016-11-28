@@ -1,4 +1,4 @@
-//lilox: move primitive, remove primitive (right-click)
+//lilox: select primitive, remove primitive (right-click)
 
 import React from 'react';
 import { connect } from "react-redux";
@@ -11,18 +11,20 @@ import 'styles/cesium.css';
 class CesiumComponent extends React.Component {
     constructor(props) {
         super(props);
-        this.initState();
+        this.clearState();
     }
 
-    initState() {
+    clearState() {
         this.state = {
+            primitiveType: 0,
+            primitive: null, // selected primitive
             center: { x: 0, y: 0 },
-            primitive: null, // current primitive we work on
-            primitives: [],
-            picked: false,
-            pickedObject: null,
         }
     }
+
+    // ----------------------------------------------------------------------
+    // rendering
+    // ----------------------------------------------------------------------
 
     shouldComponentUpdate() {
         return false;
@@ -34,7 +36,7 @@ class CesiumComponent extends React.Component {
         this.viewer = this.createCesiumViewer();
 
         this.createControls(this.viewer);
-        this.handleSelection(this.viewer);
+        this.handleCreatePrimitive(this.viewer);
         this.handleMovePrimitives(this.viewer);
     }
 
@@ -51,6 +53,10 @@ class CesiumComponent extends React.Component {
             </Box>
         );
     }
+
+    // ----------------------------------------------------------------------
+    // utility methods
+    // ----------------------------------------------------------------------
 
     createCesiumViewer() {
         const cesiumViewerOptions = {
@@ -72,95 +78,51 @@ class CesiumComponent extends React.Component {
             })
         };
 
-        this.setCesiumHome(); // before creating viewer
+        cesiumTools.setCesiumHome(32.80, 35.13); // before creating viewer
 
         return new Cesium.Viewer(this.refs.cesiumNode, cesiumViewerOptions);
     }
 
-    setCesiumHome() {
-        //lilox: home
-        const latitude = 32.80;
-        const longitude = 35.13;
-
-        const west = longitude;
-        const south = latitude;
-        const east = longitude + 0.01;
-        const north = latitude + 0.01;
-        let extent = Cesium.Rectangle.fromDegrees(west, south, east, north);
-
-        Cesium.Camera.DEFAULT_VIEW_RECTANGLE = extent;
-        Cesium.Camera.DEFAULT_VIEW_FACTOR = 0;
-    }
-
     createControls(viewer) {
-        //lilox:TODO
-
-        cesiumTools.addToolbarButton('clear', this.handleToolbarButtonClear.bind(this));
+        cesiumTools.addToolbarButton('clear', this.handleClear.bind(this));
         cesiumTools.addToolbarMenu([
             { text: 'circle', value: 'circle' },
             { text: 'box', value: 'box' },
             { text: 'polygon', value: 'polygon' }
-        ], this.handleMenuSelection);
+        ], this.handleChangePrimitiveType);
     }
 
-    handleToolbarButtonClear() {
+    selectPrimitive(primitive) {
         //lilox:TODO
-        this.reset(this.viewer);
-        this.initState();
+        this.state.primitive = primitive;
     }
 
-    reset(viewer) {
+    removePrimitive(viewer, primitive) {
+        viewer.scene.primitives.remove(primitive);
+    }
+
+    // ----------------------------------------------------------------------
+    // event handlers (toolbar/menu/...)
+    // ----------------------------------------------------------------------
+
+    handleClear() {
+        viewer = this.viewer;
         viewer.dataSources.removeAll();
         viewer.entities.removeAll();
         viewer.scene.primitives.removeAll();
+
+        this.clearState();
     }
 
-    handleMenuSelection(e) {
-        //lilox:TODO
-        console.log('lilox: ---- selected-menu:', e.target.value, ', selected-index:', e.target.selectedIndex);
+    handleChangePrimitiveType(e) {
+        this.state.primitiveType = e.target.selectedIndex;
     }
 
-    handleMovePrimitives(viewer) {
-        const self = this;
-        const camera = viewer.camera;
-        const scene = viewer.scene;
-        const ellipsoid = viewer.scene.globe.ellipsoid;
+    // ----------------------------------------------------------------------
+    // create primitive
+    // ----------------------------------------------------------------------
 
-        const handler = new Cesium.ScreenSpaceEventHandler(viewer.canvas);
-
-        handler.setInputAction(function (click) {
-            const pickedObject = scene.pick(click.position);
-            if (Cesium.defined(pickedObject)) {
-                self.state.picked = true;
-                self.state.pickedObject = pickedObject.primitive;
-                cesiumTools.enableDefaultEventHandlers(scene, false);
-            }
-        }, Cesium.ScreenSpaceEventType.LEFT_DOWN);
-
-        handler.setInputAction(function (movement) {
-            // move the primitive around
-            if (!self.state.picked)
-                return;
-            const position = camera.pickEllipsoid(movement.endPosition, ellipsoid);
-            //lilox2
-            const boundingSphere = self.state.pickedObject._boundingSpheres[0];
-            if (boundingSphere) {
-                let radius = boundingSphere.radius;
-                self.removePrimitive(viewer, self.state.pickedObject);
-                self.state.primitive = self.state.pickedObject = self.drawCirclePrimitive(viewer, position, radius);
-            }
-        }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
-
-        handler.setInputAction(function (movement) {
-            self.state.picked = false; // if picked
-            self.state.pickedObject = null;
-            cesiumTools.enableDefaultEventHandlers(scene, true);
-        }, Cesium.ScreenSpaceEventType.LEFT_UP);
-
-        viewer.zoomTo(viewer.entities);
-    }
-
-    handleSelection(viewer) {
+    handleCreatePrimitive(viewer) {
         const self = this;
         const camera = viewer.camera;
         const ellipsoid = viewer.scene.globe.ellipsoid;
@@ -170,14 +132,14 @@ class CesiumComponent extends React.Component {
         handler.setInputAction(
             function (event) {
                 dragging = true;
-                self.startSelectionDrawing(viewer, event.position);
+                self.startCreatePrimitive(viewer, event.position);
             }, Cesium.ScreenSpaceEventType.LEFT_DOWN, Cesium.KeyboardEventModifier.SHIFT
         );
 
         handler.setInputAction(
             function (movement) {
                 if (dragging)
-                    self.updateSelectionDrawing(viewer, movement.endPosition);
+                    self.updateCreatePrimitive(viewer, movement.endPosition);
             }, Cesium.ScreenSpaceEventType.MOUSE_MOVE, Cesium.KeyboardEventModifier.SHIFT
         );
 
@@ -185,96 +147,91 @@ class CesiumComponent extends React.Component {
             function () {
                 if (dragging) {
                     dragging = false;
-                    self.endSelectionDrawing(viewer);
+                    self.endCreatePrimitive(viewer);
                 }
             }, Cesium.ScreenSpaceEventType.LEFT_UP, Cesium.KeyboardEventModifier.SHIFT
         );
     }
 
-    startSelectionDrawing(viewer, mousePosition) {
+    startCreatePrimitive(viewer, mousePosition) {
         cesiumTools.enableDefaultEventHandlers(viewer.scene, false);
-
         const center = viewer.camera.pickEllipsoid(mousePosition, viewer.scene.globe.ellipsoid);
         this.state.center = center;
-        this.state.primitive = this.drawCirclePrimitive(viewer, center, 0);
+        const primitive = cesiumTools.drawCirclePrimitive(viewer, center, 0);
+        this.selectPrimitive(primitive)
     }
 
-    updateSelectionDrawing(viewer, mousePosition) {
-        //lilox:TODO
+    updateCreatePrimitive(viewer, mousePosition) {
+        //lilox:TODO (bounding rect)
         const cartesian = viewer.camera.pickEllipsoid(mousePosition, viewer.scene.globe.ellipsoid);
-        this.updateCircle(viewer, cartesian);
+        this.updateCreateCircle(viewer, cartesian);
     }
 
-    endSelectionDrawing(viewer) {
+    endCreatePrimitive(viewer) {
         //lilox:TODO - update redux store?
-        this.state.primitives.push(this.state.primitive);
         cesiumTools.enableDefaultEventHandlers(viewer.scene, true);
     }
 
-    updateCircle(viewer, pos) {
-        //lilox:TODO
-        const xsquare = Math.pow(pos.x - this.state.center.x, 2);
-        const ysquare = Math.pow(pos.y - this.state.center.y, 2);
+    updateCreateCircle(viewer, pos) {
+        const center = this.state.center;
+        const xsquare = Math.pow(pos.x - center.x, 2);
+        const ysquare = Math.pow(pos.y - center.y, 2);
         const radius = Math.sqrt(ysquare + xsquare);
         this.removePrimitive(viewer, this.state.primitive);
-        this.state.primitive = this.drawCirclePrimitive(viewer, this.state.center, radius);
+        const primitive = cesiumTools.drawCirclePrimitive(viewer, center, radius);
+        this.selectPrimitive(primitive);
     }
 
-    drawCirclePrimitive(viewer, center, radius) {
-        const circleInstance = new Cesium.GeometryInstance({
-            geometry: new Cesium.CircleGeometry({
-                center: center,
-                radius: radius,
-                vertexFormat: Cesium.PerInstanceColorAppearance.VERTEX_FORMAT
-            }),
-            attributes: {
-                color: new Cesium.ColorGeometryInstanceAttribute(0.0, 1.0, 0.0, 0.5)
-            },
-            id: 'circle'
-        });
+    // ----------------------------------------------------------------------
+    // move primitive
+    // ----------------------------------------------------------------------
 
-        const primitive = new Cesium.Primitive({
-            geometryInstances: circleInstance,
-            asynchronous: false,
-            appearance: new Cesium.PerInstanceColorAppearance()
-        });
+    handleMovePrimitives(viewer) {
+        const self = this;
+        const camera = viewer.camera;
+        const scene = viewer.scene;
+        const ellipsoid = viewer.scene.globe.ellipsoid;
+        let picked = false;
 
-        viewer.scene.primitives.add(primitive);
-        return primitive;
+        const handler = new Cesium.ScreenSpaceEventHandler(viewer.canvas);
+
+        handler.setInputAction(function (click) {
+            const pickedObject = scene.pick(click.position);
+            if (Cesium.defined(pickedObject)) {
+                picked = true;
+                self.state.primitive = pickedObject.primitive;
+                cesiumTools.enableDefaultEventHandlers(scene, false);
+            }
+        }, Cesium.ScreenSpaceEventType.LEFT_DOWN);
+
+        handler.setInputAction(function (movement) {
+            // move the primitive around
+            if (!picked)
+                return;
+            const position = camera.pickEllipsoid(movement.endPosition, ellipsoid);
+            const boundingSphere = self.state.primitive._boundingSpheres[0];
+            if (boundingSphere) {
+                let radius = boundingSphere.radius;
+                self.removePrimitive(viewer, self.state.primitive);
+                const primitive = cesiumTools.drawCirclePrimitive(viewer, position, radius);
+                self.selectPrimitive(primitive)
+            }
+        }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
+
+        handler.setInputAction(function (movement) {
+            if (picked) {
+                picked = false;
+                self.endMovePrimitive(viewer);
+            }
+        }, Cesium.ScreenSpaceEventType.LEFT_UP);
+
+        viewer.zoomTo(viewer.entities);
     }
 
-    drawCircleOutlinePrimitive(viewer, center, radius) {
-        const circleInstance = new Cesium.GeometryInstance({
-            geometry: new Cesium.CircleOutlineGeometry({
-                center: center,
-                radius: radius,
-            }),
-            attributes: {
-                color: Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.RED)
-            },
-            id: 'circle'
-        });
-
-        const primitive = new Cesium.Primitive({
-            geometryInstances: circleInstance,
-            asynchronous: false,
-            appearance: new Cesium.PerInstanceColorAppearance({
-                flat: true,
-                renderState: {
-                    depthTest: {
-                        enabled: true
-                    },
-                    lineWidth: Math.min(3.0, viewer.scene.maximumAliasedLineWidth)
-                }
-            })
-        });
-
-        viewer.scene.primitives.add(primitive);
-        return primitive;
-    }
-
-    removePrimitive(viewer, primitive) {
-        viewer.scene.primitives.remove(primitive);
+    endMovePrimitive(viewer) {
+        //lilox:TODO - update redux store?
+        this.state.primitive = null;
+        cesiumTools.enableDefaultEventHandlers(viewer.scene, true);
     }
 }
 
