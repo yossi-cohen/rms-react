@@ -51,24 +51,24 @@ class CesiumTools {
     }
 
     // get ongitude, latitude, altitude from mouse position
-    getLatLongAlt(viewer, mousePosition) {
+    getLatLongAlt(viewer, windowPosition) {
         const scene = viewer.scene;
         const ellipsoid = scene.globe.ellipsoid;
 
-        let pos = { longitude: 0, latitude: 0, altitude: 0 };
+        let pos = { x: 0, y: 0, z: 0 };
 
-        const cartesian = viewer.camera.pickEllipsoid(mousePosition, ellipsoid);
+        const cartesian = viewer.camera.pickEllipsoid(windowPosition, ellipsoid);
         if (cartesian) {
             const cartographic = ellipsoid.cartesianToCartographic(cartesian);
-            pos.longitude = Cesium.Math.toDegrees(cartographic.longitude);
-            pos.latitude = Cesium.Math.toDegrees(cartographic.latitude);
+            pos.x = Cesium.Math.toDegrees(cartographic.longitude);
+            pos.y = Cesium.Math.toDegrees(cartographic.latitude);
 
             // get height
-            const ray = viewer.camera.getPickRay(mousePosition);
+            const ray = viewer.camera.getPickRay(windowPosition);
             const position = viewer.scene.globe.pick(ray, viewer.scene);
             if (Cesium.defined(position)) {
                 const cartographic = Cesium.Ellipsoid.WGS84.cartesianToCartographic(position);
-                pos.altitude = cartographic.height;
+                pos.z = cartographic.height;
             }
         }
 
@@ -102,7 +102,7 @@ class CesiumTools {
     }
 
     drawCirclePrimitive(viewer, center, radius) {
-        const circleInstance = new Cesium.GeometryInstance({
+        const instance = new Cesium.GeometryInstance({
             geometry: new Cesium.CircleGeometry({
                 center: center,
                 radius: radius,
@@ -115,7 +115,7 @@ class CesiumTools {
         });
 
         const primitive = new Cesium.Primitive({
-            geometryInstances: circleInstance,
+            geometryInstances: instance,
             asynchronous: false,
             appearance: new Cesium.PerInstanceColorAppearance()
         });
@@ -125,7 +125,7 @@ class CesiumTools {
     }
 
     drawCircleOutlinePrimitive(viewer, center, radius) {
-        const circleInstance = new Cesium.GeometryInstance({
+        const instance = new Cesium.GeometryInstance({
             geometry: new Cesium.CircleOutlineGeometry({
                 center: center,
                 radius: radius,
@@ -137,7 +137,7 @@ class CesiumTools {
         });
 
         const primitive = new Cesium.Primitive({
-            geometryInstances: circleInstance,
+            geometryInstances: instance,
             asynchronous: false,
             appearance: new Cesium.PerInstanceColorAppearance({
                 flat: true,
@@ -148,6 +148,29 @@ class CesiumTools {
                     lineWidth: Math.min(3.0, viewer.scene.maximumAliasedLineWidth)
                 }
             })
+        });
+
+        viewer.scene.primitives.add(primitive);
+        return primitive;
+    }
+
+    drawBoxPrimitive(viewer, west, south, east, north) {
+        const instance = new Cesium.GeometryInstance({
+            geometry: new Cesium.RectangleGeometry({
+                ellipsoid : Cesium.Ellipsoid.WGS84,
+                rectangle : Cesium.Rectangle.fromDegrees(west, south, east, north),
+                //lilox2: vertexFormat: Cesium.PerInstanceColorAppearance.VERTEX_FORMAT
+            }),
+            attributes: {
+                color: new Cesium.ColorGeometryInstanceAttribute(0.0, 1.0, 0.0, 0.5)
+            },
+            id: 'rectangle'
+        });
+
+        const primitive = new Cesium.Primitive({
+            geometryInstances: instance,
+            asynchronous: false,
+            appearance: new Cesium.PerInstanceColorAppearance()
         });
 
         viewer.scene.primitives.add(primitive);

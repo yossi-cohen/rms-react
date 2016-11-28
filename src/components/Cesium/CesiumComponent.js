@@ -87,7 +87,7 @@ class CesiumComponent extends React.Component {
             { text: 'circle', value: 'circle' },
             { text: 'box', value: 'box' },
             { text: 'polygon', value: 'polygon' }
-        ], this.handleChangePrimitiveType);
+        ], this.handleChangePrimitiveType.bind(this));
     }
 
     // ----------------------------------------------------------------------
@@ -115,16 +115,40 @@ class CesiumComponent extends React.Component {
         const ellipsoid = viewer.scene.globe.ellipsoid;
         let dragging = false;
         let currentPrimitive = null;
-        let center = 0;
+        let center = null;
+        let dragStart = null;
+        let dragEnd = null;
 
         let handler = new Cesium.ScreenSpaceEventHandler(viewer.canvas);
+
+        const self = this;
 
         handler.setInputAction(
             function (event) {
                 dragging = true;
                 cesiumTools.enableDefaultEventHandlers(viewer.scene, false);
-                center = viewer.camera.pickEllipsoid(event.position, viewer.scene.globe.ellipsoid);
-                currentPrimitive = cesiumTools.drawCirclePrimitive(viewer, center, 0);
+                switch (self.state.primitiveType) {
+                    case 0: // circle
+                    default:
+                        {
+                            center = viewer.camera.pickEllipsoid(event.position, ellipsoid);
+                            currentPrimitive = cesiumTools.drawCirclePrimitive(viewer, center, 0);
+                            break;
+                        }
+
+                    case 1: // box
+                        {
+                            const cartesian = viewer.camera.pickEllipsoid(event.position, ellipsoid);
+                            const cartographic = ellipsoid.cartesianToCartographic(cartesian);
+                            dragStart = {};
+                            dragStart.longitude = Cesium.Math.toDegrees(cartographic.longitude);
+                            dragStart.latitude = Cesium.Math.toDegrees(cartographic.latitude);
+                            currentPrimitive = cesiumTools.drawBoxPrimitive(viewer,
+                                dragStart.longitude, dragStart.latitude,
+                                dragStart.longitude, dragStart.latitude);
+                            break;
+                        }
+                }
             }, Cesium.ScreenSpaceEventType.LEFT_DOWN, Cesium.KeyboardEventModifier.SHIFT
         );
 
@@ -132,14 +156,39 @@ class CesiumComponent extends React.Component {
             function (movement) {
                 if (!dragging)
                     return;
-                const cartesian = viewer.camera.pickEllipsoid(movement.endPosition, viewer.scene.globe.ellipsoid);
-                const xsquare = Math.pow(cartesian.x - center.x, 2);
-                const ysquare = Math.pow(cartesian.y - center.y, 2);
-                const radius = Math.sqrt(ysquare + xsquare);
                 // remove previous primitive while dragging
                 viewer.scene.primitives.remove(currentPrimitive);
+
                 // draw new primitive
-                currentPrimitive = cesiumTools.drawCirclePrimitive(viewer, center, radius);
+                switch (self.state.primitiveType) {
+                    case 0: // circle
+                    default:
+                        {
+                            const cartesian = viewer.camera.pickEllipsoid(
+                                movement.endPosition, ellipsoid);
+                            const xsquare = Math.pow(cartesian.x - center.x, 2);
+                            const ysquare = Math.pow(cartesian.y - center.y, 2);
+                            const radius = Math.sqrt(ysquare + xsquare);
+                            currentPrimitive = cesiumTools.drawCirclePrimitive(viewer, center, radius);
+                            break;
+                        }
+
+                    case 1: // box
+                        {
+                            const cartesian = viewer.camera.pickEllipsoid(
+                                movement.endPosition, ellipsoid);
+                            const cartographic = ellipsoid.cartesianToCartographic(cartesian);
+                            dragEnd = {};
+                            dragEnd.longitude = Cesium.Math.toDegrees(cartographic.longitude);
+                            dragEnd.latitude = Cesium.Math.toDegrees(cartographic.latitude);
+                            currentPrimitive = cesiumTools.drawBoxPrimitive(viewer,
+                                dragStart.latitude, dragEnd.longitude,
+                                dragStart.latitude, dragEnd.longitude);
+                            //lilox2
+                            console.log('lilox2: ---------- dragStart, dragEnd:', dragStart, dragEnd);
+                            break;
+                        }
+                }
             }, Cesium.ScreenSpaceEventType.MOUSE_MOVE, Cesium.KeyboardEventModifier.SHIFT
         );
 
@@ -148,6 +197,9 @@ class CesiumComponent extends React.Component {
                 if (dragging) {
                     dragging = false;
                     currentPrimitive = null;
+                    center = null;
+                    dragStart = null;
+                    dragEnd = null;
                     cesiumTools.enableDefaultEventHandlers(viewer.scene, true);
                     //lilox:TODO - update redux store?
                 }
