@@ -133,7 +133,7 @@ class CesiumComponent extends React.Component {
             const pickedObject = scene.pick(click.position);
             if (Cesium.defined(pickedObject)) {
                 self.state.picked = true;
-                self.state.pickedObject = pickedObject;
+                self.state.pickedObject = pickedObject.primitive;
                 cesiumTools.enableDefaultEventHandlers(scene, false);
             }
         }, Cesium.ScreenSpaceEventType.LEFT_DOWN);
