@@ -120,7 +120,6 @@ class CesiumComponent extends React.Component {
         console.log('lilox: ---- selected-menu:', e.target.value, ', selected-index:', e.target.selectedIndex);
     }
 
-    //lilox2
     handleMovePrimitives(viewer) {
         const self = this;
         const camera = viewer.camera;
@@ -144,11 +143,12 @@ class CesiumComponent extends React.Component {
                 return;
             const position = camera.pickEllipsoid(movement.endPosition, ellipsoid);
             //lilox2
-            // console.log('lilox ###### self.state.pickedObject:', self.state.pickedObject);
-            // const radius = self.state.pickedObject._boundingSphere2D.radius;
-            const radius = 200;
-            self.removePrimitive(viewer, self.state.pickedObject);
-            self.state.primitive = self.state.pickedObject = self.drawCirclePrimitive(viewer, position, radius);
+            const boundingSphere = self.state.pickedObject._boundingSpheres[0];
+            if (boundingSphere) {
+                let radius = boundingSphere.radius;
+                self.removePrimitive(viewer, self.state.pickedObject);
+                self.state.primitive = self.state.pickedObject = self.drawCirclePrimitive(viewer, position, radius);
+            }
         }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
 
         handler.setInputAction(function (movement) {
