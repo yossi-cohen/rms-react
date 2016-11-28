@@ -16,9 +16,7 @@ class CesiumComponent extends React.Component {
 
     clearState() {
         this.state = {
-            primitiveType: 0,
-            primitive: null, // selected primitive
-            center: { x: 0, y: 0 },
+            primitiveType: 0, // 0: circle, 1: box, 2: polygon
         }
     }
 
@@ -92,21 +90,12 @@ class CesiumComponent extends React.Component {
         ], this.handleChangePrimitiveType);
     }
 
-    selectPrimitive(primitive) {
-        //lilox:TODO
-        this.state.primitive = primitive;
-    }
-
-    removePrimitive(viewer, primitive) {
-        viewer.scene.primitives.remove(primitive);
-    }
-
     // ----------------------------------------------------------------------
     // event handlers (toolbar/menu/...)
     // ----------------------------------------------------------------------
 
     handleClear() {
-        viewer = this.viewer;
+        const viewer = this.viewer;
         viewer.dataSources.removeAll();
         viewer.entities.removeAll();
         viewer.scene.primitives.removeAll();
@@ -123,23 +112,34 @@ class CesiumComponent extends React.Component {
     // ----------------------------------------------------------------------
 
     handleCreatePrimitive(viewer) {
-        const self = this;
-        const camera = viewer.camera;
         const ellipsoid = viewer.scene.globe.ellipsoid;
         let dragging = false;
+        let currentPrimitive = null;
+        let center = 0;
+
         let handler = new Cesium.ScreenSpaceEventHandler(viewer.canvas);
 
         handler.setInputAction(
             function (event) {
                 dragging = true;
-                self.startCreatePrimitive(viewer, event.position);
+                cesiumTools.enableDefaultEventHandlers(viewer.scene, false);
+                center = viewer.camera.pickEllipsoid(event.position, viewer.scene.globe.ellipsoid);
+                currentPrimitive = cesiumTools.drawCirclePrimitive(viewer, center, 0);
             }, Cesium.ScreenSpaceEventType.LEFT_DOWN, Cesium.KeyboardEventModifier.SHIFT
         );
 
         handler.setInputAction(
             function (movement) {
-                if (dragging)
-                    self.updateCreatePrimitive(viewer, movement.endPosition);
+                if (!dragging)
+                    return;
+                const cartesian = viewer.camera.pickEllipsoid(movement.endPosition, viewer.scene.globe.ellipsoid);
+                const xsquare = Math.pow(cartesian.x - center.x, 2);
+                const ysquare = Math.pow(cartesian.y - center.y, 2);
+                const radius = Math.sqrt(ysquare + xsquare);
+                // remove previous primitive while dragging
+                viewer.scene.primitives.remove(currentPrimitive);
+                // draw new primitive
+                currentPrimitive = cesiumTools.drawCirclePrimitive(viewer, center, radius);
             }, Cesium.ScreenSpaceEventType.MOUSE_MOVE, Cesium.KeyboardEventModifier.SHIFT
         );
 
@@ -147,39 +147,12 @@ class CesiumComponent extends React.Component {
             function () {
                 if (dragging) {
                     dragging = false;
-                    self.endCreatePrimitive(viewer);
+                    currentPrimitive = null;
+                    cesiumTools.enableDefaultEventHandlers(viewer.scene, true);
+                    //lilox:TODO - update redux store?
                 }
             }, Cesium.ScreenSpaceEventType.LEFT_UP, Cesium.KeyboardEventModifier.SHIFT
         );
-    }
-
-    startCreatePrimitive(viewer, mousePosition) {
-        cesiumTools.enableDefaultEventHandlers(viewer.scene, false);
-        const center = viewer.camera.pickEllipsoid(mousePosition, viewer.scene.globe.ellipsoid);
-        this.state.center = center;
-        const primitive = cesiumTools.drawCirclePrimitive(viewer, center, 0);
-        this.selectPrimitive(primitive)
-    }
-
-    updateCreatePrimitive(viewer, mousePosition) {
-        //lilox:TODO (bounding rect)
-        const cartesian = viewer.camera.pickEllipsoid(mousePosition, viewer.scene.globe.ellipsoid);
-        this.updateCreateCircle(viewer, cartesian);
-    }
-
-    endCreatePrimitive(viewer) {
-        //lilox:TODO - update redux store?
-        cesiumTools.enableDefaultEventHandlers(viewer.scene, true);
-    }
-
-    updateCreateCircle(viewer, pos) {
-        const center = this.state.center;
-        const xsquare = Math.pow(pos.x - center.x, 2);
-        const ysquare = Math.pow(pos.y - center.y, 2);
-        const radius = Math.sqrt(ysquare + xsquare);
-        this.removePrimitive(viewer, this.state.primitive);
-        const primitive = cesiumTools.drawCirclePrimitive(viewer, center, radius);
-        this.selectPrimitive(primitive);
     }
 
     // ----------------------------------------------------------------------
@@ -187,51 +160,42 @@ class CesiumComponent extends React.Component {
     // ----------------------------------------------------------------------
 
     handleMovePrimitives(viewer) {
-        const self = this;
-        const camera = viewer.camera;
-        const scene = viewer.scene;
         const ellipsoid = viewer.scene.globe.ellipsoid;
         let picked = false;
+        let currentPrimitive = null;
 
         const handler = new Cesium.ScreenSpaceEventHandler(viewer.canvas);
 
         handler.setInputAction(function (click) {
-            const pickedObject = scene.pick(click.position);
+            const pickedObject = viewer.scene.pick(click.position);
             if (Cesium.defined(pickedObject)) {
-                picked = true;
-                self.state.primitive = pickedObject.primitive;
-                cesiumTools.enableDefaultEventHandlers(scene, false);
+                currentPrimitive = pickedObject.primitive;
+                cesiumTools.enableDefaultEventHandlers(viewer.scene, false);
             }
         }, Cesium.ScreenSpaceEventType.LEFT_DOWN);
 
         handler.setInputAction(function (movement) {
             // move the primitive around
-            if (!picked)
+            if (!currentPrimitive)
                 return;
-            const position = camera.pickEllipsoid(movement.endPosition, ellipsoid);
-            const boundingSphere = self.state.primitive._boundingSpheres[0];
+            const position = viewer.camera.pickEllipsoid(movement.endPosition, ellipsoid);
+            const boundingSphere = currentPrimitive._boundingSpheres[0];
             if (boundingSphere) {
                 let radius = boundingSphere.radius;
-                self.removePrimitive(viewer, self.state.primitive);
-                const primitive = cesiumTools.drawCirclePrimitive(viewer, position, radius);
-                self.selectPrimitive(primitive)
+                viewer.scene.primitives.remove(currentPrimitive);
+                currentPrimitive = cesiumTools.drawCirclePrimitive(viewer, position, radius);
             }
         }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
 
         handler.setInputAction(function (movement) {
-            if (picked) {
-                picked = false;
-                self.endMovePrimitive(viewer);
+            if (currentPrimitive) {
+                currentPrimitive = null;
+                cesiumTools.enableDefaultEventHandlers(viewer.scene, true);
+                //lilox:TODO - update redux store?
             }
         }, Cesium.ScreenSpaceEventType.LEFT_UP);
 
         viewer.zoomTo(viewer.entities);
-    }
-
-    endMovePrimitive(viewer) {
-        //lilox:TODO - update redux store?
-        this.state.primitive = null;
-        cesiumTools.enableDefaultEventHandlers(viewer.scene, true);
     }
 }
 
