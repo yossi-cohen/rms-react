@@ -139,10 +139,7 @@ class CesiumComponent extends React.Component {
                     case 1: // box
                         {
                             const cartesian = viewer.camera.pickEllipsoid(event.position, ellipsoid);
-                            const cartographic = ellipsoid.cartesianToCartographic(cartesian);
-                            dragStart = {};
-                            dragStart.longitude = Cesium.Math.toDegrees(cartographic.longitude);
-                            dragStart.latitude = Cesium.Math.toDegrees(cartographic.latitude);
+                            dragStart = ellipsoid.cartesianToCartographic(cartesian);
                             currentPrimitive = cesiumTools.drawBoxPrimitive(viewer,
                                 dragStart.longitude, dragStart.latitude,
                                 dragStart.longitude, dragStart.latitude);
@@ -164,8 +161,7 @@ class CesiumComponent extends React.Component {
                     case 0: // circle
                     default:
                         {
-                            const cartesian = viewer.camera.pickEllipsoid(
-                                movement.endPosition, ellipsoid);
+                            const cartesian = viewer.camera.pickEllipsoid(movement.endPosition, ellipsoid);
                             const xsquare = Math.pow(cartesian.x - center.x, 2);
                             const ysquare = Math.pow(cartesian.y - center.y, 2);
                             const radius = Math.sqrt(ysquare + xsquare);
@@ -175,17 +171,48 @@ class CesiumComponent extends React.Component {
 
                     case 1: // box
                         {
-                            const cartesian = viewer.camera.pickEllipsoid(
-                                movement.endPosition, ellipsoid);
-                            const cartographic = ellipsoid.cartesianToCartographic(cartesian);
-                            dragEnd = {};
-                            dragEnd.longitude = Cesium.Math.toDegrees(cartographic.longitude);
-                            dragEnd.latitude = Cesium.Math.toDegrees(cartographic.latitude);
-                            currentPrimitive = cesiumTools.drawBoxPrimitive(viewer,
-                                dragStart.latitude, dragEnd.longitude,
-                                dragStart.latitude, dragEnd.longitude);
-                            //lilox2
-                            console.log('lilox2: ---------- dragStart, dragEnd:', dragStart, dragEnd);
+                            const cartesian = viewer.camera.pickEllipsoid(movement.endPosition, ellipsoid);
+                            dragEnd = ellipsoid.cartesianToCartographic(cartesian);
+
+                            let west, south, east, north;
+
+                            if (dragStart.latitude >= dragEnd.latitude) {
+                                if (dragStart.longitude <= dragEnd.longitude) {
+                                    // (\.)
+                                    west = dragStart.longitude;
+                                    south = dragEnd.latitude;
+                                    east = dragEnd.longitude;
+                                    north = dragStart.latitude;
+                                }
+                                else {
+                                    // (./)
+                                    // dragStart.longitude > dragEnd.longitude
+                                    west = dragEnd.longitude;
+                                    south = dragEnd.latitude;
+                                    east = dragStart.longitude;
+                                    north = dragStart.latitude;
+                                }
+                            }
+                            else {
+                                // dragStart.latitude < dragEnd.latitude
+                                if (dragStart.longitude <= dragEnd.longitude) {
+                                    // (/^)
+                                    west = dragStart.longitude;
+                                    south = dragStart.latitude;
+                                    east = dragEnd.longitude;
+                                    north = dragEnd.latitude;
+                                }
+                                else {
+                                    // dragStart.longitude > dragEnd.longitude
+                                    // (^\)
+                                    west = dragEnd.longitude;
+                                    south = dragStart.latitude;
+                                    east = dragStart.longitude;
+                                    north = dragEnd.latitude;
+                                }
+                            }
+
+                            currentPrimitive = cesiumTools.drawBoxPrimitive(viewer, west, south, east, north);
                             break;
                         }
                 }

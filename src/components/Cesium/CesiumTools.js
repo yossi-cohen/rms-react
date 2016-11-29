@@ -72,12 +72,6 @@ class CesiumTools {
             }
         }
 
-        //lilox
-        // console.log(
-        //     '### longitude:', pos.longitude.toFixed(2),
-        //     ', latitude:', pos.latitude.toFixed(2),
-        //     ', height:', pos.altitude.toFixed(2));
-
         return pos;
     }
 
@@ -106,7 +100,6 @@ class CesiumTools {
             geometry: new Cesium.CircleGeometry({
                 center: center,
                 radius: radius,
-                vertexFormat: Cesium.PerInstanceColorAppearance.VERTEX_FORMAT
             }),
             attributes: {
                 color: new Cesium.ColorGeometryInstanceAttribute(0.0, 1.0, 0.0, 0.5)
@@ -157,9 +150,8 @@ class CesiumTools {
     drawBoxPrimitive(viewer, west, south, east, north) {
         const instance = new Cesium.GeometryInstance({
             geometry: new Cesium.RectangleGeometry({
-                ellipsoid : Cesium.Ellipsoid.WGS84,
-                rectangle : Cesium.Rectangle.fromDegrees(west, south, east, north),
-                //lilox2: vertexFormat: Cesium.PerInstanceColorAppearance.VERTEX_FORMAT
+                ellipsoid: Cesium.Ellipsoid.WGS84,
+                rectangle: { west, south, east, north },
             }),
             attributes: {
                 color: new Cesium.ColorGeometryInstanceAttribute(0.0, 1.0, 0.0, 0.5)
@@ -175,6 +167,18 @@ class CesiumTools {
 
         viewer.scene.primitives.add(primitive);
         return primitive;
+    }
+
+    drawBoxEntity(viewer, west, south, east, north) {
+        return viewer.entities.add({
+            name: 'rectangle',
+            rectangle: {
+                coordinates: Cesium.Rectangle.fromDegrees(west, south, east, north),
+                material: Cesium.Color.RED.withAlpha(0.5),
+                outline: true,
+                outlineColor: Cesium.Color.RED
+            }
+        });
     }
 }
 
