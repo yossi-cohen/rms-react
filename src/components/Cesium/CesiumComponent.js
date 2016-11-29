@@ -20,19 +20,17 @@ class CesiumComponent extends React.Component {
     }
 
     clearState() {
-        //lilox2
-        console.log('lilox: (clearState) calling this.setState(initialState)');
         this.setState(initialState);
+        this.shapeMenu.selectedIndex = 0;
     }
 
     // ----------------------------------------------------------------------
     // rendering
     // ----------------------------------------------------------------------
 
-    //lilox2
-    // shouldComponentUpdate() {
-    //     return false;
-    // }
+    shouldComponentUpdate() {
+        return false;
+    }
 
     componentDidMount() {
         window.CESIUM_BASE_URL = '/cesium/';
@@ -49,15 +47,10 @@ class CesiumComponent extends React.Component {
             this.viewer.destroy();
     }
 
-    componentWillReceiveProps(nextProps) {
-        console.log('lilox: componentWillReceiveProps'); //lilox2
-    }
-
     render() {
-        console.log('lilox: render called :) state:', this.state); //lilox2
         return (
             <Box width={500} height={300} justifyContent="center" alignItems="flex-start" alignSelf="center">
-                <div ref="cesiumNode" id="cesiumContainer" className="cesium-widget">
+                <div ref="cesiumNode" id="cesiumContainer" className="cesium-viewer">
                 </div>
             </Box>
         );
@@ -94,7 +87,7 @@ class CesiumComponent extends React.Component {
 
     createControls(viewer) {
         cesiumTools.addToolbarButton('clear', this.handleClear.bind(this));
-        cesiumTools.addToolbarMenu([
+        this.shapeMenu = cesiumTools.addToolbarMenu([
             { text: 'circle', value: 'circle' },
             { text: 'rect', value: 'rect' },
             { text: 'polygon', value: 'polygon' }
@@ -115,8 +108,6 @@ class CesiumComponent extends React.Component {
     }
 
     handleChangeShape(e) {
-        //lilox2: this.state.shape = e.target.selectedIndex;
-        console.log('lilox: calling this.setState: ', e.target.selectedIndex);
         this.setState({ shape: e.target.selectedIndex });
     }
 

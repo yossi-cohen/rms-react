@@ -46,9 +46,10 @@ class CesiumTools {
             var option = document.createElement('option');
             option.textContent = options[i].text;
             option.value = options[i].value;
-            // option.selected = true;//lilox2
             menu.appendChild(option);
         }
+
+        return menu;
     }
 
     // get ongitude, latitude, altitude from mouse position
