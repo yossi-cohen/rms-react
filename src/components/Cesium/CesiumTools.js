@@ -183,7 +183,7 @@ class CesiumTools {
     }
 
     //lilox:TODO
-    drawBoxOutlinePrimitive(viewer, center, radius) {
+    drawBoxOutlinePrimitive(viewer, west, south, east, north) {
         const instance = new Cesium.GeometryInstance({
             geometry: new Cesium.RectangleGeometry({
                 ellipsoid: Cesium.Ellipsoid.WGS84,
