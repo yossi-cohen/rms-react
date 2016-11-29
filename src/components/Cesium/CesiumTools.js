@@ -31,7 +31,6 @@ class CesiumTools {
 
         var toolbarElement = getToolbarElement();
         toolbarElement.appendChild(button);
-        // toolbarElement.insertBefore(button, toolbarElement.firstChild);
     }
 
     addToolbarMenu(options, onchange) {
