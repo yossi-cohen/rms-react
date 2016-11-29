@@ -136,6 +136,9 @@ class CesiumComponent extends React.Component {
                         {
                             center = viewer.camera.pickEllipsoid(event.position, ellipsoid);
                             currentPrimitive = cesiumTools.drawCirclePrimitive(viewer, center, 0);
+                            currentPrimitive.rms = {
+                                shape: 'circle'
+                            }
                             break;
                         }
 
@@ -143,9 +146,13 @@ class CesiumComponent extends React.Component {
                         {
                             const cartesian = viewer.camera.pickEllipsoid(event.position, ellipsoid);
                             dragStart = ellipsoid.cartesianToCartographic(cartesian);
-                            currentPrimitive = cesiumTools.drawBoxPrimitive(viewer,
-                                dragStart.longitude, dragStart.latitude,
-                                dragStart.longitude, dragStart.latitude);
+                            let west, south, east, north;
+                            west = south = east = north = dragStart.longitude;
+                            currentPrimitive = cesiumTools.drawBoxPrimitive(viewer, west, south, east, north);
+                            currentPrimitive.rms = {
+                                shape: 'rect',
+                                location: { west: west, south: south, east: east, north: north }
+                            }
                             break;
                         }
                 }
@@ -157,6 +164,7 @@ class CesiumComponent extends React.Component {
                 if (!dragging)
                     return;
                 // remove previous primitive while dragging
+                let rms = currentPrimitive.rms; // save it before removing primitive
                 viewer.scene.primitives.remove(currentPrimitive);
 
                 // draw new primitive
@@ -169,10 +177,11 @@ class CesiumComponent extends React.Component {
                             const ysquare = Math.pow(cartesian.y - center.y, 2);
                             const radius = Math.sqrt(ysquare + xsquare);
                             currentPrimitive = cesiumTools.drawCirclePrimitive(viewer, center, radius);
+                            currentPrimitive.rms = rms; // restore data
                             break;
                         }
 
-                    case 1: // box
+                    case 1: // rect
                         {
                             const cartesian = viewer.camera.pickEllipsoid(movement.endPosition, ellipsoid);
                             const dragEnd = ellipsoid.cartesianToCartographic(cartesian);
@@ -184,6 +193,8 @@ class CesiumComponent extends React.Component {
                             const north = Math.max(dragStart.latitude, dragEnd.latitude);
 
                             currentPrimitive = cesiumTools.drawBoxPrimitive(viewer, west, south, east, north);
+                            currentPrimitive.rms = rms; // restore data
+                            currentPrimitive.rms.location = { west: west, south: south, east: east, north: north };
                             break;
                         }
                 }
@@ -212,14 +223,19 @@ class CesiumComponent extends React.Component {
         const ellipsoid = viewer.scene.globe.ellipsoid;
         let picked = false;
         let currentPrimitive = null;
+        let dragStart = null;
 
         const handler = new Cesium.ScreenSpaceEventHandler(viewer.canvas);
+
+        const self = this;
 
         handler.setInputAction(function (click) {
             const pickedObject = viewer.scene.pick(click.position);
             if (Cesium.defined(pickedObject)) {
-                currentPrimitive = pickedObject.primitive;
                 cesiumTools.enableDefaultEventHandlers(viewer.scene, false);
+                currentPrimitive = pickedObject.primitive;
+                const cartesian = viewer.camera.pickEllipsoid(click.position, ellipsoid);
+                dragStart = ellipsoid.cartesianToCartographic(cartesian);
             }
         }, Cesium.ScreenSpaceEventType.LEFT_DOWN);
 
@@ -228,32 +244,47 @@ class CesiumComponent extends React.Component {
             if (!currentPrimitive)
                 return;
 
-            switch (self.state.shape) {
-                case 0: // circle
+            switch (currentPrimitive.rms.shape) {
+                case 'circle':
                 default:
                     {
                         const cartesian = viewer.camera.pickEllipsoid(movement.endPosition, ellipsoid);
                         const boundingSphere = currentPrimitive._boundingSpheres[0];
                         if (boundingSphere) {
                             let radius = boundingSphere.radius;
+                            const orig_rms = currentPrimitive.rms;
                             viewer.scene.primitives.remove(currentPrimitive);
                             currentPrimitive = cesiumTools.drawCirclePrimitive(viewer, cartesian, radius);
+                            currentPrimitive.rms = orig_rms;
                         }
                         break;
                     }
 
-                case 1: // box
+                case 'rect':
                     {
-                        //lilox2
                         const cartesian = viewer.camera.pickEllipsoid(movement.endPosition, ellipsoid);
                         const dragEnd = ellipsoid.cartesianToCartographic(cartesian);
 
-                        // Re-order so west < east and south < north
-                        // const west = Math.min(dragStart.longitude, dragEnd.longitude);
-                        // const east = Math.max(dragStart.longitude, dragEnd.longitude);
-                        // const south = Math.min(dragStart.latitude, dragEnd.latitude);
-                        // const north = Math.max(dragStart.latitude, dragEnd.latitude);
+                        // remove previous primitive (saving its location)
+                        const orig_rms = currentPrimitive.rms;
+                        viewer.scene.primitives.remove(currentPrimitive);
 
+                        // re-calc new location
+                        const new_location = {
+                            west: currentPrimitive.rms.location.west + dragEnd.longitude - dragStart.longitude,
+                            east: currentPrimitive.rms.location.east + dragEnd.longitude - dragStart.longitude,
+                            south: currentPrimitive.rms.location.south + dragEnd.latitude - dragStart.latitude,
+                            north: currentPrimitive.rms.location.north + dragEnd.latitude - dragStart.latitude
+                        };
+
+                        currentPrimitive = cesiumTools.drawBoxPrimitive(viewer,
+                            new_location.west,
+                            new_location.south,
+                            new_location.east,
+                            new_location.north);
+
+                        currentPrimitive.rms = orig_rms;
+                        currentPrimitive.rms.nextLocation = new_location; // we want to apply new location only on mouse-up
                         break;
                     }
             }
@@ -261,7 +292,9 @@ class CesiumComponent extends React.Component {
 
         handler.setInputAction(function (movement) {
             if (currentPrimitive) {
+                currentPrimitive.rms.location = currentPrimitive.rms.nextLocation;
                 currentPrimitive = null;
+                dragStart = null;
                 cesiumTools.enableDefaultEventHandlers(viewer.scene, true);
                 //lilox:TODO - update redux store?
             }
