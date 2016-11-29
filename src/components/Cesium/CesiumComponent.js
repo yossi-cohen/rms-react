@@ -1,4 +1,7 @@
-//lilox: select primitive, remove primitive (right-click)
+//lilox:TODO
+// - select primitive
+// - remove primitive (right-click)
+// - Cesium.CallbackProperty
 
 import React from 'react';
 import { connect } from "react-redux";
@@ -267,12 +270,16 @@ class CesiumComponent extends React.Component {
                         viewer.scene.primitives.remove(primitive);
 
                         // re-calc new rect
+                        const longOffset = dragEnd.longitude - dragStart.longitude;
+                        const latOffset = dragEnd.latitude - dragStart.latitude;
+
+                        const orig_rect = primitive.rms.rect;
                         const new_rect = {
-                            west: primitive.rms.rect.west + dragEnd.longitude - dragStart.longitude,
-                            east: primitive.rms.rect.east + dragEnd.longitude - dragStart.longitude,
-                            south: primitive.rms.rect.south + dragEnd.latitude - dragStart.latitude,
-                            north: primitive.rms.rect.north + dragEnd.latitude - dragStart.latitude
-                        };
+                            west: orig_rect.west + longOffset,
+                            east: orig_rect.east + longOffset,
+                            south: orig_rect.south + latOffset,
+                            north: orig_rect.north + latOffset
+                        }
 
                         primitive = cesiumTools.drawBoxPrimitive(viewer,
                             new_rect.west,
