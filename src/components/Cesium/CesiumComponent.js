@@ -121,7 +121,6 @@ class CesiumComponent extends React.Component {
         let currentPrimitive = null;
         let center = null;
         let dragStart = null;
-        let dragEnd = null;
 
         let handler = new Cesium.ScreenSpaceEventHandler(viewer.canvas);
 
@@ -176,45 +175,13 @@ class CesiumComponent extends React.Component {
                     case 1: // box
                         {
                             const cartesian = viewer.camera.pickEllipsoid(movement.endPosition, ellipsoid);
-                            dragEnd = ellipsoid.cartesianToCartographic(cartesian);
+                            const dragEnd = ellipsoid.cartesianToCartographic(cartesian);
 
-                            let west, south, east, north;
-
-                            if (dragStart.latitude >= dragEnd.latitude) {
-                                if (dragStart.longitude <= dragEnd.longitude) {
-                                    // (\.)
-                                    west = dragStart.longitude;
-                                    south = dragEnd.latitude;
-                                    east = dragEnd.longitude;
-                                    north = dragStart.latitude;
-                                }
-                                else {
-                                    // (./)
-                                    // dragStart.longitude > dragEnd.longitude
-                                    west = dragEnd.longitude;
-                                    south = dragEnd.latitude;
-                                    east = dragStart.longitude;
-                                    north = dragStart.latitude;
-                                }
-                            }
-                            else {
-                                // dragStart.latitude < dragEnd.latitude
-                                if (dragStart.longitude <= dragEnd.longitude) {
-                                    // (/^)
-                                    west = dragStart.longitude;
-                                    south = dragStart.latitude;
-                                    east = dragEnd.longitude;
-                                    north = dragEnd.latitude;
-                                }
-                                else {
-                                    // dragStart.longitude > dragEnd.longitude
-                                    // (^\)
-                                    west = dragEnd.longitude;
-                                    south = dragStart.latitude;
-                                    east = dragStart.longitude;
-                                    north = dragEnd.latitude;
-                                }
-                            }
+                            // Re-order so west < east and south < north
+                            const west = Math.min(dragStart.longitude, dragEnd.longitude);
+                            const east = Math.max(dragStart.longitude, dragEnd.longitude);
+                            const south = Math.min(dragStart.latitude, dragEnd.latitude);
+                            const north = Math.max(dragStart.latitude, dragEnd.latitude);
 
                             currentPrimitive = cesiumTools.drawBoxPrimitive(viewer, west, south, east, north);
                             break;
@@ -230,7 +197,6 @@ class CesiumComponent extends React.Component {
                     currentPrimitive = null;
                     center = null;
                     dragStart = null;
-                    dragEnd = null;
                     cesiumTools.enableDefaultEventHandlers(viewer.scene, true);
                     //lilox:TODO - update redux store?
                 }
