@@ -127,7 +127,7 @@ class CesiumTools {
             attributes: {
                 color: Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.RED)
             },
-            id: 'circle'
+            id: 'circle-outline'
         });
 
         const primitive = new Cesium.Primitive({
@@ -139,7 +139,7 @@ class CesiumTools {
                     depthTest: {
                         enabled: true
                     },
-                    lineWidth: Math.min(3.0, viewer.scene.maximumAliasedLineWidth)
+                    lineWidth: Math.min(2.0, viewer.scene.maximumAliasedLineWidth)
                 }
             })
         });
@@ -157,7 +157,7 @@ class CesiumTools {
             attributes: {
                 color: new Cesium.ColorGeometryInstanceAttribute(0.0, 1.0, 0.0, 0.5)
             },
-            id: 'rectangle'
+            id: 'box'
         });
 
         const primitive = new Cesium.Primitive({
@@ -172,7 +172,7 @@ class CesiumTools {
 
     drawBoxEntity(viewer, west, south, east, north) {
         return viewer.entities.add({
-            name: 'rectangle',
+            name: 'box',
             rectangle: {
                 coordinates: Cesium.Rectangle.fromDegrees(west, south, east, north),
                 material: Cesium.Color.RED.withAlpha(0.5),
@@ -180,6 +180,37 @@ class CesiumTools {
                 outlineColor: Cesium.Color.RED
             }
         });
+    }
+
+    //lilox:TODO
+    drawBoxOutlinePrimitive(viewer, center, radius) {
+        const instance = new Cesium.GeometryInstance({
+            geometry: new Cesium.RectangleGeometry({
+                ellipsoid: Cesium.Ellipsoid.WGS84,
+                rectangle: { west, south, east, north },
+            }),
+            attributes: {
+                color: Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.RED)
+            },
+            id: 'box-outline'
+        });
+
+        const primitive = new Cesium.Primitive({
+            geometryInstances: instance,
+            asynchronous: false,
+            appearance: new Cesium.PerInstanceColorAppearance({
+                flat: true,
+                renderState: {
+                    depthTest: {
+                        enabled: true
+                    },
+                    lineWidth: Math.min(2.0, viewer.scene.maximumAliasedLineWidth)
+                }
+            })
+        });
+
+        viewer.scene.primitives.add(primitive);
+        return primitive;
     }
 }
 
