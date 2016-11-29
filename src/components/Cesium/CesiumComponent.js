@@ -227,12 +227,35 @@ class CesiumComponent extends React.Component {
             // move the primitive around
             if (!currentPrimitive)
                 return;
-            const position = viewer.camera.pickEllipsoid(movement.endPosition, ellipsoid);
-            const boundingSphere = currentPrimitive._boundingSpheres[0];
-            if (boundingSphere) {
-                let radius = boundingSphere.radius;
-                viewer.scene.primitives.remove(currentPrimitive);
-                currentPrimitive = cesiumTools.drawCirclePrimitive(viewer, position, radius);
+
+            switch (self.state.shape) {
+                case 0: // circle
+                default:
+                    {
+                        const cartesian = viewer.camera.pickEllipsoid(movement.endPosition, ellipsoid);
+                        const boundingSphere = currentPrimitive._boundingSpheres[0];
+                        if (boundingSphere) {
+                            let radius = boundingSphere.radius;
+                            viewer.scene.primitives.remove(currentPrimitive);
+                            currentPrimitive = cesiumTools.drawCirclePrimitive(viewer, cartesian, radius);
+                        }
+                        break;
+                    }
+
+                case 1: // box
+                    {
+                        //lilox2
+                        const cartesian = viewer.camera.pickEllipsoid(movement.endPosition, ellipsoid);
+                        const dragEnd = ellipsoid.cartesianToCartographic(cartesian);
+
+                        // Re-order so west < east and south < north
+                        // const west = Math.min(dragStart.longitude, dragEnd.longitude);
+                        // const east = Math.max(dragStart.longitude, dragEnd.longitude);
+                        // const south = Math.min(dragStart.latitude, dragEnd.latitude);
+                        // const north = Math.max(dragStart.latitude, dragEnd.latitude);
+
+                        break;
+                    }
             }
         }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
 
