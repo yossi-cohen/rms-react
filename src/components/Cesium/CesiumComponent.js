@@ -49,7 +49,7 @@ class CesiumComponent extends React.Component {
         this.createControls(this.viewer);
         this.handleCreatePrimitive(this.viewer);
         this.handleMovePrimitives(this.viewer);
-        this.handleSelectPrimitives(this.viewer);
+        //lilox2: this.handleSelectPrimitives(this.viewer);
     }
 
     componentWillUnmount() {
@@ -350,12 +350,12 @@ class CesiumComponent extends React.Component {
         }, Cesium.ScreenSpaceEventType.LEFT_DOWN);
 
         //lilox2
-        // handler.setInputAction(function (movement) {
-        //     if (selected_primitive) {
-        //         self.selectPrimitive(viewer, selected_primitive, false);
-        //         selected_primitive = null;
-        //     }
-        // }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
+        handler.setInputAction(function (movement) {
+            if (pickedPrimitive && selectedPrimitive) {
+                self.selectPrimitive(viewer, selectedPrimitive, false);
+                selectedPrimitive = null;
+            }
+        }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
 
         handler.setInputAction(function (movement) {
             if (pickedPrimitive) {
@@ -374,22 +374,14 @@ class CesiumComponent extends React.Component {
     }
 
     selectPrimitive(viewer, primitive, state) {
-        //lilox:TODO
         if (state) {
             primitive._data.outline = this.drawOutline(viewer, primitive);
         }
         else {
-            console.log('lilox2 (1) 22222222222222222222222222222222');
-
             if (primitive._data.outline) {
-                console.log('lilox2 (2) 22222222222222222222222222222222');
                 viewer.scene.primitives.remove(primitive._data.outline);
                 primitive._data.outline = null;
                 this.redrawPrimitive(viewer, primitive);
-            }
-            else {
-                console.log('lilox2 (3) 22222222222222222222222222222222');
-
             }
         }
     }
@@ -397,11 +389,9 @@ class CesiumComponent extends React.Component {
     drawOutline(viewer, primitive) {
         switch (primitive._data.shape) {
             case SHAPES.CIRCLE:
-                this.drawCircleOutline(viewer, primitive);
-                break;
+                return this.drawCircleOutline(viewer, primitive);
             case SHAPES.RECT:
-                this.drawBoxOutline(viewer, primitive);
-                break;
+                return this.drawBoxOutline(viewer, primitive);
         }
     }
 
