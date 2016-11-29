@@ -8,25 +8,31 @@ import Box from 'react-layout-components'
 import 'assets/cesiumWidgets.css'
 import 'styles/cesium.css';
 
+const initialState = {
+    shape: 0, // 0: circle, 1: box, 2: polygon
+}
+
 class CesiumComponent extends React.Component {
     constructor(props) {
         super(props);
-        this.clearState();
+
+        this.state = initialState;
     }
 
     clearState() {
-        this.state = {
-            primitiveType: 0, // 0: circle, 1: box, 2: polygon
-        }
+        //lilox2
+        console.log('lilox: (clearState) calling this.setState(initialState)');
+        this.setState(initialState);
     }
 
     // ----------------------------------------------------------------------
     // rendering
     // ----------------------------------------------------------------------
 
-    shouldComponentUpdate() {
-        return false;
-    }
+    //lilox2
+    // shouldComponentUpdate() {
+    //     return false;
+    // }
 
     componentDidMount() {
         window.CESIUM_BASE_URL = '/cesium/';
@@ -43,7 +49,12 @@ class CesiumComponent extends React.Component {
             this.viewer.destroy();
     }
 
+    componentWillReceiveProps(nextProps) {
+        console.log('lilox: componentWillReceiveProps'); //lilox2
+    }
+
     render() {
+        console.log('lilox: render called :) state:', this.state); //lilox2
         return (
             <Box width={500} height={300} justifyContent="center" alignItems="flex-start" alignSelf="center">
                 <div ref="cesiumNode" id="cesiumContainer" className="cesium-widget">
@@ -85,9 +96,9 @@ class CesiumComponent extends React.Component {
         cesiumTools.addToolbarButton('clear', this.handleClear.bind(this));
         cesiumTools.addToolbarMenu([
             { text: 'circle', value: 'circle' },
-            { text: 'box', value: 'box' },
+            { text: 'rect', value: 'rect' },
             { text: 'polygon', value: 'polygon' }
-        ], this.handleChangePrimitiveType.bind(this));
+        ], this.handleChangeShape.bind(this));
     }
 
     // ----------------------------------------------------------------------
@@ -103,8 +114,10 @@ class CesiumComponent extends React.Component {
         this.clearState();
     }
 
-    handleChangePrimitiveType(e) {
-        this.state.primitiveType = e.target.selectedIndex;
+    handleChangeShape(e) {
+        //lilox2: this.state.shape = e.target.selectedIndex;
+        console.log('lilox: calling this.setState: ', e.target.selectedIndex);
+        this.setState({ shape: e.target.selectedIndex });
     }
 
     // ----------------------------------------------------------------------
@@ -127,7 +140,7 @@ class CesiumComponent extends React.Component {
             function (event) {
                 dragging = true;
                 cesiumTools.enableDefaultEventHandlers(viewer.scene, false);
-                switch (self.state.primitiveType) {
+                switch (self.state.shape) {
                     case 0: // circle
                     default:
                         {
@@ -157,7 +170,7 @@ class CesiumComponent extends React.Component {
                 viewer.scene.primitives.remove(currentPrimitive);
 
                 // draw new primitive
-                switch (self.state.primitiveType) {
+                switch (self.state.shape) {
                     case 0: // circle
                     default:
                         {
