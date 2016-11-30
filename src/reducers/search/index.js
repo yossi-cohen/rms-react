@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux'
 import { modelReducer, formReducer } from 'react-redux-form';
 import searchTermSuggestionsReducer from './suggestionsReducer'
+import updateGeoJsonReducer from './updateGeoJsonReducer'
 import searchResultReducer from './searchResultReducer';
 import videoPlayerReducer from './videoPlayerReducer';
 import initialState from './initialState'

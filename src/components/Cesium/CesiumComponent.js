@@ -9,6 +9,8 @@ import cesiumTools from './CesiumTools'
 import Box from 'react-layout-components'
 import 'assets/cesiumWidgets.css'
 import 'styles/cesium.css';
+//lilox2: 
+import { updateGeoJson } from 'actions/searchActions';
 
 const SHAPES = {
     CIRCLE: 'circle',
@@ -104,7 +106,25 @@ class CesiumComponent extends React.Component {
         ], this.handleChangeShape.bind(this));
     }
 
-    //lilox:TODO
+    add(primitive) {
+        //lilox:TODO - update redux store
+        //lilox2:
+        // this.props.dispatch(updateGeoJson(this.geoJson()));
+
+        //lilox2
+        // console.log('lilox: --- this.props', this.props);
+    }
+
+    remove(primitive) {
+        //lilox:TODO - update redux store
+        this.viewer.scene.primitives.remove(primitive);
+        //lilox2:
+        // this.props.dispatch(updateGeoJson(this.geoJson()));
+
+        //lilox2
+        // console.log('lilox: --- this.props', this.props);
+    }
+
     geoJson() {
         const viewer = this.viewer;
 
@@ -132,7 +152,7 @@ class CesiumComponent extends React.Component {
         return geoJson;
     }
 
-    //lilox:TODO
+    //lilox:TODO - geojson doesn't have 'Circle'
     circleToGeoJson(center, radius) {
         const geoJson = {
             "type": "Circle",
@@ -232,7 +252,7 @@ class CesiumComponent extends React.Component {
                 if (pickedPrimitive) {
                     // remove previous primitive while dragging
                     data = pickedPrimitive._data; // save it before removing primitive
-                    viewer.scene.primitives.remove(pickedPrimitive);
+                    self.remove(pickedPrimitive);
                 }
 
                 // draw new primitive
@@ -246,6 +266,7 @@ class CesiumComponent extends React.Component {
                             const ysquare = Math.pow(cartesian.y - center.y, 2);
                             const radius = Math.sqrt(ysquare + xsquare);
                             pickedPrimitive = cesiumTools.drawCirclePrimitive(viewer, center, radius);
+                            self.add(pickedPrimitive);
                             data.circle.radius = radius; // update radius
                             pickedPrimitive._data = data; // restore data
                             break;
@@ -263,6 +284,7 @@ class CesiumComponent extends React.Component {
                             const north = Math.max(dragStart.latitude, dragEnd.latitude);
 
                             pickedPrimitive = cesiumTools.drawBoxPrimitive(viewer, west, south, east, north);
+                            self.add(pickedPrimitive);
                             pickedPrimitive._data = data; // restore data
                             pickedPrimitive._data.rect = { west: west, south: south, east: east, north: north };
                             break;
@@ -280,7 +302,6 @@ class CesiumComponent extends React.Component {
                     pickedPrimitive = null;
                     dragStart = null;
                     cesiumTools.enableDefaultEventHandlers(viewer.scene, true);
-                    //lilox:TODO - update redux store?
                 }
             }, Cesium.ScreenSpaceEventType.LEFT_UP, Cesium.KeyboardEventModifier.SHIFT
         );
@@ -313,7 +334,6 @@ class CesiumComponent extends React.Component {
             }
         }, Cesium.ScreenSpaceEventType.LEFT_DOWN);
 
-        //lilox:TODO - use redrawPrimitive?
         // mouse-move
         handler.setInputAction(function (movement) {
             // move the primitive around
@@ -336,8 +356,9 @@ class CesiumComponent extends React.Component {
 
                         let radius = pickedPrimitive._data.circle.radius;
                         const orig_data = pickedPrimitive._data;
-                        viewer.scene.primitives.remove(pickedPrimitive);
+                        self.remove(pickedPrimitive);
                         pickedPrimitive = cesiumTools.drawCirclePrimitive(viewer, new_center, radius);
+                        self.add(pickedPrimitive);
                         pickedPrimitive._data = orig_data;
                         pickedPrimitive._data.circle.new_center = new_center; // we apply new location on mouse-up
                         self.moveOutline(viewer, pickedPrimitive);
@@ -351,7 +372,7 @@ class CesiumComponent extends React.Component {
 
                         // remove previous primitive (saving its location)
                         const orig_data = pickedPrimitive._data;
-                        viewer.scene.primitives.remove(pickedPrimitive);
+                        self.remove(pickedPrimitive);
 
                         // re-calc new rect
                         const longOffset = dragEnd.longitude - dragStartCartographic.longitude;
@@ -370,6 +391,7 @@ class CesiumComponent extends React.Component {
                             new_rect.south,
                             new_rect.east,
                             new_rect.north);
+                        self.add(pickedPrimitive);
 
                         pickedPrimitive._data = orig_data;
                         pickedPrimitive._data.new_rect = new_rect; // we apply new location on mouse-up
@@ -404,7 +426,6 @@ class CesiumComponent extends React.Component {
                 dragStartCartographic = null;
                 dragStartCartesian = null;
                 cesiumTools.enableDefaultEventHandlers(viewer.scene, true);
-                //lilox:TODO - update redux store?
             }
         }, Cesium.ScreenSpaceEventType.LEFT_UP);
     }
@@ -452,7 +473,7 @@ class CesiumComponent extends React.Component {
 
     removeOutline(viewer, primitive) {
         if (primitive._data.outline) {
-            viewer.scene.primitives.remove(primitive._data.outline);
+            this.remove(primitive._data.outline);
             primitive._data.outline = null;
         }
     }
@@ -494,19 +515,21 @@ class CesiumComponent extends React.Component {
 
     redrawCirclePrimitive(viewer, primitive) {
         const data = primitive._data; // hold date
-        viewer.scene.primitives.remove(primitive);
+        this.remove(primitive);
         primitive = cesiumTools.drawCirclePrimitive(viewer, data.circle.center, data.circle.radius);
+        this.add(primitive);
         primitive._data = data; // restore date
     }
 
     redrawBoxPrimitive(viewer, primitive) {
         const data = primitive._data; // hold date
-        viewer.scene.primitives.remove(primitive);
+        this.remove(primitive);
         primitive = cesiumTools.drawBoxPrimitive(viewer,
             data.rect.west,
             data.rect.south,
             data.rect.east,
             data.rect.north);
+        this.add(primitive);
         primitive._data = data; // restore date
     }
 
@@ -514,11 +537,11 @@ class CesiumComponent extends React.Component {
         if (!primitive._data.outline)
             return;
         // move the outline
-        viewer.scene.primitives.remove(primitive._data.outline);
+        this.remove(primitive._data.outline);
         this.drawOutline(viewer, primitive);
     }
 }
 
 export default connect((store) => ({
-    cesium: store.search.query.cesium,
+    geoJson: store.search.query.geoJson,
 }))(CesiumComponent);

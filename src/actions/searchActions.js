@@ -3,7 +3,7 @@ import urljoin from 'url-join';
 import config from '../../config';
 
 // --------------------------------------------------------
-// fetchVideos
+// fetchVideos (suggestions for autocomplete)
 // --------------------------------------------------------
 
 export function fetchVideos() {
@@ -34,6 +34,17 @@ function fetchVideosFailure(ex) {
     type: types.FETCH_SUGGESTIONS_FAILURE,
     ex
   }
+}
+
+// --------------------------------------------------------
+// updateGeoJson
+// --------------------------------------------------------
+
+export function updateGeoJson(geoJson) {
+  return {
+    type: types.UPDATE_GEO_JSON,
+    geoJson
+  };
 }
 
 // --------------------------------------------------------

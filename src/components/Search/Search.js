@@ -158,7 +158,7 @@ class Search extends React.Component {
                 <p />
                 <Row center="xs">
                   <Col>
-                    <Field model="query.cesium">
+                    <Field model="query.geoJson">
                       <CesiumComponent />
                     </Field>
                   </Col>
