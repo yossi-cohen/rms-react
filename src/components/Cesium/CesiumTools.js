@@ -109,6 +109,7 @@ class CesiumTools {
         });
 
         const primitive = new Cesium.Primitive({
+            name: 'circle',
             geometryInstances: instance,
             asynchronous: false,
             appearance: new Cesium.PerInstanceColorAppearance()
@@ -125,12 +126,13 @@ class CesiumTools {
                 radius: radius,
             }),
             attributes: {
-                color: Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.RED)
+                color: Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.YELLOWGREEN)
             },
             id: 'circle-outline'
         });
 
         const primitive = new Cesium.Primitive({
+            name: 'circle-outline',
             geometryInstances: instance,
             asynchronous: false,
             appearance: new Cesium.PerInstanceColorAppearance({
@@ -139,7 +141,7 @@ class CesiumTools {
                     depthTest: {
                         enabled: true
                     },
-                    lineWidth: Math.min(2.0, viewer.scene.maximumAliasedLineWidth)
+                    lineWidth: Math.min(3.0, viewer.scene.maximumAliasedLineWidth)
                 }
             })
         });
@@ -161,6 +163,7 @@ class CesiumTools {
         });
 
         const primitive = new Cesium.Primitive({
+            name: 'box',
             geometryInstances: instance,
             asynchronous: false,
             appearance: new Cesium.PerInstanceColorAppearance()
@@ -182,20 +185,20 @@ class CesiumTools {
         });
     }
 
-    //lilox:TODO
     drawBoxOutlinePrimitive(viewer, west, south, east, north) {
         const instance = new Cesium.GeometryInstance({
-            geometry: new Cesium.RectangleGeometry({
+            geometry: new Cesium.RectangleOutlineGeometry({
                 ellipsoid: Cesium.Ellipsoid.WGS84,
                 rectangle: { west, south, east, north },
             }),
             attributes: {
-                color: Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.RED)
+                color: Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.YELLOWGREEN)
             },
             id: 'box-outline'
         });
 
         const primitive = new Cesium.Primitive({
+            name: 'box-outline',
             geometryInstances: instance,
             asynchronous: false,
             appearance: new Cesium.PerInstanceColorAppearance({
@@ -204,7 +207,7 @@ class CesiumTools {
                     depthTest: {
                         enabled: true
                     },
-                    lineWidth: Math.min(2.0, viewer.scene.maximumAliasedLineWidth)
+                    lineWidth: Math.min(3.0, viewer.scene.maximumAliasedLineWidth)
                 }
             })
         });
