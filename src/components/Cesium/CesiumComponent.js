@@ -1,16 +1,14 @@
 //lilox:TODO
-// - remove primitive (right-click)
-// - Cesium.CallbackProperty
+// remove primitive (right-click)
 
 import React from 'react';
 import { connect } from "react-redux";
+import { actions } from 'react-redux-form';
 import Cesium from "cesium/Cesium"
 import cesiumTools from './CesiumTools'
 import Box from 'react-layout-components'
 import 'assets/cesiumWidgets.css'
 import 'styles/cesium.css';
-//lilox2: 
-import { updateGeoJson } from 'actions/searchActions';
 
 const SHAPES = {
     CIRCLE: 'circle',
@@ -107,22 +105,16 @@ class CesiumComponent extends React.Component {
     }
 
     add(primitive) {
-        //lilox:TODO - update redux store
-        //lilox2:
-        // this.props.dispatch(updateGeoJson(this.geoJson()));
-
-        //lilox2
-        // console.log('lilox: --- this.props', this.props);
+        //lilox:TODO
     }
 
     remove(primitive) {
-        //lilox:TODO - update redux store
+        //lilox:TODO
         this.viewer.scene.primitives.remove(primitive);
-        //lilox2:
-        // this.props.dispatch(updateGeoJson(this.geoJson()));
+    }
 
-        //lilox2
-        // console.log('lilox: --- this.props', this.props);
+    updateStore(geoJson) {
+        this.props.dispatch(actions.change('query.geoJson', this.geoJson()));
     }
 
     geoJson() {
@@ -209,7 +201,7 @@ class CesiumComponent extends React.Component {
 
         // shift + left-down
         handler.setInputAction(
-            function (event) {
+            function(event) {
                 dragging = true;
 
                 cesiumTools.enableDefaultEventHandlers(viewer.scene, false);
@@ -245,7 +237,7 @@ class CesiumComponent extends React.Component {
 
         // shift + mouse-move
         handler.setInputAction(
-            function (movement) {
+            function(movement) {
                 if (!dragging)
                     return;
 
@@ -295,10 +287,12 @@ class CesiumComponent extends React.Component {
 
         // shift + left-up
         handler.setInputAction(
-            function () {
+            function() {
                 dragging = false;
                 if (pickedPrimitive) {
                     self.selectPrimitive(viewer, pickedPrimitive, true);
+                    // update redux store
+                    self.updateStore(pickedPrimitive);
                     pickedPrimitive = null;
                     dragStart = null;
                     cesiumTools.enableDefaultEventHandlers(viewer.scene, true);
@@ -315,13 +309,14 @@ class CesiumComponent extends React.Component {
         let pickedPrimitive = null;
         let dragStartCartographic = null;
         let dragStartCartesian = null;
+        let objectMoved = false;
         const self = this;
 
         const handler = new Cesium.ScreenSpaceEventHandler(viewer.canvas);
         const ellipsoid = viewer.scene.globe.ellipsoid;
 
         // left-down
-        handler.setInputAction(function (click) {
+        handler.setInputAction(function(click) {
             const pickedObject = viewer.scene.pick(click.position);
             if (Cesium.defined(pickedObject)) {
                 cesiumTools.enableDefaultEventHandlers(viewer.scene, false);
@@ -335,10 +330,11 @@ class CesiumComponent extends React.Component {
         }, Cesium.ScreenSpaceEventType.LEFT_DOWN);
 
         // mouse-move
-        handler.setInputAction(function (movement) {
+        handler.setInputAction(function(movement) {
             // move the primitive around
             if (!pickedPrimitive)
                 return;
+            objectMoved = true;
 
             switch (pickedPrimitive._data.shape) {
                 case SHAPES.CIRCLE:
@@ -402,7 +398,7 @@ class CesiumComponent extends React.Component {
         }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
 
         // left-up
-        handler.setInputAction(function (movement) {
+        handler.setInputAction(function(movement) {
             if (pickedPrimitive) {
                 switch (pickedPrimitive._data.shape) {
                     case SHAPES.CIRCLE:
@@ -420,6 +416,12 @@ class CesiumComponent extends React.Component {
                             pickedPrimitive._data.new_rect = null;
                         }
                         break;
+                }
+
+                // update redux store
+                if (objectMoved) {
+                    let objectMoved = false;
+                    self.updateStore(pickedPrimitive);
                 }
 
                 pickedPrimitive = null;
@@ -440,7 +442,7 @@ class CesiumComponent extends React.Component {
         const handler = new Cesium.ScreenSpaceEventHandler(viewer.canvas);
 
         // left-click
-        handler.setInputAction(function (click) {
+        handler.setInputAction(function(click) {
             // remove any previous selection
             if (self.state.selectedPrimitive) {
                 self.selectPrimitive(viewer, self.state.selectedPrimitive, false);

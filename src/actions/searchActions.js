@@ -37,17 +37,6 @@ function fetchVideosFailure(ex) {
 }
 
 // --------------------------------------------------------
-// updateGeoJson
-// --------------------------------------------------------
-
-export function updateGeoJson(geoJson) {
-  return {
-    type: types.UPDATE_GEO_JSON,
-    geoJson
-  };
-}
-
-// --------------------------------------------------------
 // searchVideos
 // --------------------------------------------------------
 
