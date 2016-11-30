@@ -105,7 +105,9 @@ class CesiumComponent extends React.Component {
     }
 
     //lilox:TODO
-    geoJson(viewer) {
+    geoJson() {
+        const viewer = this.viewer;
+
         let geoJson = {
             "type": "GeometryCollection",
             "geometries": [
@@ -127,8 +129,6 @@ class CesiumComponent extends React.Component {
             }
         }
 
-        //lilox
-        console.log('lilox: geoJson:', geoJson);
         return geoJson;
     }
 
@@ -432,8 +432,6 @@ class CesiumComponent extends React.Component {
                 self.selectPrimitive(viewer, pickedObject.primitive, true);
             }
 
-            //lilox
-            self.geoJson(viewer);
         }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
     }
 
