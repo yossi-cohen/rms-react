@@ -11,14 +11,13 @@ import Box from 'react-layout-components'
 import 'assets/cesiumWidgets.css'
 import 'styles/cesium.css';
 
-const initialState = {
-    shape: 0, // 0: circle, 1: box, 2: polygon
-}
-
 const SHAPES = {
     CIRCLE: 'circle',
-    RECT: 'rect',
-    POLYGON: 'polygon'
+    BOX: 'box'
+}
+
+const initialState = {
+    shape: SHAPES.CIRCLE
 }
 
 class CesiumComponent extends React.Component {
@@ -99,8 +98,7 @@ class CesiumComponent extends React.Component {
         cesiumTools.addToolbarButton('clear', this.handleClear.bind(this));
         this.shapeMenu = cesiumTools.addToolbarMenu([
             { text: SHAPES.CIRCLE, value: SHAPES.CIRCLE },
-            { text: SHAPES.RECT, value: SHAPES.RECT },
-            { text: SHAPES.POLYGON, value: SHAPES.POLYGON }
+            { text: SHAPES.BOX, value: SHAPES.BOX },
         ], this.handleChangeShape.bind(this));
     }
 
@@ -118,7 +116,7 @@ class CesiumComponent extends React.Component {
     }
 
     handleChangeShape(e) {
-        this.setState({ shape: e.target.selectedIndex });
+        this.setState({ shape: e.target.value });
     }
 
     // ----------------------------------------------------------------------
@@ -137,7 +135,7 @@ class CesiumComponent extends React.Component {
             function (event) {
                 cesiumTools.enableDefaultEventHandlers(viewer.scene, false);
                 switch (self.state.shape) {
-                    case 0: // circle
+                    case SHAPES.CIRCLE:
                         {
                             const center = viewer.camera.pickEllipsoid(event.position, ellipsoid);
                             pickedPrimitive = cesiumTools.drawCirclePrimitive(viewer, center, 0);
@@ -151,7 +149,7 @@ class CesiumComponent extends React.Component {
                             break;
                         }
 
-                    case 1: // box
+                    case SHAPES.BOX:
                         {
                             const cartesian = viewer.camera.pickEllipsoid(event.position, ellipsoid);
                             dragStart = ellipsoid.cartesianToCartographic(cartesian);
@@ -159,7 +157,7 @@ class CesiumComponent extends React.Component {
                             west = south = east = north = dragStart.longitude;
                             pickedPrimitive = cesiumTools.drawBoxPrimitive(viewer, west, south, east, north);
                             pickedPrimitive._data = {
-                                shape: SHAPES.RECT,
+                                shape: SHAPES.BOX,
                                 rect: { west: west, south: south, east: east, north: north }
                             }
                             break;
@@ -178,7 +176,7 @@ class CesiumComponent extends React.Component {
 
                 // draw new primitive
                 switch (self.state.shape) {
-                    case 0: // circle
+                    case SHAPES.CIRCLE:
                         {
                             // re-calc radius
                             const center = data.circle.center;
@@ -192,7 +190,7 @@ class CesiumComponent extends React.Component {
                             break;
                         }
 
-                    case 1: // rect
+                    case SHAPES.BOX:
                         {
                             const cartesian = viewer.camera.pickEllipsoid(movement.endPosition, ellipsoid);
                             const dragEnd = ellipsoid.cartesianToCartographic(cartesian);
@@ -264,7 +262,7 @@ class CesiumComponent extends React.Component {
                         break;
                     }
 
-                case SHAPES.RECT:
+                case SHAPES.BOX:
                     {
                         const cartesian = viewer.camera.pickEllipsoid(movement.endPosition, ellipsoid);
                         const dragEnd = ellipsoid.cartesianToCartographic(cartesian);
@@ -309,7 +307,7 @@ class CesiumComponent extends React.Component {
                         }
                         break;
 
-                    case SHAPES.RECT:
+                    case SHAPES.BOX:
                         // commit the new rect
                         if (pickedPrimitive._data.new_rect) {
                             pickedPrimitive._data.rect = pickedPrimitive._data.new_rect;
@@ -390,7 +388,7 @@ class CesiumComponent extends React.Component {
         switch (primitive._data.shape) {
             case SHAPES.CIRCLE:
                 return this.drawCircleOutline(viewer, primitive);
-            case SHAPES.RECT:
+            case SHAPES.BOX:
                 return this.drawBoxOutline(viewer, primitive);
         }
     }
@@ -413,7 +411,7 @@ class CesiumComponent extends React.Component {
             case SHAPES.CIRCLE:
                 this.redrawCirclePrimitive(viewer, primitive);
                 break;
-            case SHAPES.RECT:
+            case SHAPES.BOX:
                 this.redrawBoxPrimitive(viewer, primitive);
                 break;
         }
