@@ -5,6 +5,9 @@ function getToolbarElement() {
     return toolbarElement;
 }
 
+const COLOR_PRIMITIVE = new Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.GREEN.withAlpha(0.5));
+const COLOR_OUTLINE = Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.YELLOWGREEN);
+
 class CesiumTools {
     constructor() {
     }
@@ -103,7 +106,7 @@ class CesiumTools {
                 radius: radius,
             }),
             attributes: {
-                color: new Cesium.ColorGeometryInstanceAttribute(0.0, 1.0, 0.0, 0.5)
+                color: COLOR_PRIMITIVE
             },
             id: 'circle'
         });
@@ -126,7 +129,7 @@ class CesiumTools {
                 radius: radius,
             }),
             attributes: {
-                color: Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.YELLOWGREEN)
+                color: COLOR_OUTLINE
             },
             id: 'circle-outline'
         });
@@ -157,7 +160,7 @@ class CesiumTools {
                 rectangle: { west, south, east, north },
             }),
             attributes: {
-                color: new Cesium.ColorGeometryInstanceAttribute(0.0, 1.0, 0.0, 0.5)
+                color: COLOR_PRIMITIVE
             },
             id: 'box'
         });
@@ -192,7 +195,7 @@ class CesiumTools {
                 rectangle: { west, south, east, north },
             }),
             attributes: {
-                color: Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.YELLOWGREEN)
+                color: COLOR_OUTLINE
             },
             id: 'box-outline'
         });
