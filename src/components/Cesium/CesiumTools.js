@@ -1,12 +1,12 @@
 import Cesium from "cesium/Cesium"
 
 function getToolbarElement() {
-    var toolbarElement = document.getElementsByClassName('cesium-viewer-toolbar')[0];
+    let toolbarElement = document.getElementsByClassName('cesium-viewer-toolbar')[0];
     return toolbarElement;
 }
 
-const COLOR_PRIMITIVE = new Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.GREEN.withAlpha(0.5));
-const COLOR_OUTLINE = Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.YELLOWGREEN);
+const COLOR_PRIMITIVE = new Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.RED.withAlpha(0.5));
+const COLOR_OUTLINE = Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.RED);
 
 class CesiumTools {
     constructor() {
@@ -21,33 +21,49 @@ class CesiumTools {
     reset() {
     }
 
-    addToolbarButton(text, onclick) {
-        var button = document.createElement('button');
+    addToolbarButton(text, onclick, imageUrl, attr) {
+        let button = document.createElement('button');
         button.className = 'cesium-button';
         button.type = 'button';
-        button.textContent = text;
-        button.onclick = function () {
+        // button.textContent = text;
+        button.title = text;
+        button.onclick = function (e) {
             cesiumTools.reset();
             cesiumTools.highlight(onclick);
-            onclick();
+            onclick(e);
         };
 
-        var toolbarElement = getToolbarElement();
+        if (attr) {
+            for (let i = 0; i < attr.length; i++) {
+                button.setAttribute(attr[i].attr, attr[i].value);
+            }
+        }
+
+        // <span class="glyphicons glyphicons-remove-circle"></span>
+        let image = document.createElement('img');
+        image.src = imageUrl;
+        image.setAttribute('width', '18');
+        image.setAttribute('height', '18');
+        button.appendChild(image);
+
+        let toolbarElement = getToolbarElement();
         toolbarElement.appendChild(button);
+        return button;
     }
 
     addToolbarMenu(options, onchange) {
-        var menu = document.createElement('select');
+        let menu = document.createElement('select');
         menu.className = 'cesium-button';
         menu.onchange = onchange;
 
-        var toolbarElement = getToolbarElement();
+        let toolbarElement = getToolbarElement();
         toolbarElement.appendChild(menu);
 
-        for (var i = 0, len = options.length; i < len; ++i) {
-            var option = document.createElement('option');
+        for (let i = 0, len = options.length; i < len; ++i) {
+            let option = document.createElement('option');
             option.textContent = options[i].text;
             option.value = options[i].value;
+            //lilox3: option.setAttribute('style', 'background-image:url(' + options[i].imageUrl + ')');
             menu.appendChild(option);
         }
 

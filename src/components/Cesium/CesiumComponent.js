@@ -9,10 +9,16 @@ import cesiumTools from './CesiumTools'
 import Box from 'react-layout-components'
 import 'assets/cesiumWidgets.css'
 import 'styles/cesium.css';
+import cleanImage from 'images/clean.png'
+import circleImage from 'images/circle.png'
+import squareImage from 'images/square.png'
+import polygonImage from 'images/polygon.png'
+import deleteImage from 'images/delete.png'
 
 const SHAPES = {
     CIRCLE: 'circle',
-    BOX: 'box'
+    BOX: 'box',
+    POLYGON: 'polygon'
 }
 
 const initialState = {
@@ -60,10 +66,12 @@ class CesiumComponent extends React.Component {
 
     render() {
         return (
-            <Box width={500} height={300} justifyContent="center" alignItems="flex-start" alignSelf="center">
-                <div ref="cesiumNode" id="cesiumContainer" className="cesium-viewer">
-                </div>
-            </Box>
+            <div>
+                <Box width={500} height={300} justifyContent="center" alignItems="flex-start" alignSelf="center">
+                    <div ref="cesiumNode" id="cesiumContainer" className="cesium-viewer">
+                    </div>
+                </Box>
+            </div>
         );
     }
 
@@ -97,10 +105,35 @@ class CesiumComponent extends React.Component {
     }
 
     createControls(viewer) {
-        cesiumTools.addToolbarButton('clear', this.handleClear.bind(this));
+        cesiumTools.addToolbarButton('circle',
+            this.handleChangeShape.bind(this),
+            circleImage,
+            [{ attr: 'value', value: SHAPES.CIRCLE }]
+        );
+        cesiumTools.addToolbarButton('box',
+            this.handleChangeShape.bind(this),
+            squareImage,
+            [{ attr: 'value', value: SHAPES.BOX }]
+        );
+        cesiumTools.addToolbarButton('polygon (disabled)',
+            this.handleChangeShape.bind(this),
+            polygonImage,
+            [{ attr: 'value', value: SHAPES.POLYGON }, { attr: 'disabled', value: 'true' }]
+        );
+        cesiumTools.addToolbarButton('delete',
+            this.handleDeleteShape.bind(this),
+            deleteImage
+        );
+        cesiumTools.addToolbarButton('remove all',
+            this.handleClear.bind(this),
+            cleanImage
+        );
+
+        //lilox3
         this.shapeMenu = cesiumTools.addToolbarMenu([
             { text: SHAPES.CIRCLE, value: SHAPES.CIRCLE },
             { text: SHAPES.BOX, value: SHAPES.BOX },
+            { text: SHAPES.POLYGON, value: SHAPES.POLYGON }
         ], this.handleChangeShape.bind(this));
     }
 
@@ -109,8 +142,11 @@ class CesiumComponent extends React.Component {
     }
 
     remove(primitive) {
-        //lilox:TODO
-        this.viewer.scene.primitives.remove(primitive);
+        if (primitive) {
+            if (primitive == this.state.selectedPrimitive)
+                this.selectPrimitive(this.viewer, this.state.selectedPrimitive, false);
+            this.viewer.scene.primitives.remove(primitive);
+        }
     }
 
     updateStore(geoJson) {
@@ -182,7 +218,15 @@ class CesiumComponent extends React.Component {
     }
 
     handleChangeShape(e) {
+        //lilox3: 
         this.setState({ shape: e.target.value });
+        console.log(this.state);
+        console.log(e);
+        console.log(e.target);
+    }
+
+    handleDeleteShape(e) {
+        this.remove(this.state.selectedPrimitive);
     }
 
     // ----------------------------------------------------------------------
@@ -201,7 +245,7 @@ class CesiumComponent extends React.Component {
 
         // shift + left-down
         handler.setInputAction(
-            function(event) {
+            function (event) {
                 dragging = true;
 
                 cesiumTools.enableDefaultEventHandlers(viewer.scene, false);
@@ -237,7 +281,7 @@ class CesiumComponent extends React.Component {
 
         // shift + mouse-move
         handler.setInputAction(
-            function(movement) {
+            function (movement) {
                 if (!dragging)
                     return;
 
@@ -287,7 +331,7 @@ class CesiumComponent extends React.Component {
 
         // shift + left-up
         handler.setInputAction(
-            function() {
+            function () {
                 dragging = false;
                 if (pickedPrimitive) {
                     self.selectPrimitive(viewer, pickedPrimitive, true);
@@ -316,7 +360,7 @@ class CesiumComponent extends React.Component {
         const ellipsoid = viewer.scene.globe.ellipsoid;
 
         // left-down
-        handler.setInputAction(function(click) {
+        handler.setInputAction(function (click) {
             const pickedObject = viewer.scene.pick(click.position);
             if (Cesium.defined(pickedObject)) {
                 cesiumTools.enableDefaultEventHandlers(viewer.scene, false);
@@ -330,7 +374,7 @@ class CesiumComponent extends React.Component {
         }, Cesium.ScreenSpaceEventType.LEFT_DOWN);
 
         // mouse-move
-        handler.setInputAction(function(movement) {
+        handler.setInputAction(function (movement) {
             // move the primitive around
             if (!pickedPrimitive)
                 return;
@@ -398,7 +442,7 @@ class CesiumComponent extends React.Component {
         }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
 
         // left-up
-        handler.setInputAction(function(movement) {
+        handler.setInputAction(function (movement) {
             if (pickedPrimitive) {
                 switch (pickedPrimitive._data.shape) {
                     case SHAPES.CIRCLE:
@@ -442,7 +486,7 @@ class CesiumComponent extends React.Component {
         const handler = new Cesium.ScreenSpaceEventHandler(viewer.canvas);
 
         // left-click
-        handler.setInputAction(function(click) {
+        handler.setInputAction(function (click) {
             // remove any previous selection
             if (self.state.selectedPrimitive) {
                 self.selectPrimitive(viewer, self.state.selectedPrimitive, false);
