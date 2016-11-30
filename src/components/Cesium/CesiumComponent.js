@@ -1,5 +1,4 @@
 //lilox:TODO
-// - select primitive
 // - remove primitive (right-click)
 // - Cesium.CallbackProperty
 
@@ -103,6 +102,58 @@ class CesiumComponent extends React.Component {
             { text: SHAPES.CIRCLE, value: SHAPES.CIRCLE },
             { text: SHAPES.BOX, value: SHAPES.BOX },
         ], this.handleChangeShape.bind(this));
+    }
+
+    //lilox:TODO
+    geoJson(viewer) {
+        let geoJson = {
+            "type": "GeometryCollection",
+            "geometries": [
+            ]
+        };
+
+        const primitives = viewer.scene.primitives;
+        for (let i = 0; i < primitives.length; i++) {
+            let primitive = primitives.get(i);
+            if (primitive._data) {
+                switch (primitive._data.shape) {
+                    case SHAPES.CIRCLE:
+                        geoJson.geometries.push(this.circleToGeoJson(primitive._data.circle.center, primitive._data.circle.radius));
+                        break;
+                    case SHAPES.BOX:
+                        geoJson.geometries.push(this.boxToGeoJson(primitive._data.rect));
+                        break;
+                }
+            }
+        }
+
+        //lilox
+        console.log('lilox: geoJson:', geoJson);
+        return geoJson;
+    }
+
+    //lilox:TODO
+    circleToGeoJson(center, radius) {
+        const geoJson = {
+            "type": "Circle",
+            "geometry": {
+                "center": [center.x, center.y],
+                "radius": radius
+            }
+        };
+
+        return geoJson;
+    }
+
+    boxToGeoJson(rect) {
+        const geoJson = {
+            "type": "Polygon",
+            "coordinates": [
+                [[rect.west.x, rect.west.y], [rect.south.x, rect.south.y], [rect.east.x, rect.east.y], [rect.north.x, rect.north.y]]
+            ]
+        };
+
+        return geoJson;
     }
 
     // ----------------------------------------------------------------------
@@ -257,7 +308,7 @@ class CesiumComponent extends React.Component {
                 self.selectPrimitive(viewer, pickedObject.primitive, true);
                 pickedPrimitive = self.state.selectedPrimitive; // select re-creates primitive argument
 
-                dragStartCartesian = viewer.camera.pickEllipsoid(click.position, ellipsoid); 
+                dragStartCartesian = viewer.camera.pickEllipsoid(click.position, ellipsoid);
                 dragStartCartographic = ellipsoid.cartesianToCartographic(dragStartCartesian);
             }
         }, Cesium.ScreenSpaceEventType.LEFT_DOWN);
@@ -274,10 +325,10 @@ class CesiumComponent extends React.Component {
                     {
                         const cartesian = viewer.camera.pickEllipsoid(movement.endPosition, ellipsoid);
                         // calculate offset of center
-                        const deltaX=cartesian.x-dragStartCartesian.x;
-                        const deltaY=cartesian.y-dragStartCartesian.y;
-                        const deltaZ=cartesian.z-dragStartCartesian.z;
-                        const new_center={
+                        const deltaX = cartesian.x - dragStartCartesian.x;
+                        const deltaY = cartesian.y - dragStartCartesian.y;
+                        const deltaZ = cartesian.z - dragStartCartesian.z;
+                        const new_center = {
                             x: pickedPrimitive._data.circle.center.x + deltaX,
                             y: pickedPrimitive._data.circle.center.y + deltaY,
                             z: pickedPrimitive._data.circle.center.z + deltaZ
@@ -380,6 +431,9 @@ class CesiumComponent extends React.Component {
                 // select pickedObject 
                 self.selectPrimitive(viewer, pickedObject.primitive, true);
             }
+
+            //lilox
+            self.geoJson(viewer);
         }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
     }
 
@@ -394,6 +448,8 @@ class CesiumComponent extends React.Component {
             this.removeOutline(viewer, primitive);
             this.state.selectedPrimitive = null;
         }
+
+        return this.state.selectedPrimitive;
     }
 
     removeOutline(viewer, primitive) {
