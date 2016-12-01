@@ -1,6 +1,3 @@
-//lilox:TODO
-// remove primitive (right-click)
-
 import React from 'react';
 import { connect } from "react-redux";
 import { actions } from 'react-redux-form';
@@ -9,11 +6,6 @@ import cesiumTools from './CesiumTools'
 import Box from 'react-layout-components'
 import 'assets/cesiumWidgets.css'
 import 'styles/cesium.css';
-// import cleanImage from 'images/clean.png'
-// import circleImage from 'images/circle.png'
-// import squareImage from 'images/square.png'
-// import polygonImage from 'images/polygon.png'
-// import deleteImage from 'images/delete.png'
 
 import ActionDelete from 'material-ui/svg-icons/action/delete';
 import ActionDeleteForever from 'material-ui/svg-icons/action/delete-forever';
@@ -93,7 +85,7 @@ class CesiumComponent extends React.Component {
     // rendering
     // ----------------------------------------------------------------------
 
-    //lilox3
+    //lilox
     // shouldComponentUpdate() {
     //     return false;
     // }
@@ -104,7 +96,6 @@ class CesiumComponent extends React.Component {
         this.viewer = this.createCesiumViewer();
         this.handleClear();
 
-        this.createControls(this.viewer);
         this.handleCreatePrimitive(this.viewer);
         this.handleMovePrimitives(this.viewer);
         this.handleSelectPrimitives(this.viewer);
@@ -171,32 +162,6 @@ class CesiumComponent extends React.Component {
         cesiumTools.setCesiumHome(32.80, 35.13); // before creating viewer
 
         return new Cesium.Viewer(this.refs.cesiumNode, cesiumViewerOptions);
-    }
-
-    //lilox3
-    createControls(viewer) {
-        // cesiumTools.addToolbarButton('delete',
-        //     this.handleDeleteShape.bind(this),
-        //     deleteImage
-        // );
-        // cesiumTools.addToolbarButton('remove all',
-        //     this.handleClear.bind(this),
-        //     cleanImage
-        // );
-
-        // this.shapeMenu = cesiumTools.addToolbarMenu([
-        //     { text: SHAPES.CIRCLE, value: SHAPES.CIRCLE },
-        //     { text: SHAPES.BOX, value: SHAPES.BOX },
-        //     { text: SHAPES.POLYGON, value: SHAPES.POLYGON }
-        // ], this.handleChangeShape.bind(this));
-    }
-
-    handleShapeSelected(event, child) {
-        const value = child.props.value;
-        this.setState({
-            shape: value,
-            shapeIcon: getShapeIcon(value)
-        });
     }
 
     add(primitive) {
@@ -279,16 +244,16 @@ class CesiumComponent extends React.Component {
         this.clearState();
     }
 
-    handleChangeShape(e) {
-        //lilox3: 
-        this.setState({ shape: e.target.value });
-        console.log(this.state);
-        console.log(e);
-        console.log(e.target);
-    }
-
     handleDeleteShape(e) {
         this.remove(this.state.selectedPrimitive);
+    }
+
+    handleShapeSelected(event, child) {
+        const value = child.props.value;
+        this.setState({
+            shape: value,
+            shapeIcon: getShapeIcon(value)
+        });
     }
 
     // ----------------------------------------------------------------------

@@ -25,8 +25,7 @@ class CesiumTools {
         let button = document.createElement('button');
         button.className = 'cesium-button';
         button.type = 'button';
-        // button.textContent = text;
-        button.title = text;
+        button.textContent = text;
         button.onclick = function (e) {
             cesiumTools.reset();
             cesiumTools.highlight(onclick);
@@ -39,7 +38,6 @@ class CesiumTools {
             }
         }
 
-        // <span class="glyphicons glyphicons-remove-circle"></span>
         let image = document.createElement('img');
         image.src = imageUrl;
         image.setAttribute('width', '18');
@@ -63,7 +61,6 @@ class CesiumTools {
             let option = document.createElement('option');
             option.textContent = options[i].text;
             option.value = options[i].value;
-            //lilox3: option.setAttribute('style', 'background-image:url(' + options[i].imageUrl + ')');
             menu.appendChild(option);
         }
 
