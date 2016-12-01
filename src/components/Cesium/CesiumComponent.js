@@ -9,11 +9,16 @@ import cesiumTools from './CesiumTools'
 import Box from 'react-layout-components'
 import 'assets/cesiumWidgets.css'
 import 'styles/cesium.css';
-import cleanImage from 'images/clean.png'
-import circleImage from 'images/circle.png'
-import squareImage from 'images/square.png'
-import polygonImage from 'images/polygon.png'
-import deleteImage from 'images/delete.png'
+// import cleanImage from 'images/clean.png'
+// import circleImage from 'images/circle.png'
+// import squareImage from 'images/square.png'
+// import polygonImage from 'images/polygon.png'
+// import deleteImage from 'images/delete.png'
+
+import ActionDelete from 'material-ui/svg-icons/action/delete';
+
+import { SelectField, MenuItem, IconMenu, IconButton, SvgIcon, FlatButton } from 'material-ui';
+import { blue500, red500, greenA200 } from 'material-ui/styles/colors';
 
 const SHAPES = {
     CIRCLE: 'circle',
@@ -21,15 +26,59 @@ const SHAPES = {
     POLYGON: 'polygon'
 }
 
+const styles = {
+    shapeSelectWidth: {
+        width: 100,
+    }
+};
+
+const CircleIcon = (props) => (
+    <SvgIcon {...props}>
+        <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z" />
+    </SvgIcon>
+);
+
+const RectIcon = (props) => (
+    <SvgIcon {...props}>
+        <path d="M22 2v20h-20v-20h20zm2-2h-24v24h24v-24z" />
+    </SvgIcon>
+);
+
+const PolygonIcon = (props) => (
+    <SvgIcon {...props}>
+        <path d="M16.839 4l4.857 8.5-4.857 8.5h-9.678l-4.857-8.5 4.857-8.5h9.678zm1.161-2h-12l-6 10.5 6 10.5h12l6-10.5-6-10.5z" />
+    </SvgIcon>
+);
+
+// polygon
+// <path d="M 9 0 C 7.8954305 0 7 0.8954305 7 2 C 7 2.4142136 7.1281013 2.8057979 7.34375 3.125 L 3.40625 9.03125 C 3.2760548 9.0046082 3.1380712 9 3 9 C 1.8954305 9 1 9.8954305 1 11 C 1 11.779178 1.4435038 12.451112 2.09375 12.78125 L 1.40625 20.09375 C 0.59211286 20.346973 0 21.102538 0 22 C 0 23.104569 0.8954305 24 2 24 C 2.8387825 24 3.5466906 23.482178 3.84375 22.75 L 13.15625 22.75 C 13.45331 23.482178 14.161218 24 15 24 C 16.104569 24 17 23.104569 17 22 C 17 21.635035 16.889508 21.294544 16.71875 21 L 21.46875 14.9375 C 21.637102 14.983508 21.817056 15 22 15 C 23.104569 15 24 14.104569 24 13 C 24 11.895431 23.104569 11 22 11 C 21.883046 11 21.7677 11.011987 21.65625 11.03125 L 18.625 6.1875 C 18.864768 5.8576669 19 5.4389712 19 5 C 19 3.8954305 18.104569 3 17 3 C 16.41534 3 15.896947 3.2562802 15.53125 3.65625 L 11 1.96875 C 10.983107 0.87876102 10.094011 0 9 0 z M 10.46875 3.34375 L 15 5.03125 C 15.016893 6.121239 15.905989 7 17 7 C 17.127513 7 17.254117 6.9915604 17.375 6.96875 L 20.40625 11.8125 C 20.158861 12.145356 20 12.553411 20 13 C 20 13.364965 20.110492 13.705456 20.28125 14 L 15.53125 20.0625 C 15.362898 20.016492 15.182944 20 15 20 C 14.161218 20 13.45331 20.517822 13.15625 21.25 L 3.84375 21.25 C 3.6619295 20.801858 3.3346896 20.436274 2.90625 20.21875 L 3.5625 12.90625 C 4.3911873 12.66197 5 11.907818 5 11 C 5 10.585786 4.8718987 10.194202 4.65625 9.875 L 8.59375 3.96875 C 8.7239452 3.9953918 8.8619288 4 9 4 C 9.5846598 4 10.103053 3.7437198 10.46875 3.34375 z" />
+
+const iconStyles = {
+    strokeWidth: 3
+};
+
+function getShapeIcon(value) {
+    switch (value) {
+        case SHAPES.CIRCLE:
+        default:
+            return <CircleIcon style={iconStyles} color={'red'} hoverColor={'blue'} />;
+        case SHAPES.BOX:
+            return <RectIcon style={iconStyles} color={'red'} hoverColor={'blue'} />;
+        case SHAPES.POLYGON:
+            return <PolygonIcon style={iconStyles} color={'red'} hoverColor={'blue'} />;
+    }
+}
+
 const initialState = {
     shape: SHAPES.CIRCLE,
-    selectedPrimitive: null
+    selectedPrimitive: null,
+    value: SHAPES.BOX,
+    shapeIcon: getShapeIcon(SHAPES.CIRCLE)
 }
 
 class CesiumComponent extends React.Component {
     constructor(props) {
         super(props);
-
         this.state = initialState;
     }
 
@@ -43,9 +92,10 @@ class CesiumComponent extends React.Component {
     // rendering
     // ----------------------------------------------------------------------
 
-    shouldComponentUpdate() {
-        return false;
-    }
+    //lilox3
+    // shouldComponentUpdate() {
+    //     return false;
+    // }
 
     componentDidMount() {
         window.CESIUM_BASE_URL = '/cesium/';
@@ -69,6 +119,24 @@ class CesiumComponent extends React.Component {
             <div>
                 <Box width={500} height={300} justifyContent="center" alignItems="flex-start" alignSelf="center">
                     <div ref="cesiumNode" id="cesiumContainer" className="cesium-viewer">
+                        <div className='toolbar-left'>
+                            <IconMenu
+                                iconButtonElement={<IconButton title='select shape' >{this.state.shapeIcon}</IconButton>}
+                                onItemTouchTap={this.handleShapeSelected.bind(this)}
+                                >
+                                <MenuItem value={SHAPES.CIRCLE} primaryText={SHAPES.CIRCLE} />
+                                <MenuItem value={SHAPES.BOX} primaryText={SHAPES.BOX} />
+                                <MenuItem value={SHAPES.POLYGON} primaryText={SHAPES.POLYGON} />
+                            </IconMenu>
+
+                            <IconButton iconStyle={{ color: 'white' }} tooltip="delete shape" onClick={this.handleDeleteShape.bind(this)}>
+                                <ActionDelete />
+                            </IconButton>
+
+                            <IconButton iconStyle={{ color: 'white' }} tooltip="remove all" onClick={this.handleClear.bind(this)}>
+                                <ActionDelete />
+                            </IconButton>
+                        </div>
                     </div>
                 </Box>
             </div>
@@ -104,37 +172,30 @@ class CesiumComponent extends React.Component {
         return new Cesium.Viewer(this.refs.cesiumNode, cesiumViewerOptions);
     }
 
+    //lilox3
     createControls(viewer) {
-        cesiumTools.addToolbarButton('circle',
-            this.handleChangeShape.bind(this),
-            circleImage,
-            [{ attr: 'value', value: SHAPES.CIRCLE }]
-        );
-        cesiumTools.addToolbarButton('box',
-            this.handleChangeShape.bind(this),
-            squareImage,
-            [{ attr: 'value', value: SHAPES.BOX }]
-        );
-        cesiumTools.addToolbarButton('polygon (disabled)',
-            this.handleChangeShape.bind(this),
-            polygonImage,
-            [{ attr: 'value', value: SHAPES.POLYGON }, { attr: 'disabled', value: 'true' }]
-        );
-        cesiumTools.addToolbarButton('delete',
-            this.handleDeleteShape.bind(this),
-            deleteImage
-        );
-        cesiumTools.addToolbarButton('remove all',
-            this.handleClear.bind(this),
-            cleanImage
-        );
+        // cesiumTools.addToolbarButton('delete',
+        //     this.handleDeleteShape.bind(this),
+        //     deleteImage
+        // );
+        // cesiumTools.addToolbarButton('remove all',
+        //     this.handleClear.bind(this),
+        //     cleanImage
+        // );
 
-        //lilox3
-        this.shapeMenu = cesiumTools.addToolbarMenu([
-            { text: SHAPES.CIRCLE, value: SHAPES.CIRCLE },
-            { text: SHAPES.BOX, value: SHAPES.BOX },
-            { text: SHAPES.POLYGON, value: SHAPES.POLYGON }
-        ], this.handleChangeShape.bind(this));
+        // this.shapeMenu = cesiumTools.addToolbarMenu([
+        //     { text: SHAPES.CIRCLE, value: SHAPES.CIRCLE },
+        //     { text: SHAPES.BOX, value: SHAPES.BOX },
+        //     { text: SHAPES.POLYGON, value: SHAPES.POLYGON }
+        // ], this.handleChangeShape.bind(this));
+    }
+
+    handleShapeSelected(event, child) {
+        const value = child.props.value;
+        this.setState({
+            shape: value,
+            shapeIcon: getShapeIcon(value)
+        });
     }
 
     add(primitive) {
