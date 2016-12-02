@@ -117,7 +117,7 @@ class CesiumComponent extends React.Component {
                                 <MenuItem value={SHAPES.BOX} primaryText={SHAPES.BOX} leftIcon={<RectIcon />} />
                                 <MenuItem value={SHAPES.POLYGON} primaryText={SHAPES.POLYGON} leftIcon={<PolygonIcon />} />
                             </IconMenu>
-                            <IconButton iconStyle={{ color: 'white' }} tooltip="delete shape" onClick={this.handleDeleteShape.bind(this)}>
+                            <IconButton iconStyle={{ color: 'white' }} tooltip="delete selected shape" onClick={this.handleDeleteShape.bind(this)}>
                                 <ActionDelete />
                             </IconButton>
 

@@ -51,6 +51,7 @@ class Search extends React.Component {
       minDate: minDate,
       maxDate: maxDate,
       autoOk: false,
+      container: 'dialog' // 'inline'
     };
   }
 
@@ -109,7 +110,7 @@ class Search extends React.Component {
                         hintText="Start Date"
                         floatingLabelText="Start Date"
                         autoOk={this.state.autoOk}
-                        container="inline"
+                        container={this.state.container}
                         value={this.props.query.startDate}
                         onChange={(event, date) => this.handleChangeStartDate(event, date)}
                         />
@@ -136,7 +137,7 @@ class Search extends React.Component {
                         floatingLabelText="End Date"
                         autoOk={this.state.autoOk}
                         minDate={this.state.minDate}
-                        container="inline"
+                        container={this.state.container}
                         disabled={!this.startDateValid()}
                         value={this.props.query.endDate}
                         onChange={(event, date) => this.handleChangeEndDate(event, date)}

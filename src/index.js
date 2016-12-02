@@ -17,10 +17,6 @@ import App from './components/App/App';
 import Search from './components/Search/Search';
 import Settings from './components/Settings/Settings';
 
-if (module.hot) {
-    module.hot.accept();
-}
-
 ReactDOM.render(
     <MuiThemeProvider>
         <Provider store={store}>
