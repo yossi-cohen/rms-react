@@ -125,7 +125,7 @@ class CesiumTools {
         });
 
         const primitive = new Cesium.Primitive({
-            name: 'circle',
+            name: 'circle-primitive',
             geometryInstances: instance,
             asynchronous: false,
             appearance: new Cesium.PerInstanceColorAppearance()
@@ -179,7 +179,7 @@ class CesiumTools {
         });
 
         const primitive = new Cesium.Primitive({
-            name: 'box',
+            name: 'box-primitive',
             geometryInstances: instance,
             asynchronous: false,
             appearance: new Cesium.PerInstanceColorAppearance()
@@ -191,7 +191,7 @@ class CesiumTools {
 
     drawBoxEntity(viewer, west, south, east, north) {
         return viewer.entities.add({
-            name: 'box',
+            name: 'box-entity',
             rectangle: {
                 coordinates: Cesium.Rectangle.fromDegrees(west, south, east, north),
                 material: Cesium.Color.RED.withAlpha(0.5),
@@ -215,6 +215,59 @@ class CesiumTools {
 
         const primitive = new Cesium.Primitive({
             name: 'box-outline',
+            geometryInstances: instance,
+            asynchronous: false,
+            appearance: new Cesium.PerInstanceColorAppearance({
+                flat: true,
+                renderState: {
+                    depthTest: {
+                        enabled: true
+                    },
+                    lineWidth: Math.min(3.0, viewer.scene.maximumAliasedLineWidth)
+                }
+            })
+        });
+
+        viewer.scene.primitives.add(primitive);
+        return primitive;
+    }
+
+    drawPolygonPrimitive(viewer, points) {
+        const instance = new Cesium.GeometryInstance({
+            geometry: new Cesium.PolygonGeometry({
+                polygonHierarchy: new Cesium.PolygonHierarchy(points)
+            }),
+            attributes: {
+                color: COLOR_PRIMITIVE
+            },
+            id: 'polygon'
+        });
+
+        const primitive = new Cesium.Primitive({
+            name: 'polygon-primitive',
+            geometryInstances: instance,
+            asynchronous: false,
+            appearance: new Cesium.PerInstanceColorAppearance()
+        });
+
+        viewer.scene.primitives.add(primitive);
+        return primitive;
+    }
+
+    drawPolygonOutlinePrimitive(viewer, points) {
+        const instance = new Cesium.GeometryInstance({
+            geometry: new Cesium.PolygonOutlineGeometry({
+                ellipsoid: Cesium.Ellipsoid.WGS84,
+                polygonHierarchy: new Cesium.PolygonHierarchy(points)
+            }),
+            attributes: {
+                color: COLOR_OUTLINE
+            },
+            id: 'polygon-outline'
+        });
+
+        const primitive = new Cesium.Primitive({
+            name: 'polygon-outline',
             geometryInstances: instance,
             asynchronous: false,
             appearance: new Cesium.PerInstanceColorAppearance({
