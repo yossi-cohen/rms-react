@@ -9,9 +9,7 @@ import 'styles/cesium.css';
 
 import ActionDelete from 'material-ui/svg-icons/action/delete';
 import ActionDeleteForever from 'material-ui/svg-icons/action/delete-forever';
-
-import { SelectField, MenuItem, IconMenu, IconButton, SvgIcon, FlatButton } from 'material-ui';
-import { blue500, red500, greenA200 } from 'material-ui/styles/colors';
+import { MenuItem, IconMenu, IconButton, SvgIcon, Snackbar } from 'material-ui';
 
 const SHAPES = {
     CIRCLE: 'circle',
@@ -63,7 +61,9 @@ const defaultShape = SHAPES.CIRCLE;
 const initialState = {
     shape: defaultShape,
     selectedPrimitive: null,
-    shapeIcon: getShapeIcon(defaultShape)
+    shapeIcon: getShapeIcon(defaultShape),
+    snackbarOpen: false,
+    snackbarMessage: ''
 }
 
 class CesiumComponent extends React.Component {
@@ -90,6 +90,8 @@ class CesiumComponent extends React.Component {
         this.handleCreatePrimitive(this.viewer);
         this.handleMovePrimitives(this.viewer);
         this.handleSelectPrimitives(this.viewer);
+
+        this.selectShape(defaultShape);
     }
 
     componentWillUnmount() {
@@ -124,6 +126,12 @@ class CesiumComponent extends React.Component {
                         </div>
                     </div>
                 </Box>
+                <Snackbar
+                    open={this.state.snackbarOpen}
+                    message={this.state.snackbarMessage}
+                    autoHideDuration={4000}
+                    onRequestClose={this.handleSnackbarRequestClose.bind(this)}
+                    />
             </div>
         );
     }
@@ -241,10 +249,35 @@ class CesiumComponent extends React.Component {
     }
 
     handleShapeSelected(event, child) {
-        const value = child.props.value;
+        this.selectShape(child.props.value);
+    }
+
+    selectShape(value) {
+        let message = '';
+        switch (value) {
+            case SHAPES.CIRCLE:
+                message = 'shift-left-drag to create.';
+                break;
+            case SHAPES.BOX:
+                message = 'shift-left-drag to create.';
+                break;
+            case SHAPES.POLYGON:
+                message = 'shift-click to add point, shift-double-click to finish.';
+                break;
+        }
+
         this.setState({
             shape: value,
-            shapeIcon: getShapeIcon(value)
+            shapeIcon: getShapeIcon(value),
+            snackbarOpen: true,
+            snackbarMessage: message
+        });
+    }
+
+    handleSnackbarRequestClose() {
+        this.setState({
+            snackbarOpen: false,
+            snackbarMessage: ''
         });
     }
 
@@ -680,12 +713,12 @@ class CesiumComponent extends React.Component {
         if (this.state.selectedPrimitive)
             this.removeSelection(viewer, this.state.selectedPrimitive);
         this.drawOutline(viewer, primitive);
-        this.state.selectedPrimitive = primitive;
+        this.setState({ selectedPrimitive: primitive });
     }
 
     removeSelection(viewer, primitive) {
         this.removeOutline(viewer, primitive);
-        this.state.selectedPrimitive = null;
+        this.setState({ selectedPrimitive: null });
     }
 
     removeOutline(viewer, primitive) {
