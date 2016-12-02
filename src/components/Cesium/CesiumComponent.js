@@ -110,12 +110,13 @@ class CesiumComponent extends React.Component {
                             <IconMenu
                                 iconButtonElement={<IconButton title='select shape' >{this.state.shapeIcon}</IconButton>}
                                 onItemTouchTap={this.handleShapeSelected.bind(this)}
+                                anchorOrigin={{ horizontal: 'left', vertical: 'top' }}
+                                targetOrigin={{ horizontal: 'left', vertical: 'top' }}
                                 >
                                 <MenuItem value={SHAPES.CIRCLE} primaryText={SHAPES.CIRCLE} leftIcon={<CircleIcon />} />
                                 <MenuItem value={SHAPES.BOX} primaryText={SHAPES.BOX} leftIcon={<RectIcon />} />
                                 <MenuItem value={SHAPES.POLYGON} primaryText={SHAPES.POLYGON} leftIcon={<PolygonIcon />} />
                             </IconMenu>
-
                             <IconButton iconStyle={{ color: 'white' }} tooltip="delete shape" onClick={this.handleDeleteShape.bind(this)}>
                                 <ActionDelete />
                             </IconButton>
@@ -124,14 +125,14 @@ class CesiumComponent extends React.Component {
                                 <ActionDeleteForever />
                             </IconButton>
                         </div>
+                        <Snackbar
+                            open={this.state.snackbarOpen}
+                            message={this.state.snackbarMessage}
+                            autoHideDuration={4000}
+                            onRequestClose={this.handleSnackbarRequestClose.bind(this)}
+                            />
                     </div>
                 </Box>
-                <Snackbar
-                    open={this.state.snackbarOpen}
-                    message={this.state.snackbarMessage}
-                    autoHideDuration={4000}
-                    onRequestClose={this.handleSnackbarRequestClose.bind(this)}
-                    />
             </div>
         );
     }
