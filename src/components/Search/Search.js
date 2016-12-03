@@ -47,7 +47,7 @@ class Search extends React.Component {
     maxDate.setHours(0, 0, 0, 0);
 
     this.state = this.initialState = {
-      expanded: true,
+      expanded: false,
       minDate: minDate,
       maxDate: maxDate,
       autoOk: false,

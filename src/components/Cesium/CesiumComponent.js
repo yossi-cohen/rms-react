@@ -7,8 +7,8 @@ import Box from 'react-layout-components'
 import 'assets/cesiumWidgets.css'
 import 'styles/cesium.css';
 
-import ActionDelete from 'material-ui/svg-icons/action/delete';
-import ActionDeleteForever from 'material-ui/svg-icons/action/delete-forever';
+import ActionDelete from 'material-ui/svg-icons/action/delete-forever';
+import ActionDeleteAll from 'material-ui/svg-icons/action/delete';
 import { MenuItem, IconMenu, IconButton, SvgIcon, Snackbar } from 'material-ui';
 
 const SHAPES = {
@@ -117,12 +117,13 @@ class CesiumComponent extends React.Component {
                                 <MenuItem value={SHAPES.BOX} primaryText={SHAPES.BOX} leftIcon={<RectIcon />} />
                                 <MenuItem value={SHAPES.POLYGON} primaryText={SHAPES.POLYGON} leftIcon={<PolygonIcon />} />
                             </IconMenu>
-                            <IconButton iconStyle={{ color: 'white' }} tooltip="delete selected shape" onClick={this.handleDeleteShape.bind(this)}>
-                                <ActionDelete />
-                            </IconButton>
 
                             <IconButton iconStyle={{ color: 'white' }} tooltip="remove all" onClick={this.handleClear.bind(this)}>
-                                <ActionDeleteForever />
+                                <ActionDeleteAll />
+                            </IconButton>
+
+                            <IconButton iconStyle={{ color: 'white' }} tooltip="delete selected shape" onClick={this.handleDeleteShape.bind(this)}>
+                                <ActionDelete />
                             </IconButton>
                         </div>
                         <Snackbar
