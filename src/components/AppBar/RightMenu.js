@@ -18,16 +18,14 @@ export default class RightMenu extends React.Component {
         return (
             <IconMenu
                 iconButtonElement={
-                    <IconButton><MoreVertIcon /></IconButton>
+                    <IconButton><MoreVertIcon color='white' /></IconButton>
                 }
                 targetOrigin={{ horizontal: 'right', vertical: 'top' }}
                 anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
             >
+                <MenuItem containerElement={<Link to="/home" />} primaryText="Home..." />
                 <MenuItem containerElement={<Link to="/search" />} primaryText="Search..." />
-                <MenuItem containerElement={<Link to="/video" />} primaryText="Video..." />
                 <MenuItem containerElement={<Link to="/settings" />} primaryText="Settings..." />
-
-                <MenuItem primaryText="Sign out" onTouchTap={this.handleSignOut.bind(this)} />
             </IconMenu>
         );
     }

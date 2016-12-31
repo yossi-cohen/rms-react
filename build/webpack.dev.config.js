@@ -104,5 +104,5 @@ module.exports = merge.smart(webpackBaseConfig.baseWebpackConfig, {
     ],
 
     // Generate sourcemaps using a faster method
-    devtool: '#cheap-module-inline-source-map'
+    devtool: 'source-map'
 })

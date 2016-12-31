@@ -7,13 +7,12 @@ import SearchIcon from 'material-ui/svg-icons/action/search';
 import { Link } from 'react-router';
 
 import RightMenu from './RightMenu';
-import ResultNav from './ResultNav';
-import SearchDialog from './SearchDialog';
+import SideNav from './SideNav';
 
 export default class AppBar extends React.Component {
     constructor() {
         super();
-        this.state = { searchDialogOpen: false, resultNavOpen: false }
+        this.state = { sideNavOpen: false }
     }
 
     render() {
@@ -21,31 +20,30 @@ export default class AppBar extends React.Component {
         return (
             <div>
                 <MuiAppBar
-                    style={{ color: 'white', background: 'gray' }}
-                    title="הקלטות"
+                    style={{ color: 'white', background: 'indigo' }}
                     iconElementRight={
                         <div>
-                            <IconButton tooltip="search" onTouchTap={this.handleOpenSearch.bind(this)}>
-                                <SearchIcon />
+                            <IconButton tooltip='search videos' onTouchTap={this.handleOpenSearch.bind(this)}>
+                                <SearchIcon color='white' />
                             </IconButton>
-                            <RightMenu />
+                            <RightMenu  />
                         </div>
                     }
 
-                    onLeftIconButtonTouchTap={this.handleToggleResultNav.bind(this)}
+                    onLeftIconButtonTouchTap={this.handleToggleSideNav.bind(this)}
                     >
                 </MuiAppBar>
-                <SearchDialog ref="search" open={this.state.searchDialogOpen} />
-                <ResultNav ref="resultNav" open={this.state.resultNavOpen} />
+                <SideNav ref="sideNav" open={this.state.sideNavOpen} />
             </div>
         );
     }
 
     handleOpenSearch() {
-        this.refs.search.setState({ open: !this.state.searchDialogOpen });
+        //lilox:TODO
+        window.location.assign("/#/Search");
     };
 
-    handleToggleResultNav() {
-        this.refs.resultNav.setState({ open: !this.refs.resultNav.state.open });
+    handleToggleSideNav() {
+        this.refs.sideNav.setState({ open: !this.refs.sideNav.state.open });
     }
 }

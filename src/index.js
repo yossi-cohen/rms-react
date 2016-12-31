@@ -13,16 +13,18 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 import store from "./store";
 
-import App from './components/App/App';
-import Search from './components/Search/Search';
-import Settings from './components/Settings/Settings';
+import App from 'components/App/App';
+import Home from 'components/Home/Home';
+import Search from 'components/Search/Search';
+import Settings from 'components/Settings/Settings';
 
 ReactDOM.render(
     <MuiThemeProvider>
         <Provider store={store}>
             <Router history={hashHistory}>
                 <Route path="/" component={App}>
-                    <IndexRoute component={Search} />
+                    <IndexRoute component={Home} />
+                    <Route path="/home" component={Home} />
                     <Route path="/search" component={Search} />
                     <Route path="/settings" component={Settings} />
                 </Route>

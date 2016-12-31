@@ -3,7 +3,7 @@
 const path = require('path');
 const express = require('express');
 const webpack = require('webpack');
-const webpackConfig = require('./webpack/webpack.dev.config.js');
+const webpackConfig = require('./build/webpack.dev.config.js');
 
 const config = require("./config");
 
@@ -42,12 +42,12 @@ app.listen(ENVIRONMENT.port, ENVIRONMENT.host, (err) => {
     console.log(`Listening at http://${ENVIRONMENT.host}:${ENVIRONMENT.port}`);
 });
 
-var videos = require('./db');
+var catalog = require('./db');
 
-app.get('/api/videos', function (req, res) {
-    res.json(videos.getVideoList)
+app.get('/api/catalog', function (req, res) {
+    res.json(catalog.videos)
 })
 
 app.post("/api/search", function (req, res) {
-    res.json(videos.searchResult);
+    res.json(catalog.videos)
 });

@@ -5,8 +5,8 @@ import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import { grey400, darkBlack, lightBlack } from 'material-ui/styles/colors';
 import VideoImage from 'material-ui/svg-icons/av/videocam';
 import { Grid, Row, Col } from 'react-flexbox-grid/lib/index'
-import { playVideo } from 'actions/videoPlayerActions';
-import VideoPlayer from 'components/Video/VideoPlayer';
+//lilox: import VideoPlayer from 'components/Video/VideoPlayer';
+import { playVideo } from 'actions/videoActions';
 
 class SearchResult extends React.Component {
     constructor(props) {
@@ -16,6 +16,10 @@ class SearchResult extends React.Component {
     render() {
         const items = this.props.result.videos.map((v) => { return this.renderVideoItem(v) });
 
+                    //lilox
+                    // <Col>
+                    //     <VideoPlayer />
+                    // </Col>
         return (
             <Grid>
                 <Row>
@@ -23,9 +27,6 @@ class SearchResult extends React.Component {
                         <List>
                             {items}
                         </List>
-                    </Col>
-                    <Col>
-                        <VideoPlayer />
                     </Col>
                 </Row>
             </Grid>

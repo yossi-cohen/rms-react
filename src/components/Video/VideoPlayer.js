@@ -2,10 +2,7 @@ import React from 'react';
 import { connect } from "react-redux";
 import ReactPlayer from 'react-player'
 import Duration from './Duration'
-import screenfull from 'screenfull'
 import { findDOMNode } from 'react-dom'
-import VideoCam from 'material-ui/svg-icons/av/videocam';
-import { blue500, red500, greenA200 } from 'material-ui/styles/colors';
 
 const iconStyles = {
     marginRight: 24
@@ -131,5 +128,5 @@ class VideoPlayer extends React.Component {
 }
 
 export default connect((store) => ({
-    video: store.search.player.video
+    video: store.player.video
 }))(VideoPlayer);

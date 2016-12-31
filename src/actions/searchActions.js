@@ -1,4 +1,4 @@
-import * as types from 'constants/ActionTypes'
+import * as types from 'actions/ActionTypes'
 import urljoin from 'url-join';
 import config from '../../config';
 
@@ -9,7 +9,7 @@ import config from '../../config';
 export function fetchVideos() {
   return function (dispatch) {
     dispatch(fetchVideosRequest());
-    return fetch(urljoin(config.BASE_URL, '/api/videos'))
+    return fetch(urljoin(config.BASE_URL, '/api/catalog'))
       .then(res => res.json())
       .then(json => { dispatch(fetchVideosSuccess(json)) })
       .catch(ex => dispatch(fetchVideosFailure(ex)));

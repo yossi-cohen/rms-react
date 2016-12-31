@@ -19,7 +19,7 @@ import CesiumComponent from 'components/Cesium/CesiumComponent';
 import SearchResult from './SearchResult';
 import { fetchVideos } from 'actions/searchActions';
 import { searchVideos } from 'actions/searchActions';
-import { stopVideo } from 'actions/videoPlayerActions';
+import { stopVideo } from 'actions/videoActions';
 
 const isRequired = (value) => !validator.isNull('' + value);
 

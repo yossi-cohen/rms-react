@@ -18,10 +18,6 @@ const initialState = {
         searching: false,
         videos: [],
         error: null
-    },
-
-    player: {
-        video: null
     }
 }
 

@@ -1,5 +1,10 @@
-import * as types from 'constants/ActionTypes'
-import initialState from './initialState'
+import * as types from 'actions/ActionTypes'
+
+const initialState = {
+    fetching: false,
+    videos: [],
+    error: null
+}
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {

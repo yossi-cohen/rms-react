@@ -1,8 +1,8 @@
 import React from 'react';
 import Drawer from 'material-ui/Drawer';
-import MenuItem from 'material-ui/MenuItem';
+import Catalog from 'components/Catalog/Catalog';
 
-export default class ResultNav extends React.Component {
+export default class SideNav extends React.Component {
     constructor(props) {
         super(props);
         this.state = { open: this.props ? this.props.open : false }
@@ -16,8 +16,7 @@ export default class ResultNav extends React.Component {
                 open={this.state.open}
                 onRequestChange={(open) => this.setState({ open })}
                 >
-                <MenuItem onTouchTap={this.handleClose.bind(this)}>Item 1</MenuItem>
-                <MenuItem onTouchTap={this.handleClose.bind(this)}>Item 2</MenuItem>
+                <Catalog />
             </Drawer>
         );
     }

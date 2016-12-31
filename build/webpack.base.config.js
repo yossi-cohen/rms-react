@@ -89,7 +89,7 @@ const htmlPlugin = // Auto-generate an HTML host page, and insert links to our J
     new HtmlWebpackPlugin({
         // Sort the inserted script tags by dependency graph
         chunksSortMode: 'dependency',
-        template: path.join(PATHS.src, '/index.template.html')
+        template: path.join(PATHS.base, 'build', 'index.html.template')
     });
 
 module.exports = {

@@ -3,8 +3,7 @@ import { connect } from "react-redux";
 import { actions } from 'react-redux-form';
 import Cesium from "cesium/Cesium"
 import cesiumTools from './CesiumTools'
-import Box from 'react-layout-components'
-import 'assets/cesiumWidgets.css'
+import 'styles/cesiumWidgets.css'
 import 'styles/cesium.css';
 
 import ActionDelete from 'material-ui/svg-icons/action/delete-forever';
@@ -103,37 +102,33 @@ class CesiumComponent extends React.Component {
 
     render() {
         return (
-            <div>
-                <Box width={500} height={300} justifyContent="center" alignItems="flex-start" alignSelf="center">
-                    <div ref="cesiumNode" id="cesiumContainer" className="cesium-viewer">
-                        <div className='toolbar-left'>
-                            <IconMenu
-                                iconButtonElement={<IconButton title='select shape' >{this.state.shapeIcon}</IconButton>}
-                                onItemTouchTap={this.handleShapeSelected.bind(this)}
-                                anchorOrigin={{ horizontal: 'left', vertical: 'top' }}
-                                targetOrigin={{ horizontal: 'left', vertical: 'top' }}
-                                >
-                                <MenuItem value={SHAPES.CIRCLE} primaryText={SHAPES.CIRCLE} leftIcon={<CircleIcon />} />
-                                <MenuItem value={SHAPES.BOX} primaryText={SHAPES.BOX} leftIcon={<RectIcon />} />
-                                <MenuItem value={SHAPES.POLYGON} primaryText={SHAPES.POLYGON} leftIcon={<PolygonIcon />} />
-                            </IconMenu>
+            <div ref="cesiumNode" id="cesiumContainer" className="cesium-viewer">
+                <div className='toolbar-left'>
+                    <IconMenu
+                        iconButtonElement={<IconButton title='select shape' >{this.state.shapeIcon}</IconButton>}
+                        onItemTouchTap={this.handleShapeSelected.bind(this)}
+                        anchorOrigin={{ horizontal: 'left', vertical: 'top' }}
+                        targetOrigin={{ horizontal: 'left', vertical: 'top' }}
+                        >
+                        <MenuItem value={SHAPES.CIRCLE} primaryText={SHAPES.CIRCLE} leftIcon={<CircleIcon />} />
+                        <MenuItem value={SHAPES.BOX} primaryText={SHAPES.BOX} leftIcon={<RectIcon />} />
+                        <MenuItem value={SHAPES.POLYGON} primaryText={SHAPES.POLYGON} leftIcon={<PolygonIcon />} />
+                    </IconMenu>
 
-                            <IconButton iconStyle={{ color: 'white' }} tooltip="remove all" onClick={this.handleClear.bind(this)}>
-                                <ActionDeleteAll />
-                            </IconButton>
+                    <IconButton iconStyle={{ color: 'white' }} tooltip="remove all" onClick={this.handleClear.bind(this)}>
+                        <ActionDeleteAll />
+                    </IconButton>
 
-                            <IconButton iconStyle={{ color: 'white' }} tooltip="delete selected shape" onClick={this.handleDeleteShape.bind(this)}>
-                                <ActionDelete />
-                            </IconButton>
-                        </div>
-                        <Snackbar
-                            open={this.state.snackbarOpen}
-                            message={this.state.snackbarMessage}
-                            autoHideDuration={4000}
-                            onRequestClose={this.handleSnackbarRequestClose.bind(this)}
-                            />
-                    </div>
-                </Box>
+                    <IconButton iconStyle={{ color: 'white' }} tooltip="delete selected shape" onClick={this.handleDeleteShape.bind(this)}>
+                        <ActionDelete />
+                    </IconButton>
+                </div>
+                <Snackbar
+                    open={this.state.snackbarOpen}
+                    message={this.state.snackbarMessage}
+                    autoHideDuration={4000}
+                    onRequestClose={this.handleSnackbarRequestClose.bind(this)}
+                    />
             </div>
         );
     }

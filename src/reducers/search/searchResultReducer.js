@@ -1,4 +1,4 @@
-import * as types from 'constants/ActionTypes'
+import * as types from 'actions/ActionTypes'
 import initialState from './initialState'
 
 export default function reducer(state = initialState.result, action) {

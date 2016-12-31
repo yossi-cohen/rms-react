@@ -9,8 +9,8 @@
     "dev": "cross-env NODE_ENV=development node devServer.js",
     "build": "npm run dll:build:vendor && npm run dll:build:cesium",
     "server": "cd src/server/ && PORT=3003 nodemon server.js",
-    "dll:build:cesium": "webpack --config webpack/webpack.cesium.dll.config.js",
-    "dll:build:vendor": "webpack --config webpack/webpack.vendor.dll.config.js"
+    "dll:build:cesium": "webpack --config build/webpack.cesium.dll.config.js",
+    "dll:build:vendor": "webpack --config build/webpack.vendor.dll.config.js"
   },
   "author": "Yossi Cohen <yossi.cohen@live.com>",
   "license": "ISC",
@@ -23,6 +23,7 @@
     "classnames": "^2.2.5",
     "flexboxgrid": "^6.3.1",
     "history": "^4.4.1",
+    "lodash": "^4.17.3",
     "material-ui": "^0.16.4",
     "react": "^15.4.1",
     "react-addons-perf": "^15.4.1",
@@ -33,6 +34,7 @@
     "react-player": "^0.12.1",
     "react-redux": "^4.4.6",
     "react-redux-form": "^1.2.4",
+    "react-resizable-and-movable": "^3.0.0",
     "react-router": "^3.0.0",
     "react-tap-event-plugin": "^2.0.1",
     "redux": "^3.6.0",
