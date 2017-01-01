@@ -1,25 +1,20 @@
 import React from 'react';
 import { connect } from "react-redux";
+import validator from 'validator';
+import SearchResult from './SearchResult';
+import { fetchVideos } from 'actions/searchActions';
+import { searchVideos } from 'actions/searchActions';
+import { stopVideo } from 'actions/videoActions';
 import { Form, Control, Field, actions } from 'react-redux-form';
-import { Grid, Row, Col } from 'react-flexbox-grid/lib/index'
 import {
   AutoComplete,
   Card,
   CardActions,
   CardHeader,
-  CardMedia,
-  CardText,
-  CardTitle,
   DatePicker,
   RaisedButton,
   TimePicker
 } from 'material-ui';
-import validator from 'validator';
-import CesiumComponent from 'components/Cesium/CesiumComponent';
-import SearchResult from './SearchResult';
-import { fetchVideos } from 'actions/searchActions';
-import { searchVideos } from 'actions/searchActions';
-import { stopVideo } from 'actions/videoActions';
 
 const isRequired = (value) => !validator.isNull('' + value);
 
@@ -27,6 +22,12 @@ const styles = {
   card: {
     borderStyle: 'none',
     boxShadow: 'none',
+  },
+
+  submit: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
   }
 }
 
@@ -56,119 +57,95 @@ class Search extends React.Component {
   }
 
   componentWillMount() {
-    this.props.dispatch(fetchVideos());
+    //lilox: this.props.dispatch(fetchVideos());
   }
 
   render() {
     return (
       <div>
         <Form model="query" onSubmit={(v) => this.handleSubmit(v)}>
-          <Grid>
-            <Card
-              expanded={this.state.expanded}
-              onExpandChange={(expanded) => this.setState({ expanded: expanded })}
-              style={styles.card}
-              >
-              <CardHeader
-                actAsExpander={true}
-                showExpandableButton={true}
-                />
-              <CardActions>
-                <Row center="xs">
-                  <Col xs={3}>
-                    <Field model="query.text"
-                      validators={{
-                        isRequired,
-                        length: (v) => v && v.length >= 3,
-                      }}
-                      validateOn="blur">
-                      <AutoComplete
-                        autoFocus
-                        name="searchText"
-                        ref='autoComplete'
-                        openOnFocus={false}
-                        hintText="Search video by name"
-                        filter={AutoComplete.fuzzyFilter}
-                        dataSource={this.props.suggestions.videos}
-                        maxSearchResults={5}
-                        onUpdateInput={v => this.props.dispatch(actions.change('query.text', v))}
-                        onNewRequest={this.handleChangeSearchTerm.bind(this)}
-                        />
-                    </Field>
-                  </Col>
-                  <Col>
-                    <RaisedButton label="Search" type="submit" primary={true} />
-                  </Col>
-                </Row>
-              </CardActions>
-              <CardActions expandable={true}>
-                <Row center="xs">
-                  <Col xs={3}>
-                    <Field model="query.startDate">
-                      <DatePicker
-                        ref="startDate"
-                        hintText="Start Date"
-                        floatingLabelText="Start Date"
-                        autoOk={this.state.autoOk}
-                        container={this.state.container}
-                        value={this.props.query.startDate}
-                        onChange={(event, date) => this.handleChangeStartDate(event, date)}
-                        />
-                    </Field>
-                  </Col>
-                  <Col>
-                    <Field model="query.startTime">
-                      <TimePicker
-                        ref="startTime"
-                        hintText="Start Time"
-                        floatingLabelText="Start Time"
-                        disabled={!this.startDateValid()}
-                        onChange={(event, time) => this.handleChangeStartTime(event, time)}
-                        />
-                    </Field>
-                  </Col>
-                </Row>
-                <Row center="xs">
-                  <Col xs={3}>
-                    <Field model="query.endDate">
-                      <DatePicker
-                        ref="endDate"
-                        hintText="End Date"
-                        floatingLabelText="End Date"
-                        autoOk={this.state.autoOk}
-                        minDate={this.state.minDate}
-                        container={this.state.container}
-                        disabled={!this.startDateValid()}
-                        value={this.props.query.endDate}
-                        onChange={(event, date) => this.handleChangeEndDate(event, date)}
-                        />
-                    </Field>
-                  </Col>
-                  <Col>
-                    <Field model="query.endTime">
-                      <TimePicker
-                        ref="endTime"
-                        hintText="End Time"
-                        floatingLabelText="End Time"
-                        disabled={!this.endDateValid()}
-                        onChange={(event, time) => this.handleChangeEndTime(event, time)}
-                        />
-                    </Field>
-                  </Col>
-                </Row>
-                <p />
-                <Row center="xs">
-                  <Col>
-                    <Field model="query.geoJson">
-                      <CesiumComponent />
-                    </Field>
-                  </Col>
-                </Row>
-              </CardActions>
-            </Card>
-          </Grid>
+          <Card
+            expanded={this.state.expanded}
+            onExpandChange={(expanded) => this.setState({ expanded: expanded })}
+            style={styles.card}
+            >
+            <CardHeader
+              actAsExpander={true}
+              showExpandableButton={true}
+              />
+            <CardActions>
+              <Field model="query.text"
+                validators={{
+                  isRequired,
+                  length: (v) => v && v.length >= 3,
+                }}
+                validateOn="blur">
+                <AutoComplete
+                  autoFocus
+                  name="searchText"
+                  ref='autoComplete'
+                  openOnFocus={false}
+                  hintText="Search video by name"
+                  filter={AutoComplete.fuzzyFilter}
+                  dataSource={this.props.suggestions.videos}
+                  maxSearchResults={5}
+                  onUpdateInput={v => this.props.dispatch(actions.change('query.text', v))}
+                  onNewRequest={this.handleChangeSearchTerm.bind(this)}
+                  />
+              </Field>
+            </CardActions>
+            <CardActions expandable={true}>
+              <Field model="query.startDate">
+                <DatePicker
+                  ref="startDate"
+                  hintText="Start Date"
+                  floatingLabelText="Start Date"
+                  autoOk={this.state.autoOk}
+                  container={this.state.container}
+                  value={this.props.query.startDate}
+                  onChange={(event, date) => this.handleChangeStartDate(event, date)}
+                  />
+              </Field>
+              <Field model="query.startTime">
+                <TimePicker
+                  ref="startTime"
+                  hintText="Start Time"
+                  floatingLabelText="Start Time"
+                  disabled={!this.startDateValid()}
+                  onChange={(event, time) => this.handleChangeStartTime(event, time)}
+                  />
+              </Field>
+              <Field model="query.endDate">
+                <DatePicker
+                  ref="endDate"
+                  hintText="End Date"
+                  floatingLabelText="End Date"
+                  autoOk={this.state.autoOk}
+                  minDate={this.state.minDate}
+                  container={this.state.container}
+                  disabled={!this.startDateValid()}
+                  value={this.props.query.endDate}
+                  onChange={(event, date) => this.handleChangeEndDate(event, date)}
+                  />
+              </Field>
+              <Field model="query.endTime">
+                <TimePicker
+                  ref="endTime"
+                  hintText="End Time"
+                  floatingLabelText="End Time"
+                  disabled={!this.endDateValid()}
+                  onChange={(event, time) => this.handleChangeEndTime(event, time)}
+                  />
+              </Field>
+            </CardActions>
+            <CardActions style={styles.submit}>
+              <RaisedButton label="Search" type="submit" primary={true} />
+            </CardActions>
+          </Card>
         </Form>
-        <SearchResult result={this.props.result} />
+        <div>
+          <SearchResult result={this.props.result} />
+        </div>
       </div>
     );
   }

@@ -15,8 +15,6 @@ import store from "./store";
 
 import App from 'components/App/App';
 import Home from 'components/Home/Home';
-import Search from 'components/Search/Search';
-import Settings from 'components/Settings/Settings';
 
 ReactDOM.render(
     <MuiThemeProvider>
@@ -25,8 +23,6 @@ ReactDOM.render(
                 <Route path="/" component={App}>
                     <IndexRoute component={Home} />
                     <Route path="/home" component={Home} />
-                    <Route path="/search" component={Search} />
-                    <Route path="/settings" component={Settings} />
                 </Route>
             </Router>
         </Provider>

@@ -1,6 +1,19 @@
 import React from 'react';
-import Drawer from 'material-ui/Drawer';
 import Catalog from 'components/Catalog/Catalog';
+import Search from 'components/Search/Search';
+import SearchIcon from 'material-ui/svg-icons/action/search';
+import OnlineIcon from 'material-ui/svg-icons/av/videocam';
+import { 
+    Drawer, 
+    Tabs, 
+    Tab
+} from 'material-ui';
+
+const styles = {
+    tabItem: {
+        background: 'indigo',
+    }
+}
 
 export default class SideNav extends React.Component {
     constructor(props) {
@@ -12,11 +25,18 @@ export default class SideNav extends React.Component {
         return (
             <Drawer
                 docked={false}
-                width={250}
+                width={300}
                 open={this.state.open}
                 onRequestChange={(open) => this.setState({ open })}
                 >
-                <Catalog />
+                <Tabs tabItemContainerStyle={styles.tabItem}>
+                    <Tab label='Online' icon={<OnlineIcon />}>
+                        <Catalog />
+                    </Tab>
+                    <Tab label='Search' icon={<SearchIcon />}>
+                        <Search />
+                    </Tab>
+                </Tabs>
             </Drawer>
         );
     }
