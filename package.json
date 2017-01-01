@@ -45,7 +45,8 @@
     "reselect": "^2.5.4",
     "screenfull": "^3.0.2",
     "svg-url-loader": "^1.1.0",
-    "validator": "^6.1.0"
+    "validator": "^6.1.0",
+    "youtube-finder": "^1.0.0"
   },
   "devDependencies": {
     "babel-core": "^6.18.2",

@@ -1,13 +1,19 @@
 import React, { Component } from 'react';
 import { AutoComplete } from 'material-ui';
 import JSONP from 'jsonp';
+import YoutubeFinder from 'youtube-finder';
 
 const googleAutoSuggestURL = `//suggestqueries.google.com/complete/search?client=youtube&ds=yt&q=`;
 
-class MaterialUIAutocomplete extends Component {
+class MuiAutocomplete extends Component {
     constructor(props) {
         super(props);
+
         this.onUpdateInput = this.onUpdateInput.bind(this);
+        this.onNewRequest = this.onNewRequest.bind(this);
+
+        this.YoutubeClient  = YoutubeFinder.createClient({ key: 'AIzaSyDdJyARRERZxxe08iPNZ-2YR3YVro-iDJA' });
+
         this.state = {
             dataSource: [],
             inputValue: ''
@@ -21,6 +27,10 @@ class MaterialUIAutocomplete extends Component {
         }, function () {
             self.performSearch();
         });
+    }
+
+    onNewRequest(searchTerm) {
+        console.log('lilox ------------------------- onNewRequest:', searchTerm);
     }
 
     performSearch() {
@@ -49,10 +59,17 @@ class MaterialUIAutocomplete extends Component {
     render() {
         return (
             <AutoComplete
+                searchText={this.state.inputValue}
+                floatingLabelText={this.props.placeHolder}
+                filter={AutoComplete.noFilter}
+                openOnFocus={true}
+
                 dataSource={this.state.dataSource}
-                onUpdateInput={this.onUpdateInput} />
+                onUpdateInput={this.onUpdateInput}
+                onNewRequest={this.onNewRequest}
+                />
         );
     }
 }
 
-export default MaterialUIAutocomplete;
+export default MuiAutocomplete;

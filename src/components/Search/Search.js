@@ -6,7 +6,7 @@ import { fetchVideos } from 'actions/searchActions';
 import { searchVideos } from 'actions/searchActions';
 import { stopVideo } from 'actions/videoActions';
 import { Form, Control, Field, actions } from 'react-redux-form';
-import MaterialUIAutocomplete from './AutoComplete'
+import Autocomplete from './AutoComplete'
 
 import {
   Card,
@@ -57,22 +57,6 @@ class Search extends React.Component {
     };
   }
 
-  componentWillMount() {
-    //lilox: this.props.dispatch(fetchVideos());
-  }
-                // <AutoComplete
-                //   autoFocus
-                //   name="searchText"
-                //   ref='autoComplete'
-                //   openOnFocus={false}
-                //   hintText="Search video by name"
-                //   filter={AutoComplete.fuzzyFilter}
-                //   dataSource={this.props.suggestions.videos}
-                //   maxSearchResults={5}
-                //   onUpdateInput={v => this.props.dispatch(actions.change('query.text', v))}
-                //   onNewRequest={this.handleChangeSearchTerm.bind(this)}
-                //   />
-
   render() {
     return (
       <div>
@@ -93,7 +77,7 @@ class Search extends React.Component {
                   length: (v) => v && v.length >= 3,
                 }}
                 validateOn="blur">
-                <MaterialUIAutocomplete />
+                <Autocomplete />
               </Field>
             </CardActions>
             <CardActions expandable={true}>
@@ -227,8 +211,31 @@ class Search extends React.Component {
 
   handleSubmit(searchTerm) {
     this.setState({ expanded: false });
-    this.props.dispatch(stopVideo());
-    this.props.dispatch(searchVideos(searchTerm));
+    // this.props.dispatch(stopVideo());
+    // this.props.dispatch(searchVideos(searchTerm));
+    this.searchVideos2(searchTerm);
+  }
+
+  searchVideos2(searchTerm) {
+    const
+      self = this,
+      params = {
+        part: 'id,snippet',
+        type: 'video',
+        q: searchTerm,
+        maxResults: this.props.maxResults <= 50 ? this.props.maxResults : '50'
+      }
+
+      //lilox: TODO
+    this.YoutubeClient.search(params, function (error, results) {
+      if (error)
+        return console.log(error);
+      self.props.callback(results.items, searchTerm);
+      self.setState({
+        dataSource: [],
+        inputValue: ''
+      });
+    });
   }
 }
 
