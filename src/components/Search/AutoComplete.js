@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import { Autocomplete } from 'material-ui';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import { AutoComplete } from 'material-ui';
 import JSONP from 'jsonp';
 
 const googleAutoSuggestURL = `//suggestqueries.google.com/complete/search?client=youtube&ds=yt&q=`;
@@ -26,13 +24,24 @@ class MaterialUIAutocomplete extends Component {
     }
 
     performSearch() {
-        const
-            self = this,
-            url = googleAutoSuggestURL + this.state.inputValue;
+        const self = this;
+        const url = googleAutoSuggestURL + this.state.inputValue;
 
         if (this.state.inputValue !== '') {
             JSONP(url, function (error, data) {
-                // handle results here
+                let searchResults, retrievedSearchTerms;
+
+                if (error) return error;
+
+                searchResults = data[1];
+
+                retrievedSearchTerms = searchResults.map(function (result) {
+                    return result[0];
+                });
+
+                self.setState({
+                    dataSource: retrievedSearchTerms
+                });
             });
         }
     }

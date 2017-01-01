@@ -6,8 +6,9 @@ import { fetchVideos } from 'actions/searchActions';
 import { searchVideos } from 'actions/searchActions';
 import { stopVideo } from 'actions/videoActions';
 import { Form, Control, Field, actions } from 'react-redux-form';
+import MaterialUIAutocomplete from './AutoComplete'
+
 import {
-  AutoComplete,
   Card,
   CardActions,
   CardHeader,
@@ -59,6 +60,18 @@ class Search extends React.Component {
   componentWillMount() {
     //lilox: this.props.dispatch(fetchVideos());
   }
+                // <AutoComplete
+                //   autoFocus
+                //   name="searchText"
+                //   ref='autoComplete'
+                //   openOnFocus={false}
+                //   hintText="Search video by name"
+                //   filter={AutoComplete.fuzzyFilter}
+                //   dataSource={this.props.suggestions.videos}
+                //   maxSearchResults={5}
+                //   onUpdateInput={v => this.props.dispatch(actions.change('query.text', v))}
+                //   onNewRequest={this.handleChangeSearchTerm.bind(this)}
+                //   />
 
   render() {
     return (
@@ -80,18 +93,7 @@ class Search extends React.Component {
                   length: (v) => v && v.length >= 3,
                 }}
                 validateOn="blur">
-                <AutoComplete
-                  autoFocus
-                  name="searchText"
-                  ref='autoComplete'
-                  openOnFocus={false}
-                  hintText="Search video by name"
-                  filter={AutoComplete.fuzzyFilter}
-                  dataSource={this.props.suggestions.videos}
-                  maxSearchResults={5}
-                  onUpdateInput={v => this.props.dispatch(actions.change('query.text', v))}
-                  onNewRequest={this.handleChangeSearchTerm.bind(this)}
-                  />
+                <MaterialUIAutocomplete />
               </Field>
             </CardActions>
             <CardActions expandable={true}>
