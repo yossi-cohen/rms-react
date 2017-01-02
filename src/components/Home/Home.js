@@ -14,6 +14,7 @@ export default class Home extends React.Component {
     render() {
         return (
             <div>
+                <CesiumComponent />
                 <ResizableAndMovable>
                     <VideoPlayer poster='images/video-poster.png' />
                 </ResizableAndMovable>

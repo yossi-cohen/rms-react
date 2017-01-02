@@ -103,13 +103,13 @@ class CesiumTools {
 
     setCesiumHome(latitude, longitude) {
         const west = longitude;
+        const east = longitude;
         const south = latitude;
-        const east = longitude + 0.01;
-        const north = latitude + 0.01;
+        const north = latitude;
         let extent = Cesium.Rectangle.fromDegrees(west, south, east, north);
 
         Cesium.Camera.DEFAULT_VIEW_RECTANGLE = extent;
-        Cesium.Camera.DEFAULT_VIEW_FACTOR = 0;
+        Cesium.Camera.DEFAULT_VIEW_FACTOR = 0.10;
     }
 
     drawCirclePrimitive(viewer, center, radius) {

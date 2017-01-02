@@ -157,7 +157,7 @@ class CesiumComponent extends React.Component {
             })
         };
 
-        cesiumTools.setCesiumHome(32.80, 35.13); // before creating viewer
+        cesiumTools.setCesiumHome(32, 35); // before creating viewer
 
         return new Cesium.Viewer(this.refs.cesiumNode, cesiumViewerOptions);
     }

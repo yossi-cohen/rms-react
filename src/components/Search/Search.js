@@ -289,16 +289,36 @@ class Search extends React.Component {
     }
 
     //lilox: TODO
-    this.YoutubeClient.search(params, function (error, results) {
-      if (error)
-        return console.log(error);
-      //lilox: 
-      self.props.callback(results.items, searchTerm);
-      self.setState({
-        dataSource: [],
-        inputValue: ''
-      });
-    });
+    let startDateTime = null;
+    let endDateTime = null;
+    if (this.props.query.startDate) {
+      startDateTime = this.props.query.startDate;
+      if (this.props.query.startTime) {
+        startDateTime = this.props.query.startTime;
+      }
+
+      if (this.props.query.endDate) {
+        endDateTime = this.props.query.endDate;
+        if (this.props.query.endTime) {
+          endDateTime = this.props.query.endTime;
+        }
+      }
+    }
+
+    console.log('lilox --------------------------------------- startDateTime:', startDateTime);
+    console.log('lilox --------------------------------------- endDateTime:', endDateTime);
+
+    //lilox: TODO
+    // this.YoutubeClient.search(params, function (error, results) {
+    //   if (error)
+    //     return console.log(error);
+    //   //lilox: 
+    //   self.props.callback(results.items, searchTerm);
+    //   self.setState({
+    //     dataSource: [],
+    //     inputValue: ''
+    //   });
+    // });
   }
 }
 
