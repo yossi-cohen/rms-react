@@ -3,40 +3,6 @@ import urljoin from 'url-join';
 import config from '../../config';
 
 // --------------------------------------------------------
-// fetchVideos (suggestions for autocomplete)
-// --------------------------------------------------------
-
-export function fetchVideos() {
-  return function (dispatch) {
-    dispatch(fetchVideosRequest());
-    return fetch(urljoin(config.BASE_URL, '/api/catalog'))
-      .then(res => res.json())
-      .then(json => { dispatch(fetchVideosSuccess(json)) })
-      .catch(ex => dispatch(fetchVideosFailure(ex)));
-  }
-}
-
-function fetchVideosRequest() {
-  return {
-    type: types.FETCH_SUGGESTIONS_REQUEST
-  }
-}
-
-function fetchVideosSuccess(json) {
-  return {
-    type: types.FETCH_SUGGESTIONS_SUCCESS,
-    json
-  }
-}
-
-function fetchVideosFailure(ex) {
-  return {
-    type: types.FETCH_SUGGESTIONS_FAILURE,
-    ex
-  }
-}
-
-// --------------------------------------------------------
 // searchVideos
 // --------------------------------------------------------
 

@@ -2,13 +2,14 @@ import React from 'react';
 import { connect } from "react-redux";
 import validator from 'validator';
 import SearchResult from './SearchResult';
-import { fetchVideos } from 'actions/searchActions';
 import { searchVideos } from 'actions/searchActions';
 import { stopVideo } from 'actions/videoActions';
 import { Form, Control, Field, actions } from 'react-redux-form';
-import Autocomplete from './AutoComplete'
+import JSONP from 'jsonp';
+import YoutubeFinder from 'youtube-finder';
 
 import {
+  AutoComplete,
   Card,
   CardActions,
   CardHeader,
@@ -16,6 +17,8 @@ import {
   RaisedButton,
   TimePicker
 } from 'material-ui';
+
+const googleAutoSuggestURL = `//suggestqueries.google.com/complete/search?client=youtube&ds=yt&q=`;
 
 const isRequired = (value) => !validator.isNull('' + value);
 
@@ -48,13 +51,64 @@ class Search extends React.Component {
     maxDate.setFullYear(maxDate.getFullYear() + 1);
     maxDate.setHours(0, 0, 0, 0);
 
+    this.onUpdateInput = this.onUpdateInput.bind(this);
+    this.onNewRequest = this.onNewRequest.bind(this);
+    this.YoutubeClient = YoutubeFinder.createClient({ key: 'AIzaSyDdJyARRERZxxe08iPNZ-2YR3YVro-iDJA' });
+
     this.state = this.initialState = {
       expanded: false,
       minDate: minDate,
       maxDate: maxDate,
       autoOk: false,
-      container: 'dialog' // 'inline'
+      container: 'dialog', // 'inline'
+      firstTimeActive: true,
+      dataSource: [],
+      inputValue: '',
     };
+  }
+
+  onUpdateInput(inputValue) {
+    const self = this;
+    this.setState({
+      inputValue: inputValue
+    }, function () {
+      self.performSearch();
+    });
+  }
+
+  onNewRequest(searchTerm) {
+    console.log('lilox ------------------------- onNewRequest:', searchTerm);
+  }
+
+  performSearch() {
+    const self = this;
+    const url = googleAutoSuggestURL + this.state.inputValue;
+
+    if (this.state.inputValue !== '') {
+      JSONP(url, function (error, data) {
+        let searchResults, retrievedSearchTerms;
+
+        if (error) return error;
+
+        searchResults = data[1];
+
+        retrievedSearchTerms = searchResults.map(function (result) {
+          return result[0];
+        });
+
+        self.setState({
+          dataSource: retrievedSearchTerms
+        });
+      });
+    }
+  }
+
+  //lilox
+  componentDidUpdate() {
+    if (this.props.active && this.state.firstTimeActive) {
+      this.refs.autoComplete.focus();
+      this.setState({ firstTimeActive: false })
+    }
   }
 
   render() {
@@ -77,7 +131,16 @@ class Search extends React.Component {
                   length: (v) => v && v.length >= 3,
                 }}
                 validateOn="blur">
-                <Autocomplete />
+                <AutoComplete
+                  ref='autoComplete'
+                  searchText={this.state.inputValue}
+                  floatingLabelText={this.props.placeHolder}
+                  filter={AutoComplete.noFilter}
+                  openOnFocus={true}
+                  dataSource={this.state.dataSource}
+                  onUpdateInput={this.onUpdateInput}
+                  onNewRequest={this.onNewRequest}
+                  />
               </Field>
             </CardActions>
             <CardActions expandable={true}>
@@ -217,20 +280,19 @@ class Search extends React.Component {
   }
 
   searchVideos2(searchTerm) {
-    const
-      self = this,
-      params = {
-        part: 'id,snippet',
-        type: 'video',
-        q: searchTerm,
-        maxResults: this.props.maxResults <= 50 ? this.props.maxResults : '50'
-      }
+    const self = this;
+    const params = {
+      part: 'id,snippet',
+      type: 'video',
+      q: searchTerm,
+      maxResults: this.props.maxResults <= 10 ? this.props.maxResults : '10'
+    }
 
-      //lilox: TODO
+    //lilox: TODO
     this.YoutubeClient.search(params, function (error, results) {
       if (error)
         return console.log(error);
-      self.props.callback(results.items, searchTerm);
+      //lilox: self.props.callback(results.items, searchTerm);
       self.setState({
         dataSource: [],
         inputValue: ''
@@ -241,6 +303,5 @@ class Search extends React.Component {
 
 export default connect((store) => ({
   query: store.search.query,
-  suggestions: store.search.suggestions,
   result: store.search.result
 }))(Search);

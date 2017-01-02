@@ -8,12 +8,6 @@ const initialState = {
         geoJson: null
     },
 
-    suggestions: {
-        fetching: false,
-        videos: [],
-        error: null
-    },
-
     result: {
         searching: false,
         videos: [],
