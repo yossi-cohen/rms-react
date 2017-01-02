@@ -88,7 +88,8 @@ class Search extends React.Component {
       JSONP(url, function (error, data) {
         let searchResults, retrievedSearchTerms;
 
-        if (error) return error;
+        if (error)
+          return error;
 
         searchResults = data[1];
 
@@ -103,7 +104,6 @@ class Search extends React.Component {
     }
   }
 
-  //lilox
   componentDidUpdate() {
     if (this.props.active && this.state.firstTimeActive) {
       this.refs.autoComplete.focus();
@@ -114,7 +114,7 @@ class Search extends React.Component {
   render() {
     return (
       <div>
-        <Form model="query" onSubmit={(v) => this.handleSubmit(v)}>
+        <Form model="query" onSubmit={() => this.handleSubmit()}>
           <Card
             expanded={this.state.expanded}
             onExpandChange={(expanded) => this.setState({ expanded: expanded })}
@@ -272,11 +272,11 @@ class Search extends React.Component {
     this.props.dispatch(actions.change('query.endTime', time));
   }
 
-  handleSubmit(searchTerm) {
+  handleSubmit() {
     this.setState({ expanded: false });
     // this.props.dispatch(stopVideo());
-    // this.props.dispatch(searchVideos(searchTerm));
-    this.searchVideos2(searchTerm);
+    // this.props.dispatch(searchVideos(this.state.inputValue));
+    this.searchVideos2(this.state.inputValue);
   }
 
   searchVideos2(searchTerm) {
@@ -285,14 +285,15 @@ class Search extends React.Component {
       part: 'id,snippet',
       type: 'video',
       q: searchTerm,
-      maxResults: this.props.maxResults <= 10 ? this.props.maxResults : '10'
+      maxResults: this.props.maxResults <= 50 ? this.props.maxResults : '50'
     }
 
     //lilox: TODO
     this.YoutubeClient.search(params, function (error, results) {
       if (error)
         return console.log(error);
-      //lilox: self.props.callback(results.items, searchTerm);
+      //lilox: 
+      self.props.callback(results.items, searchTerm);
       self.setState({
         dataSource: [],
         inputValue: ''
