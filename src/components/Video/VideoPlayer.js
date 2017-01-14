@@ -4,6 +4,12 @@ import ReactPlayer from 'react-player'
 import Duration from './Duration'
 import { findDOMNode } from 'react-dom'
 
+import RecordIcon from 'material-ui/svg-icons/file/cloud-circle';
+import Blink from 'components/Util/Blink';
+import {
+    Subheader,
+} from 'material-ui';
+
 const iconStyles = {
     marginRight: 24
 };
@@ -52,6 +58,10 @@ class VideoPlayer extends React.Component {
                     null == url ?
                         <div /> :
                         <div>
+                            <Subheader style={{ display: 'flex', alignItems: 'center' }}>
+                                <span>Recording</span>
+                                <RecordIcon color='red' />
+                            </Subheader>
                             <ReactPlayer
                                 ref={player => { this.player = player } }
                                 className='react-player'
@@ -79,7 +89,7 @@ class VideoPlayer extends React.Component {
     }
 
     onStart = () => {
-        //lilox: console.log('onStart');
+        //lilox: console.log('onStart');this.player
     }
 
     onReady = () => {

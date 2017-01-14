@@ -1,11 +1,20 @@
 import React from 'react';
 import { connect } from "react-redux";
-import { List, ListItem, IconButton } from 'material-ui';
 
 import { fetchCatalog } from 'actions/catalogActions';
 import { playVideo } from 'actions/videoActions';
 
 import PlayIcon from 'material-ui/svg-icons/av/play-arrow';
+import VideoCam from 'material-ui/svg-icons/av/videocam';
+import VideoCamOff from 'material-ui/svg-icons/av/videocam-off';
+
+import Blink from 'components/Util/Blink';
+import {
+    IconButton,
+    List,
+    ListItem,
+    Toggle,
+} from 'material-ui';
 
 class Catalog extends React.Component {
     constructor(props) {
@@ -25,12 +34,42 @@ class Catalog extends React.Component {
 
     render() {
         return (
-            <div>
-                <List>
-                    {this.state.videos.map(v => this.renderItem(v))}
-                </List>
-            </div>
+            <List>
+                {this.state.videos.map(v => this.renderItem(v))}
+            </List>
         );
+    }
+
+    renderItem(video) {
+        return (
+            <ListItem
+                primaryText={video.title}
+                secondaryText={this.isPlaying(video) ? 'playing' : 'stopped'}
+                leftIcon={this.renderLeftIcon(video)}
+                rightIconButton={this.renderPlayStopIcon(video)}
+                primaryTogglesNestedList={true}
+                initiallyOpen={false}
+                nestedItems={[
+                    <ListItem
+                        primaryText={video.title}
+                        leftIcon={this.renderLeftIcon(video)}
+                        rightIconButton={this.renderPlayStopIcon(video)}
+                        />,
+                ]}
+
+                />
+        );
+    }
+
+    // <Blink><PlayIcon color='red' /></Blink>
+    renderLeftIcon(video) {
+        return (
+            <VideoCam />
+        );
+    }
+
+    isPlaying(video) {
+        return video.state && video.state.playing;
     }
 
     renderPlayStopIcon(video) {
@@ -41,18 +80,7 @@ class Catalog extends React.Component {
         );
     }
 
-    renderItem(video) {
-        return (
-            <ListItem primaryText={video.title} secondaryText={this.isPlaying(video) ? 'playing' : 'stopped'} rightIconButton={this.renderPlayStopIcon(video)} />
-        );
-    }
-
-    isPlaying(video) {
-        return video.state && video.state.playing;
-    }
-
     handlePlayStop(video) {
-        console.log('lilox: ------------------------------------> play/stop:', video.title);
         this.props.dispatch(playVideo(video));
     }
 }
